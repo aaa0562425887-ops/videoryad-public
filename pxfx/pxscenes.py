@@ -127,14 +127,18 @@ def s03(t):
         _P3["e"] += dt
         _P3["es"] += dt
         n = loopnoise(_P3["t"] / 3.0, seed=3, n=3)
-        if _P3["e"] >= 0.03:
+        if _P3["e"] >= 0.035:
             _P3["e"] = 0.0
-            _P3["f"].emit(5, bx + n * 20, by, speed=(180, 430), ang=(-math.pi * 0.60, -math.pi * 0.40),
-                          life=(0.55, 1.30), size=(5, 14), rp=rpf, drift=70)
-        if _P3["es"] >= 0.10:
+            # костёр шириной с очаг: языки стартуют по всей его ширине, а не из точки
+            for sx in (-52, -18, 18, 52):
+                _P3["f"].emit(1, bx + sx * (0.7 + 0.5 * abs(n)) + n * 10, by,
+                              speed=(150, 330), ang=(-math.pi * 0.66, -math.pi * 0.34),
+                              life=(0.45, 1.15), size=(7, 17), rp=rpf, kind="flame", drift=85)
+        if _P3["es"] >= 0.075:
             _P3["es"] = 0.0
-            _P3["s"].emit(2, bx + n * 34, by - 230, speed=(16, 60), ang=(-math.pi * 0.70, -math.pi * 0.30),
-                          life=(2.4, 4.2), size=(30, 62), rp=rps, kind="smoke", drift=46)
+            _P3["s"].emit(1, bx + n * 70 + (_P3["t"] * 97 % 120 - 60), by - 300,
+                          speed=(30, 95), ang=(-math.pi * 0.85, -math.pi * 0.15),
+                          life=(2.6, 4.6), size=(20, 44), rp=rps, kind="smoke", drift=120)
         _P3["f"].step(dt)
         _P3["s"].step(dt)
         _P3["t"] += dt
@@ -148,7 +152,7 @@ def s03(t):
         d.ellipse([bx - rx, by - ry, bx + rx, by + ry], fill=at(rpf, 0.26 + 0.13 * (5 - i)) + (255,))
     _P3["f"].draw(f)
     pul = 1 + 0.10 * math.sin(t * math.tau * 7) + 0.06 * loopnoise(t, seed=9, n=3)
-    f.splat(bx, by - 26, 96 * pul, at(rpf, 0.62), 0.40)
+    f.splat(bx, by - 20, 88 * pul, at(rpf, 0.58), 0.26)
     f.splat(bx, by - 70, 260, at(rpf, 0.42), 0.13)
     f.splat(bx, by + 26, 420, at(rpf, 0.32), 0.09, hard=3.6)
     title(f, "ДЫМ — ЭТО НЕ СЕТОЧКА", "клубы по-настоящему полупрозрачные и подсвечены со стороны огня")

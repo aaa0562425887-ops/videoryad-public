@@ -247,7 +247,7 @@ class Particles:
             if q["kind"] == "smoke":
                 # дым — по-настоящему полупрозрачный клуб из трёх комков, не ровный круг
                 r = q["sz"] * (1 + 3.6 * u)
-                a = int(132 * (1 - u) ** 1.2 * (0.3 + 0.7 * min(1.0, q["age"] / 0.4)))
+                a = int(104 * (1 - u) ** 1.15 * (0.25 + 0.75 * min(1.0, q["age"] / 0.5)))
                 if a <= 2:
                     continue
                 col = at(q["rp"], 0.42 + 0.34 * (1 - u))
@@ -259,6 +259,14 @@ class Particles:
                 warm = max(0.0, 1.0 - u * 2.2)
                 if warm > 0:
                     f.splat(q["x"], q["y"] + r * 0.45, r * 1.15, at(q["rp"], 0.55), 0.11 * warm * glow)
+                continue
+            if q["kind"] == "flame":
+                hot = (1 - u) ** 0.8
+                col = at(q["rp"], 0.26 + 0.42 * hot)
+                r = max(1.0, q["sz"] * (0.5 + 0.7 * hot) * (1 - 0.45 * u))
+                a = int(235 * min(1.0, hot * 1.6))
+                d.ellipse([q["x"] - r, q["y"] - r * 1.25, q["x"] + r, q["y"] + r * 1.25], fill=col + (a,))
+                f.splat(q["x"], q["y"], r * 2.6, col, 0.16 * hot * glow)
                 continue
             # искра: тело жёстким шагом рампы, свет отдельно
             hot = 1 - u
