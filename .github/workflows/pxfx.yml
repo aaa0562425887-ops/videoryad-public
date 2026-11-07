@@ -1,0 +1,51 @@
+# Приёмы, забранные из pixelfx: шесть клипов, каждый на своей машине.
+name: pxfx
+on:
+  workflow_dispatch:
+    inputs:
+      scenes:
+        description: "какие сцены считать, списком JSON"
+        default: '["01","02","03","04","05","06"]'
+  push:
+    paths: ["pxfx/**"]
+concurrency:
+  group: pxfx-${{ github.sha }}
+  cancel-in-progress: false
+permissions:
+  contents: write
+jobs:
+  clip:
+    runs-on: ubuntu-latest
+    timeout-minutes: 40
+    strategy:
+      fail-fast: false
+      matrix:
+        scene: ${{ fromJSON(github.event.inputs.scenes || '["01","02","03","04","05","06"]') }}
+    steps:
+      - uses: actions/checkout@v4
+      - name: Шрифты и библиотеки
+        run: |
+          sudo apt-get update -qq
+          sudo apt-get install -y -qq fonts-liberation fonts-dejavu-core >/dev/null
+          pip install --quiet --upgrade numpy pillow imageio-ffmpeg
+      - name: Собрать клип
+        run: |
+          cd pxfx
+          time python3 shard_px.py "${{ matrix.scene }}" "$GITHUB_WORKSPACE/pxfx_${{ matrix.scene }}.mp4"
+      - uses: actions/upload-artifact@v4
+        with:
+          name: pxfx-${{ matrix.scene }}
+          path: pxfx_${{ matrix.scene }}.mp4
+          retention-days: 1
+  pack:
+    needs: clip
+    if: always()
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/download-artifact@v4
+        with: {path: clips, merge-multiple: true}
+      - env: {GH_TOKEN: "${{ github.token }}"}
+        run: |
+          ls -la clips
+          tag="pxfx-${{ github.run_id }}"
+          gh release create "$tag" clips/*.mp4 -R "${{ github.repository }}" -t "$tag" -n "Приёмы pixelfx в движении."
