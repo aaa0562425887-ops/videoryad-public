@@ -11,7 +11,7 @@ import numpy as np
 from PIL import Image, ImageDraw, ImageFilter
 
 from pxcore import (FPS, H, SANS, SANS_B, SANS_BL, W, Frame, Particles, at, backdrop, ease_in_out,
-                    ease_lin, ease_out_expo, ease_out_quart, font, label, loopnoise, plate, ramp, seg)
+                    ease_lin, ease_out_expo, ease_out_quart, font, label, loopnoise, plate, pulse, ramp, seg)
 
 TXT = (238, 242, 246)
 TXT2 = (150, 168, 188)
@@ -98,7 +98,7 @@ def s02(t):
     p.draw(f)
     # вспышка на кадре удара — «герой-кадр»
     for i, (ht, hx_) in enumerate(hits):
-        k = 1 - seg(t, ht, ht + 0.012)      # 0,012 от сцены ≈ 0,08 с — две-три рамки
+        k = pulse(t, ht, 0.012)             # 0,012 от сцены ≈ 0,08 с — две-три рамки
         if k > 0:
             f.splat(hx_, H * 0.52, 150 * k, (255, 246, 228), 0.75 * k)
             f.splat(hx_, H * 0.52, 60, (255, 255, 255), 0.9 * k)
@@ -115,26 +115,26 @@ _P3 = {}
 
 def s03(t):
     if t < 1e-6 or "f" not in _P3:
-        _P3["f"] = Particles(seed=11, grav=-760.0, drag=1.45)          # языки пламени
-        _P3["s"] = Particles(seed=12, grav=0.0, drag=0.9, lift=165.0)  # дым своей тягой
+        _P3["f"] = Particles(seed=11, grav=-620.0, drag=0.9)           # языки пламени
+        _P3["s"] = Particles(seed=12, grav=0.0, drag=0.75, lift=195.0)  # дым своей тягой
         _P3["t"] = 0.0
         _P3["e"] = 0.0
         _P3["es"] = 0.0
     dt = 1.0 / FPS
     rpf, rps = ramp("ОГОНЬ"), ramp("ДЫМ")
-    bx, by = W * 0.5, H * 0.74
+    bx, by = W * 0.5, H * 0.80
     while _P3["t"] < t:
         _P3["e"] += dt
         _P3["es"] += dt
         n = loopnoise(_P3["t"] / 3.0, seed=3, n=3)
-        if _P3["e"] >= 0.035:
+        if _P3["e"] >= 0.03:
             _P3["e"] = 0.0
-            _P3["f"].emit(4, bx + n * 18, by, speed=(90, 230), ang=(-math.pi * 0.62, -math.pi * 0.38),
-                          life=(0.45, 1.05), size=(4, 11), rp=rpf, drift=55)
-        if _P3["es"] >= 0.12:
+            _P3["f"].emit(5, bx + n * 20, by, speed=(180, 430), ang=(-math.pi * 0.60, -math.pi * 0.40),
+                          life=(0.55, 1.30), size=(5, 14), rp=rpf, drift=70)
+        if _P3["es"] >= 0.10:
             _P3["es"] = 0.0
-            _P3["s"].emit(2, bx + n * 30, by - 90, speed=(20, 70), ang=(-math.pi * 0.70, -math.pi * 0.30),
-                          life=(2.2, 3.8), size=(26, 52), rp=rps, kind="smoke", drift=34)
+            _P3["s"].emit(2, bx + n * 34, by - 230, speed=(16, 60), ang=(-math.pi * 0.70, -math.pi * 0.30),
+                          life=(2.4, 4.2), size=(30, 62), rp=rps, kind="smoke", drift=46)
         _P3["f"].step(dt)
         _P3["s"].step(dt)
         _P3["t"] += dt
@@ -142,18 +142,17 @@ def s03(t):
     f = Frame()
     d = f.draw()
     _P3["s"].draw(f)          # дым позади пламени
-    # очаг: приплюснутое ядро жёсткими шагами рампы
-    for i in range(6, 0, -1):
-        rx, ry = (10 + i * 11) * 1.7, (10 + i * 11) * 0.45
-        d.ellipse([bx - rx, by - ry, bx + rx, by + ry], fill=at(rpf, 0.22 + 0.13 * (6 - i)) + (255,))
+    # очаг: небольшое приплюснутое ядро, свет приглушён — иначе от сцены остаётся один шар
+    for i in range(5, 0, -1):
+        rx, ry = (8 + i * 7) * 1.9, (8 + i * 7) * 0.42
+        d.ellipse([bx - rx, by - ry, bx + rx, by + ry], fill=at(rpf, 0.26 + 0.13 * (5 - i)) + (255,))
     _P3["f"].draw(f)
     pul = 1 + 0.10 * math.sin(t * math.tau * 7) + 0.06 * loopnoise(t, seed=9, n=3)
-    f.splat(bx, by - 30, 190 * pul, at(rpf, 0.72), 0.95)
-    f.splat(bx, by - 90, 420, at(rpf, 0.45), 0.26)
-    # отсвет на земле — свет виден не только на источнике
-    f.splat(bx, by + 40, 520, at(rpf, 0.35), 0.16, hard=3.4)
+    f.splat(bx, by - 26, 96 * pul, at(rpf, 0.62), 0.40)
+    f.splat(bx, by - 70, 260, at(rpf, 0.42), 0.13)
+    f.splat(bx, by + 26, 420, at(rpf, 0.32), 0.09, hard=3.6)
     title(f, "ДЫМ — ЭТО НЕ СЕТОЧКА", "клубы по-настоящему полупрозрачные и подсвечены со стороны огня")
-    return f.composite(backdrop("ночь"))
+    return f.composite(backdrop("студия"))
 
 
 # ── 04. ХОД ДВИЖЕНИЯ: линейно против outExpo + герой-кадр
@@ -182,7 +181,7 @@ def s04(t):
         d.text((cx2, cy - 30), "ДОЛЯ ЭКСПОРТА", font=fn_cap, fill=at(rp, 0.75) + (255,))
         d.text((cx2, cy + 10), "за четвёртый квартал", font=fn_sub, fill=TXT2 + (255,))
         if hero:
-            fl = 1 - seg(t, LAND, LAND + 0.014)    # ≈ 0,1 с: две-три рамки, не зарево
+            fl = pulse(t, LAND, 0.014)             # ≈ 0,1 с: две-три рамки, не зарево
             if fl > 0:
                 f.splat(x + bw, cy, 170 * fl, (255, 255, 255), 0.85 * fl)
                 d.rectangle([x, cy - bh // 2, x + bw, cy + bh // 2],
@@ -264,6 +263,8 @@ def s06(t):
     title(f, "ОДИН ЭФФЕКТ, ГАММА ПО КАНАЛУ", "цвет приходит рампой извне — код эффекта не меняется")
     return f.composite(backdrop("студия"))
 
+
+LOOPS = ("05",)   # сцены, которые обязаны сходиться первым и последним кадром
 
 SCENES = {
     "01": (s01, 7.0),
