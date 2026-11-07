@@ -1,0 +1,186 @@
+name: cards-render
+# ЧЬИ КАРТОЧКИ ГДЕ РИСУЮТСЯ (правило 23.10, после живого столкновения):
+#   боевые новостные ролики — на своей публичной цели, как обычно;
+#   РАЗРАБОТКА АРСЕНАЛА — ТОЛЬКО на `rezerv`, ДАЖЕ ЕСЛИ ОН ЗАНЯТ.
+# Очередь внутри своей цели не мешает никому (это ожидание своей же группы
+# concurrency), а занятая боевая цель ОСТАНАВЛИВАЕТ чужой ролик. Общее
+# правило «не ждать, брать первую свободную» на разработку не распространяется
+# именно поэтому.
+# Рисует видео-версии карточек-цитат на раннере: на машине пользователя
+# считать нельзя (его прямое слово 22.10). Чужих сборок не касается —
+# та идёт по queue/**, у этой свой триггер и своя группа.
+on:
+  workflow_dispatch:
+  push:
+    paths: ["cards_render/**"]
+concurrency:
+  # ГРУППА УНИКАЛЬНА НА ПРОГОН (23.10, находка вкладки-разработчика). Была одна
+  # на репозиторий — и два ролика карточек на одной цели ВСЕГДА вставали друг за
+  # другом, даже когда свободны все двадцать раннеров. Пользователь зол именно на
+  # это: «почему вы стоите друг за дружкой при четырёх аккаунтах». Каждое задание
+  # приезжает своим коммитом, поэтому sha и даёт нужную уникальность; упираемся
+  # теперь только в реальный лимит машин, а он при max-parallel 4 далеко.
+  group: cards-render-${{ github.sha }}
+  cancel-in-progress: false
+jobs:
+  # СКОЛЬКО МАШИН — ПО ЧИСЛУ КАРТОЧЕК (диспетчер, 23.10, по предложению
+  # вкладки-разработчика). Матрица из шести нужна полному комплекту арсенала
+  # (62 клипа, 699 с экранного времени), но боевой новостной ролик несёт 4-5
+  # карточек: пять машин из шести простаивали бы впустую и писали warning
+  # «no files found», а лимит раннеров на аккаунте общий с фетчем — там уже
+  # 20 шардов. Считаем по 10 заданий на машину, потолок шесть.
+  plan:
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    outputs:
+      shards: ${{ steps.calc.outputs.shards }}
+      total: ${{ steps.calc.outputs.total }}
+    steps:
+      - uses: actions/checkout@v4
+      - id: calc
+        run: |
+          # ПУСТОЙ ПРОГОН ЗАКРЫВАЕМ СРАЗУ (23.10, находка вкладки-разработчика).
+          # Триггер `paths: cards_render/**` срабатывает и на УДАЛЕНИЕ файлов,
+          # то есть штатный финал («карточки: убрано после скачивания») сам
+          # запускает второй прогон, в котором задания уже нет. Рисовать
+          # нечего, а цель он занимает на минуты — и следующая отправка
+          # получает «цель занята». Нет `jobs.json` — отдаём ПУСТУЮ матрицу,
+          # джоб `render` не запускается вовсе, прогон закрывается за секунды.
+          if [ ! -f cards_render/jobs.json ]; then
+            echo "задания нет — это финальный коммит уборки, закрываемся"
+            echo "total=0" >> "$GITHUB_OUTPUT"
+            echo "shards=[]" >> "$GITHUB_OUTPUT"
+            exit 0
+          fi
+          python3 - <<'PY' >> "$GITHUB_OUTPUT"
+          import json, os
+          try:
+              n = len(json.load(open("cards_render/jobs.json", encoding="utf-8")))
+          except Exception:
+              n = 1
+          # ПО ОДНОМУ ЗАДАНИЮ НА МАШИНУ, А НЕ ПО ДЕСЯТЬ (замер 28.10).
+          # Десять на машину имело смысл, пока заданием была карточка-цитата
+          # (3-6 с рендера). С элементами арсенала цена другая: картограмма
+          # 45 с, плёнка 39 с — семь штук подряд дали 226 с счёта и 5 минут
+          # прогона на ОДНОЙ машине, пока остальные простаивали. Накладные
+          # раннера (checkout, ffmpeg, выгрузка) — 70-90 с и платятся один
+          # раз независимо от дробления, поэтому выигрыш идёт прямо в срок.
+          parts = max(1, min(10, n))
+          print("total=%d" % parts)
+          print("shards=%s" % json.dumps(list(range(1, parts + 1))))
+          print("заданий: %d, машин: %d" % (n, parts), file=__import__("sys").stderr)
+          PY
+      - name: что решили
+        run: echo "заданий разложено на ${{ steps.calc.outputs.total }} машин"
+
+  render:
+    needs: plan
+    # ПУСТОЙ ПРОГОН НЕ КРАСИМ КРАСНЫМ (06.11, улов `usuario-80` при приёмке
+    # пятой трубы). `plan` отдаёт пустую матрицу на финальном коммите уборки,
+    # и прогон закрывался как `failure` за 7-13 секунд — на ВСЕХ целях. На
+    # глаз это читается как поломка трубы: вкладка идёт разбираться, хотя
+    # рисовать было нечего. Теперь джоб просто пропускается.
+    if: needs.plan.outputs.total != '0' && needs.plan.outputs.total != ''
+
+    runs-on: ubuntu-latest
+    timeout-minutes: 60
+    # ПОЛНЫЙ КОМПЛЕКТ АРСЕНАЛА (2026-10-23): 62 сцены одним потоком в таймаут
+    # не влезают — шесть машин берут по куску заданий, каждая кладёт свой
+    # артефакт. Минуты на публичном репозитории не считаются.
+    strategy:
+      fail-fast: false
+      # ПОТОЛОК ОДНОВРЕМЕННЫХ МАШИН (23.10). Лимит 20 раннеров считается НА
+      # АККАУНТ и делится с фетчем, у которого 20 шардов. Матрица карточек
+      # выгребала квоту пачкой: 23.10 прогон «62 карточки» на боевой цели
+      # поставил чужой ролик (`celi-ne-menyaem-2410`) в очередь. Четыре вместо
+      # шести дают ту же картину по времени и оставляют запас фетчу.
+      max-parallel: 10
+      matrix:
+        shard: ${{ fromJson(needs.plan.outputs.shards) }}
+    steps:
+      - uses: actions/checkout@v4
+      - name: системные пакеты
+        # 5 → 10 (23.10, тем же вечером). Пять минут оказались СЛИШКОМ
+        # жёстки: на `planeta-merc` семь шардов из двадцати легли именно на
+        # этом шаге и оставили 29 сцен пустыми — это инфраструктура раннера,
+        # не наши запросы. Обычная установка идёт 30-60 с, залипание, ради
+        # которого таймаут и ставился, длилось 23 минуты; десять минут
+        # разделяют эти два случая надёжно.
+        timeout-minutes: 6
+        run: |
+          # не полагаемся на apt — см. разбор в videoryad-cloud.yml (23.10)
+          command -v ffmpeg >/dev/null 2>&1 && command -v ffprobe >/dev/null 2>&1 || {
+            timeout 120 sudo apt-get update -qq || true
+            timeout 180 sudo apt-get install -y -qq ffmpeg fonts-dejavu-core || true
+          }
+          # ЗАПАСНОЙ ИСТОЧНИК И ЖЁСТКИЕ ТАЙМАУТЫ (06.11, улов `usuario-b9`):
+          # шард шесть минут висел на `johnvansickle.com` (curl 28, «Failed to
+          # connect after 135002 ms»), шаг вышел по таймауту, прогон стал
+          # `failure` — хотя остальные десять шардов карточки отрисовали.
+          # Теперь: соединение не дольше 10 с, попытка одна, и если зеркало
+          # молчит — берём сборку с GitHub (BtbN), она лежит рядом с нами.
+          if ! command -v ffmpeg >/dev/null 2>&1 || ! command -v ffprobe >/dev/null 2>&1; then
+            curl -fsSL --retry 1 --connect-timeout 10 --max-time 90 \
+              https://johnvansickle.com/ffmpeg/releases/ffmpeg-release-amd64-static.tar.xz \
+              -o /tmp/ff.tar.xz \
+              && mkdir -p /tmp/ffbin && tar -xJf /tmp/ff.tar.xz -C /tmp/ffbin --strip-components=1 \
+              && sudo install -m755 /tmp/ffbin/ffmpeg /tmp/ffbin/ffprobe /usr/local/bin/ || true
+          fi
+          if ! command -v ffmpeg >/dev/null 2>&1 || ! command -v ffprobe >/dev/null 2>&1; then
+            echo "зеркало johnvansickle не ответило — беру сборку с GitHub"
+            curl -fsSL --retry 2 --connect-timeout 10 --max-time 120 \
+              https://github.com/BtbN/FFmpeg-Builds/releases/download/latest/ffmpeg-master-latest-linux64-gpl.tar.xz \
+              -o /tmp/ff2.tar.xz \
+              && mkdir -p /tmp/ffbin2 && tar -xJf /tmp/ff2.tar.xz -C /tmp/ffbin2 --strip-components=1 \
+              && sudo install -m755 /tmp/ffbin2/bin/ffmpeg /tmp/ffbin2/bin/ffprobe /usr/local/bin/ || true
+          fi
+          command -v ffmpeg >/dev/null 2>&1 || { echo "::error::ffmpeg не установлен"; exit 1; }
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+      - name: библиотеки
+        run: pip install --quiet pillow numpy
+      - name: маска фигуры — ставится ТОЛЬКО под вырезку по контуру
+        # `rembg` плюс модель `u2net_human_seg` (176 МБ) стоят полторы-две
+        # минуты на каждой машине матрицы, а нужны ровно ОДНОМУ виду из
+        # полутора десятков. Поэтому шаг смотрит в задание и при отсутствии
+        # вырезки по контуру не делает ничего — обычный ролик не дорожает.
+        # Модель тянется здесь, а не в рисовалке: падение сети должно быть
+        # видно отдельным красным шагом, а не «карточка не нарисована».
+        timeout-minutes: 8
+        run: |
+          if grep -q 'vyrezka.figura' cards_render/jobs.json 2>/dev/null; then
+            pip install --quiet "rembg[cpu]"
+            python3 -c "from rembg import new_session; new_session('u2net_human_seg')"
+            echo "маска фигуры готова"
+          else
+            echo "вырезки по контуру в задании нет — модель не нужна"
+          fi
+      - name: рендер карточек
+        env:
+          VIDEORYAD_FONTS: ${{ github.workspace }}/cards_render/fonts
+          VIDEORYAD_PORTRAIT: ${{ github.workspace }}/cards_render/portrait.jpg
+        run: python3 cards_render/render_cards.py cards_out --shard ${{ matrix.shard }}/${{ needs.plan.outputs.total }}
+      # СТРАЖ ПУСТОГО РЕЗУЛЬТАТА (23.10, предложение вкладки-разработчика).
+      # С тех пор как одно упавшее задание перестало валить всю часть, джоб
+      # завершается `success`, даже если УПАЛИ ВСЕ задания: наружу это
+      # выглядит нормальным прогоном с артефактом в 140 байт. Ровно так
+      # NameError съел 0 из 5 карточек у рабочей вкладки и 0 из 52 у
+      # разработки — и обе увидели это только по логу. Пусть пустой результат
+      # падает честно.
+      - name: страж — хотя бы один клип должен существовать
+        run: |
+          n=$(ls cards_out/*.mp4 2>/dev/null | wc -l)
+          if [ "$n" = "0" ]; then
+            echo "::error::ни одного клипа не отрисовано — все задания этой части упали; смотри строки «УПАЛО» выше"
+            exit 1
+          fi
+          echo "клипов в части: $n"
+
+      - name: что получилось
+        run: ls -la cards_out && cat cards_out/report.json
+      - uses: actions/upload-artifact@v4
+        with:
+          name: cards-${{ matrix.shard }}
+          path: cards_out
+          retention-days: 1

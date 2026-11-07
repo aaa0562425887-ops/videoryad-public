@@ -1,0 +1,513 @@
+#!/usr/bin/env python3
+# -*- coding: utf-8 -*-
+"""КАРТОЧКИ РАЗБОРА В БОЕВОМ СБОРЩИКЕ — обёртка над fullcycle/style_cards.py.
+
+Второй элемент арсенала после цитаты-лоскута, и входит он в ту же дверь
+`card:<вид>`: фетч за такой сценой не идёт, линтер не считает её текст
+запросом, видео-лид не засчитывает, эффекты не ложатся.
+
+ЗАЧЕМ (слово пользователя 2026-10-22): «давай пробуем этому пикселю сраному
+сделать замену — наши комментарии, то, что мы выводим. Там всё-таки какая-то
+динамика будет, какой-то видеопотенциал есть». Повод — сток мёртв третий
+ролик подряд: на `ze-soglasen-2310` девять из четырнадцати стоковых сцен
+вернулись заглушками (яркость 28 из 255), сток в ролике 0% при коридоре
+10-20%. Эти сцены абстрактные по смыслу — рассуждение, вывод, расстановка
+сил, — и фотографии им не положено по правилу f0. Поэтому вместо чужого
+стока рисуем СВОЙ кадр с нашим текстом.
+
+Три вида (у каждого своя динамика, чтобы ролик не стал презентацией):
+
+    bullets  — тезисы разбора, до 5 пунктов, строки проявляются по очереди
+    forces   — расстановка сил: кто и чего хочет, РОВНО 3 строки
+    timeline — хронология: линия прочерчивается, засечки зажигаются
+    photo    — слабое фото маленьким: снимок слева в своём окне (не
+               растягивается выше своего разрешения), справа до 4 фактов;
+               движение — зум ВНУТРИ окна снимка (A34 с полки библиотеки,
+               внедрён 06.11)
+
+Пользоваться так (из папки проекта, ПЕРЕД ship.sh):
+
+    python3 ~/.claude/skills/news-video/template/style_card.py \\
+        planeta.scenes.json 34 bullets \\
+        --kick "ЧТО ЭТО ЗНАЧИТ" \\
+        --item "Киев соглашается обсуждать территории" \\
+        --item "Условие одно — гарантии Вашингтона" \\
+        --item "Европа об этом узнаёт из прессы" \\
+        --note "а значит, решение уже принято без неё"
+
+    python3 … 51 forces --kick "РАССТАНОВКА СИЛ" \\
+        --row "ВАШИНГТОН=нужна сделка до выборов" \\
+        --row "КИЕВ=нужны деньги и гарантии" \\
+        --row "БРЮССЕЛЬ=нужно остаться за столом"
+
+    python3 … 22 photo --photo images/scene_022.jpg \\
+        --kick "КАДР С МЕСТА" --title "Что на снимке" \\
+        --item "Колонна стоит второй день" \\
+        --item "Проверки идут выборочно"
+
+    python3 … 67 timeline --kick "КАК ЭТО ШЛО" --title "Три недели" \\
+        --event "28 сентября=первый звонок" \\
+        --event "12 октября=встреча в Белом доме|hot" \\
+        --event "21 октября=заявление о согласии"
+
+Делает ровно то же, что quote_card.py: берёт длительность и канал из сцены,
+гонит проверки ДО рендера, рисует images/scene_NNN.mp4 РОВНО на duration_sec,
+кладёт постер в cards/, прежний кадр убирает в cards/replaced/, ставит сцене
+источник `card:<вид>` и ведёт общий журнал cards/cards.json.
+"""
+import argparse, fcntl, json, os, shutil, subprocess, sys, time
+
+# Непустой source_query — см. разбор в quote_card.py: гарды облака считают
+# сцену с пустым запросом неклассифицированной и роняют прогон на setup.
+_CARD_QUERY = "карточка разбора — кадр рисуется локально, фетч не нужен"
+
+SKILL = os.path.dirname(os.path.abspath(__file__))
+FULLCYCLE = os.path.join(os.path.dirname(SKILL), "fullcycle")
+
+WM = {
+    "ПЛАНЕТА": "ПЛАНЕТА",
+    "ОЛЬКА": "ОЛЬКА",
+    "ДИПЛОМАТИЯ СИЛЫ": "ДИПЛОМАТИЯ СИЛЫ",
+    "ПЕРЕВОД с ДИПЛОМАТИЧЕСКОГО": "ПЕРЕВОД С ДИПЛОМАТИЧЕСКОГО",
+    "5 МИНУТ": "5 МИНУТ",
+}
+
+# Ёмкости рисовалок — ПОВТОРЯЮТ fullcycle/style_cards.py. Рисовалка лишнее
+# молча обрезает (forces: «ТОЛЬКО 3 строки, четвёртая уезжает за край»),
+# поэтому считаем здесь и падаем ДО рендера.
+LIMITS = {
+    "bullets":  {"items": (2, 5), "item_chars": 62, "kick_chars": 34},
+    "forces":   {"items": (3, 3), "item_chars": 46, "kick_chars": 34},
+    "timeline": {"items": (3, 6), "item_chars": 40, "kick_chars": 34},
+    # A34 С ПОЛКИ БИБЛИОТЕКИ — «слабое фото маленьким» (внедрён 06.11 по
+    # его прямому слову: «что нужно внедрить при следующей сборке на все
+    # проекты… в соответствующей цветовой гамме»). Единственный вид здесь,
+    # которому нужен СНИМОК: фото стоит слева в своём окне и НИКОГДА не
+    # растягивается выше собственного разрешения, справа кикер, заголовок и
+    # строки фактов. Поэтому узкий или мелкий кадр не портится апскейлом —
+    # он просто маленький, а остальную площадь держит текст.
+    # Фактов до ЧЕТЫРЁХ: пятая строка уезжает под подвал (считано по
+    # `fullcycle/photo_card.py` — строка 44 px плюс 12 отступа от y≈400).
+    "photo":    {"items": (1, 4), "item_chars": 46, "kick_chars": 34},
+}
+
+# ШИРИНУ МЕРЯЕМ В ПИКСЕЛЯХ, А НЕ В ЗНАКАХ (23.10, улов `usuario-fa`).
+# `item_chars` выше — грубый потолок, он пропускал строки, которые физически
+# не влезают: у `bullets` стояло 62 знака, а в кадр помещается ~43 (замер:
+# F_HEAD 72, доступно 1596 px, средний знак 36,7 px). Строки на 50 и 54 знака
+# вышли ЗА ПРАВЫЙ КРАЙ карточки МОЛЧА — рисовалка не ругается, обрезку видно
+# только глазами на постере, а перерисовка в облаке стоит ~65 с. Знаки вообще
+# не годятся мерой: «ШШШ» и «ііі» при одной длине дают разную ширину.
+# Кегли взяты из самих рисовалок (`style_cards.py`), поле — MARGIN_L=264.
+PIX = {
+    "bullets":  ("F_HEAD", 72),
+    "forces":   ("F_ALT", 50),
+    "timeline": ("F_HEAD", 40),
+    "photo":    ("F_HEAD", 34),
+}
+PIX_AVAIL = 1920 - 264 - 60          # левое поле + правый запас
+# У `photo` поле СВОЁ И ВТРОЕ УЖЕ: слева стоит окно снимка. Считано по
+# `fullcycle/photo_card.py`: окно 0,40 ширины кадра от x=150, текст начинается
+# за ним (tx = 150 + 768 + 92) и держит правый запас 140 px.
+PIX_AVAIL_BY_KIND = {"photo": 1920 - (150 + int(1920 * 0.40) + 92) - 140}
+
+# Расстановка по ролику. Норма карточек общая на ВСЕ виды (одна на 15 сцен,
+# 22.10), но у видов разная динамика, поэтому подряд одинаковые не ставим.
+# Порог одного вида приведён к норме плотности 26.10: при 16 выполнить
+# норму «одна на 15 сцен» одним видом было нельзя (улов `usuario-aa`).
+PER_SCENES, MIN_GAP, MIN_GAP_SAME_KIND = 15, 8, 15
+
+
+def _fail(code, *lines):
+    print("\n".join(lines), file=sys.stderr)
+    sys.exit(code)
+
+
+def _channel(scenes_path, data):
+    ch = (data.get("channel") or "").strip()
+    if ch:
+        return ch
+    up = os.path.abspath(scenes_path).upper()
+    for name in WM:
+        if name.upper().replace(" ", "") in up.replace(" ", "").replace("-", ""):
+            return name
+    return ""
+
+
+def _split_pair(raw, what):
+    """«ЛЕВОЕ=правое» → (левое, правое). Разделитель только первый знак =."""
+    if "=" not in raw:
+        _fail(2, f"{what} пишется как «левое=правое», а пришло: {raw}")
+    left, right = raw.split("=", 1)
+    return left.strip(), right.strip()
+
+
+def main():
+    ap = argparse.ArgumentParser(description="карточка разбора на сцену ролика")
+    ap.add_argument("scenes")
+    ap.add_argument("sid", type=int)
+    ap.add_argument("kind", choices=sorted(LIMITS))
+    ap.add_argument("--kick", default="", help="эпиграф над карточкой")
+    ap.add_argument("--title", default="", help="заголовок (timeline/forces)")
+    ap.add_argument("--item", action="append", default=[],
+                    help="пункт для bullets (повторяй для каждого)")
+    ap.add_argument("--row", action="append", default=[],
+                    help="строка forces: «КТО=чего хочет»")
+    ap.add_argument("--event", action="append", default=[],
+                    help="событие timeline: «дата=что было» или «дата=что было|hot»")
+    ap.add_argument("--photo", default="",
+                    help="снимок для вида photo: ставится слева в своём окне "
+                         "и НЕ растягивается выше своего разрешения")
+    ap.add_argument("--note", default="", help="сноска внизу (золотая)")
+    ap.add_argument("--source", default="", help="первоисточник, можно пустым")
+    ap.add_argument("--images", default="images")
+    ap.add_argument("--anim", type=float, default=0.0,
+                    help="секунд рисовать покадрово (0 — всю сцену: у этих "
+                         "видов элементы выходят по очереди)")
+    ap.add_argument("--tail-zoom", type=float, default=0.06)
+    ap.add_argument("--watermark", default="", help="перебить канал вручную")
+    ap.add_argument("--dry-run", action="store_true", help="только проверки")
+    ap.add_argument("--force", action="store_true",
+                    help="не падать на расстановке (норма, интервал)")
+    a = ap.parse_args()
+
+    if not os.path.isfile(a.scenes):
+        _fail(2, f"нет файла сцен: {a.scenes}")
+    data = json.load(open(a.scenes, encoding="utf-8"))
+    scenes = data["scenes"] if isinstance(data, dict) else data
+    scene = next((s for s in scenes if int(s.get("id", -1)) == a.sid), None)
+    if scene is None:
+        _fail(2, f"в {a.scenes} нет сцены {a.sid}")
+
+    dur = float(scene.get("duration_sec") or 0)
+    if dur <= 0:
+        _fail(2, f"у сцены {a.sid} нет duration_sec")
+
+    # КАРТОЧКА ЗАМОРАЖИВАЛАСЬ НА 2,5 с, А ХВОСТ АНИМАЦИИ В РОЛИК НЕ ЕХАЛ
+    # (30.10, улов `usuario-6b`). Тот же дефект чинили 29.10 в
+    # `fullcycle/card_put.py`, но ЭТОТ файл — отдельный скрипт и правку не
+    # получил: `--anim` стоял константой 2,5 независимо от содержимого.
+    # Замер живьём на сцене 11,84 с: у `timeline` с четырьмя событиями на
+    # последней секунде клипа видно ДВА, с тремя — ОДНО.
+    # Все три вида (`bullets`, `forces`, `timeline`) выводят элементы ПО
+    # ОЧЕРЕДИ, поэтому, как и у досье с картами, покадрово рисуется ВСЯ
+    # сцена — обрезать нечего по устройству. Формулу «сколько нужно секунд»
+    # здесь намеренно не заводим: любое изменение таймингов внутри элемента
+    # снова обрежет кадр.
+    if a.anim <= 0:
+        a.anim = round(dur, 2)
+        print("рисуем покадрово всю сцену (%.1f с) — элементы этого вида "
+              "выходят по очереди и не обрезаются" % a.anim)
+    else:
+        a.anim = round(min(a.anim, dur), 2)
+
+    channel = a.watermark or _channel(a.scenes, data if isinstance(data, dict) else {})
+    watermark = WM.get(channel, channel or "").upper()
+    if not watermark:
+        _fail(2, "не определить канал: в шапке scenes.json нет «channel», в пути "
+                 "его тоже не видно. Передай --watermark, иначе в углу встанет "
+                 "ЧУЖОЕ имя канала (у рисовалки по умолчанию «ДИПЛОМАТИЯ СИЛЫ»)")
+
+    lim = LIMITS[a.kind]
+
+    # --- ПРОВЕРКА 1: содержимое под вид -----------------------------------
+    raw = {"bullets": a.item, "forces": a.row, "timeline": a.event,
+           "photo": a.item}[a.kind]
+    flag = {"bullets": "--item", "forces": "--row", "timeline": "--event",
+            "photo": "--item"}[a.kind]
+    # СНИМОК ПРОВЕРЯЕМ ДО ВСЕГО ОСТАЛЬНОГО: без него вид `photo` рисует пустое
+    # окно, и видно это только на постере — то есть после облачного прогона.
+    if a.kind == "photo":
+        if not a.photo:
+            _fail(2, "виду «photo» нужен снимок: --photo <файл>",
+                  "  это композиция ДЛЯ СЛАБОГО кадра: фото слева в окне, "
+                  "справа факты. Без файла рисовать нечего.")
+        if not os.path.isfile(a.photo):
+            _fail(2, f"нет файла снимка: {a.photo}")
+    elif a.photo:
+        print("ВНИМАНИЕ: --photo читает только вид «photo», здесь он "
+              "пропущен")
+    lo, hi = lim["items"]
+    if not lo <= len(raw) <= hi:
+        _fail(2, f"виду «{a.kind}» нужно от {lo} до {hi} строк ({flag}), "
+                 f"а пришло {len(raw)}.",
+              "  forces рисует РОВНО три дорожки — четвёртая уезжает за край "
+              "кадра и рисовалка об этом не скажет." if a.kind == "forces" else "")
+
+    # --- ПРОВЕРКА 2: длина строк ------------------------------------------
+    # Рисовалка обрезает молча, поэтому меряем здесь. С 23.10 — в ПИКСЕЛЯХ
+    # фактическим шрифтом: счёт в знаках пропускал строки за правый край.
+    def _too_wide(text):
+        """Шире поля? Возвращает (ширина, предел) или None, если мерить нечем."""
+        try:
+            sys.path.insert(0, FULLCYCLE)
+            import style_cards as _sc
+            fname, size = PIX[a.kind]
+            fpath = getattr(_sc, fname, None) or _sc.F_HEAD
+            w = _sc._f(fpath, size).getlength(text)
+            avail = PIX_AVAIL_BY_KIND.get(a.kind, PIX_AVAIL)
+            return (w, avail) if w > avail else None
+        except Exception:
+            return None            # нет шрифтов — остаётся счёт в знаках ниже
+
+    long_lines = []
+    items, rows, events = [], [], []
+    for r in raw:
+        if a.kind in ("bullets", "photo"):
+            items.append(r)
+            _wide = _too_wide(r)
+            if _wide:
+                long_lines.append((r, f"{len(r)} зн., {_wide[0]:.0f} px при пределе {_wide[1]}"))
+            elif len(r) > lim["item_chars"]:
+                long_lines.append((r, len(r)))
+        elif a.kind == "forces":
+            who, want = _split_pair(r, "строка forces")
+            rows.append({"who": who, "want": want})
+            _wide = _too_wide(want)
+            if _wide:
+                long_lines.append((want, f"{len(want)} зн., {_wide[0]:.0f} px при пределе {_wide[1]}"))
+            elif len(want) > lim["item_chars"]:
+                long_lines.append((want, len(want)))
+        else:
+            when, what = _split_pair(r, "событие timeline")
+            hot = what.endswith("|hot")
+            what = what[:-4].strip() if hot else what
+            # ключи рисовалки: "date"/"mark" — засечка, "text" — подпись
+            # (проверено по style_cards.timeline, 22.10: на "when"/"what"
+            # она падает KeyError уже в рендере, то есть после всех проверок)
+            ev = {"date": when, "text": what}
+            if hot:
+                ev["hot"] = True
+            events.append(ev)
+            if len(what) > lim["item_chars"]:
+                long_lines.append((what, len(what)))
+    if long_lines:
+        # `n` — либо число знаков (грубый потолок), либо готовая строка с
+        # замером в пикселях; поэтому склеиваем, а не форматируем как число
+        _fail(3, f"строка не влезает в карточку «{a.kind}»:",
+              *[f"  {n}{'' if isinstance(n, str) else ' зн.'} → {t}"
+                for t, n in long_lines],
+              "  рисовалка обрежет это МОЛЧА, обрезку видно только глазами "
+              "на постере — сократи строку")
+    if len(a.kick) > lim["kick_chars"]:
+        _fail(3, f"эпиграф длиннее {lim['kick_chars']} знаков ({len(a.kick)}): {a.kick}")
+
+    # --- ПРОВЕРКА 3: текст не повторяет уже стоящую карточку --------------
+    jpath = os.path.join("cards", "cards.json")
+    journal = json.load(open(jpath, encoding="utf-8")) if os.path.isfile(jpath) else {}
+    mine = " ".join(items) + " ".join(r["want"] for r in rows) \
+        + " ".join(e["text"] for e in events)
+    for sid_s, rec in journal.items():
+        if int(sid_s) == a.sid:
+            continue
+        theirs = " ".join(rec.get("lines", [])) or rec.get("text", "")
+        if theirs and theirs.strip() == mine.strip():
+            msg = f"тот же текст уже стоит на сцене {sid_s}"
+            if not a.force:
+                _fail(2, msg, "  снимается ключом --force")
+            print("ВНИМАНИЕ:", msg)
+
+    # --- ПРОВЕРКА 4: расстановка ------------------------------------------
+    others = {}
+    for x in scenes:
+        src = str(x.get("source", ""))
+        if src.startswith("card") and int(x.get("id", -1)) != a.sid:
+            others[int(x.get("id", 0))] = src.split(":", 1)[-1]
+    # НОРМА И ЗАЗОР БЕРУТСЯ ИЗ ОБЩЕГО СПИСКА ОБЯЗАТЕЛЬНЫХ (06.11). Пока они
+    # были константами здесь, одиннадцать обязательных элементов и норма
+    # «одна карточка на 15 сцен» противоречили друг другу: инструмент сам
+    # требовал поставить кадр и сам же ругался, что кадров больше нормы.
+    _norm, _gap = None, MIN_GAP
+    _ob = None
+    try:
+        sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
+        import obyazatelno as _ob
+        _norm, _gap = _ob.норма(len(scenes)), _ob.зазор(len(scenes))
+    except Exception:
+        pass
+    norm = _norm if _norm else max(1, round(len(scenes) / PER_SCENES))
+    MIN_GAP_EFF = _gap
+    # ЗАЗОР СЧИТАЕМ ПО СЕМЬЯМ (06.11, улов `usuario-a3`): плоский зазор на
+    # ролике в 101 сцену отбивал законную пару «фото в окне» + «стена улик»
+    # через 6 сцен, и вкладка жала `--force` на ОБЯЗАТЕЛЬНОМ элементе.
+    def _gap_to(_sid_other):
+        try:
+            return _ob.зазор_вида(a.kind, len(scenes), others.get(_sid_other))
+        except Exception:
+            return MIN_GAP_EFF
+    near = [i for i in others if abs(i - a.sid) < _gap_to(i)]
+    if near:
+        msg = (f"карточка слишком близко к соседней (сцены {', '.join(map(str, sorted(near)))}): "
+               f"держим не меньше {MIN_GAP_EFF} сцен между любыми карточками.")
+        if not a.force:
+            _fail(2, msg, "  выбери сцену подальше или сними ключом --force")
+        print("ВНИМАНИЕ:", msg)
+    # ОДИН ВИД ПОДРЯД — ЭТО ПРЕЗЕНТАЦИЯ, А НЕ РОЛИК. Своя, более широкая
+    # дистанция: два списка тезисов через восемь сцен читаются как слайды.
+    same = [i for i, k in others.items()
+            if k == a.kind and abs(i - a.sid) < MIN_GAP_SAME_KIND]
+    if same:
+        msg = (f"такой же вид «{a.kind}» уже стоит рядом (сцены "
+               f"{', '.join(map(str, sorted(same)))}): одинаковые карточки ближе "
+               f"{MIN_GAP_SAME_KIND} сцен читаются как слайды презентации.")
+        if not a.force:
+            _fail(2, msg, "  возьми другой вид (bullets/forces/timeline) "
+                          "или сцену подальше, либо сними ключом --force")
+        print("ВНИМАНИЕ:", msg)
+    over = len(others) + 1 - (norm + 1)
+    if over > 0:
+        print(f"ВНИМАНИЕ: карточек станет {len(others) + 1} при норме {norm} (+1 допуск) "
+              f"на {len(scenes)} сцен — это на {over} больше коридора")
+        # НОРМА СЧИТАЕТСЯ НА ВСЕ ВИДЫ ВМЕСТЕ (решение диспетчера 22.10):
+        # зритель видит не «цитаты и разборы», а рисованные кадры, и считает
+        # их общим числом. Единственное законное превышение — ЗАМЕНА уже
+        # провалившейся сцены (сток приехал заглушкой, кадр забракован): такая
+        # карточка занимает место брака, а не добавляется к ролику. Потолок и
+        # на этот случай есть: +3 к коридору, дальше ролик читается как
+        # презентация, и лучше честно оставить жёлтую карточку.
+        print("  норма считается на ВСЕ виды вместе (цитаты + разборы).")
+        print("  Законное превышение одно: это ЗАМЕНА провалившейся сцены")
+        print("  (заглушка, брак) — тогда карточка встаёт на место брака.")
+        if over > 3:
+            print("  НО превышение больше +3 — так ролик читается как "
+                  "презентация. Оставь жёлтую карточку вместо ещё одной.")
+
+    print(f"сцена {a.sid}: {dur:.2f} с, канал {channel}, вид {a.kind}, "
+          f"строк {len(raw)}; карточек в ролике станет {len(others) + 1} "
+          f"из нормы {norm} ({len(scenes)} сцен)")
+    if a.dry_run:
+        print("--dry-run: проверки пройдены, ничего не нарисовано")
+        return
+
+    # --- рендер ------------------------------------------------------------
+    sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
+    sys.path.insert(0, FULLCYCLE)
+    import style_cards as sc
+
+    os.makedirs(a.images, exist_ok=True)
+    os.makedirs(os.path.join("cards", "replaced"), exist_ok=True)
+    out_mp4 = os.path.join(a.images, f"scene_{a.sid:03d}.mp4")
+    poster = os.path.join("cards", f"scene_{a.sid:03d}.jpg")
+
+    common = dict(kick=a.kick, source=a.source, watermark=watermark)
+    if a.kind == "photo":
+        # A34: рисует `fullcycle/photo_card.py`, фон берёт у канала тем же
+        # `sc.canvas()` — отдельной палитры заводить не нужно, гамма приходит
+        # из `CHANNEL_PALETTES` по каналу сцены.
+        sys.path.insert(0, FULLCYCLE)
+        import photo_card as _pc
+        fn = _pc.photo_card
+        kwargs = dict(common, photo=a.photo, title=a.title,
+                      lines=tuple(items))
+        # НАЕЗД НА ВЕСЬ КАДР ЗДЕСЬ ВРЕДЕН (слово пользователя 21.10, стоит в
+        # шапке самой рисовалки): «зум для общей сцены не нужен… зум можно
+        # применить к фотографии внутри». Движение у вида своё — ступенчатый
+        # зум ВНУТРИ окна снимка, подписи при этом стоят на месте.
+        a.tail_zoom = 0.0
+    elif a.kind == "bullets":
+        fn = sc.bullets
+        kwargs = dict(common, items=tuple(items), note=a.note or None)
+    elif a.kind == "forces":
+        fn = sc.forces
+        kwargs = dict(common, title=a.title, rows=tuple(rows), note=a.note or None)
+    else:
+        fn = sc.timeline
+        kwargs = dict(common, title=a.title, events=tuple(events),
+                      note=a.note or None)
+
+    # --- НА МАШИНЕ ПОЛЬЗОВАТЕЛЯ НЕ СЧИТАЕМ (его прямое слово 2026-10-23) ---
+    # «При сборке, неважно чего, ни в коем случае не использовать ресурсы
+    # компьютера; всё, что можно сделать на GitHub, отсылать в GitHub; только
+    # крайние случаи, и то оповещать мне». Замер 22.10: одна карточка 7,4 с =
+    # 50,9 с счёта на машине, 4-6 минут за ролик. Штатный путь — задание в
+    # cards/queue/ и один облачный прогон на все карточки ролика
+    # (fullcycle/cards_cloud.py). Локальный рендер остаётся КРАЙНИМ случаем:
+    # только с явного VIDEORYAD_LOCAL_OK=1, и тогда он сам оповещает.
+    import cards_queue as cq
+    _lines = items or [r["want"] for r in rows] or [e["text"] for e in events]
+    _card = {k: v for k, v in dict(
+        kind=a.kind, kick=a.kick, title=a.title, lines=_lines, note=a.note,
+        src=a.source, watermark=watermark, anim=a.anim,
+        photo=a.photo if a.kind == "photo" else "").items()
+        if v not in ("", None, [])}
+    if not cq.local_allowed():
+        _jq = cq.queue(a.scenes, a.sid, a.kind, dur, watermark, channel,
+                       dict(kwargs), anim=a.anim, tail_zoom=a.tail_zoom,
+                       card=_card)
+        cq.report(_jq, a.sid, a.kind, a.scenes)
+        return
+    cq.notify_local(f"рендер карточки «{a.kind}» на сцене {a.sid}, "
+                    f"{dur:.0f} с видео (разрешено VIDEORYAD_LOCAL_OK=1)")
+    print("ВНИМАНИЕ: считаю НА ЭТОЙ МАШИНЕ — так делать нельзя без нужды. "
+          "Облачный путь: убери VIDEORYAD_LOCAL_OK и повтори команду.")
+
+    t0 = time.time()
+    fn(out=poster, **kwargs)                 # постер — он же проверка глазами
+    # fps БОЕВОЙ (30): сборщик клипов работает на 30, смешение частот в concat
+    # уже однажды растянуло готовый ролик на 20%.
+    sc.render_anim(fn, kwargs, dur, out_mp4, fps=30, anim_seconds=a.anim,
+                   tail_zoom=a.tail_zoom, sfx_out=False)
+    took = time.time() - t0
+
+    # --- ПРОВЕРКА 5: длительность совпала со сценой ------------------------
+    r = subprocess.run(["ffprobe", "-v", "error", "-show_entries", "format=duration",
+                        "-of", "csv=p=0", out_mp4], capture_output=True, text=True)
+    # 27.10: на битом файле ffprobe отдаёт 'N/A' — float() ронял проверку
+    # трассировкой вместо понятного отказа.
+    try:
+        got = float((r.stdout or "").strip())
+    except ValueError:
+        _fail(4, "клип битый: ffprobe не дал длительности "
+                 f"({(r.stdout or '').strip() or 'пусто'!r}). Пересними: {out_mp4}")
+    if abs(got - dur) > 0.2:
+        _fail(4, f"длительность разошлась: клип {got:.2f} с, сцена {dur:.2f} с. "
+                 "Разница больше 0,2 с — сборщик начнёт клип не с начала. Файл "
+                 f"оставлен, пересними: {out_mp4}")
+
+    # --- прежний кадр сцены в сторону --------------------------------------
+    moved = []
+    for ext in ("jpg", "jpeg", "png", "webp", "mov"):
+        p = os.path.join(a.images, f"scene_{a.sid:03d}.{ext}")
+        if os.path.exists(p):
+            shutil.move(p, os.path.join("cards", "replaced", os.path.basename(p)))
+            moved.append(os.path.basename(p))
+
+    # --- сцена и журнал ----------------------------------------------------
+    # Перечитываем файл перед записью и правим ТОЛЬКО свою сцену, под замком:
+    # рендер держит объект десятки секунд, и правки соседних сцен, сделанные
+    # вкладкой в это время, иначе молча откатываются (разбор — quote_card.py).
+    lines = items or [r["want"] for r in rows] or [e["text"] for e in events]
+    card = {k: v for k, v in dict(
+        kind=a.kind, kick=a.kick, title=a.title, lines=lines, note=a.note,
+        src=a.source, watermark=watermark, anim=a.anim).items()
+        if v not in ("", None, [])}
+
+    lockp = os.path.join("cards", ".scenes.lock")
+    with open(lockp, "w") as lf:
+        fcntl.flock(lf, fcntl.LOCK_EX)
+        fresh = json.load(open(a.scenes, encoding="utf-8"))
+        fscenes = fresh["scenes"] if isinstance(fresh, dict) else fresh
+        tgt = next((x for x in fscenes if int(x.get("id", -1)) == a.sid), None)
+        if tgt is None:
+            _fail(2, f"сцена {a.sid} исчезла из {a.scenes}, пока шёл рендер")
+        tgt["source"] = f"card:{a.kind}"
+        tgt["source_query"] = _CARD_QUERY
+        tgt["card"] = card
+        tmp = a.scenes + ".tmp"
+        json.dump(fresh, open(tmp, "w", encoding="utf-8"), ensure_ascii=False, indent=1)
+        os.replace(tmp, a.scenes)
+
+        journal = json.load(open(jpath, encoding="utf-8")) if os.path.isfile(jpath) else {}
+        journal[str(a.sid)] = dict(card, duration=dur, file=out_mp4,
+                                   rendered=time.strftime("%Y-%m-%d %H:%M"))
+        json.dump(journal, open(jpath, "w", encoding="utf-8"), ensure_ascii=False, indent=1)
+
+    print(f"готово за {took:.1f} с: {out_mp4} ({got:.2f} с), постер {poster}")
+    if moved:
+        print("прежний кадр сцены убран в cards/replaced/: " + ", ".join(moved))
+    print(f"источник сцены: card:{a.kind} — фетч за ней не пойдёт, в видео-лид "
+          f"не считается, эффекты на карточку не лягут")
+
+
+if __name__ == "__main__":
+    main()

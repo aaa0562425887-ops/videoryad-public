@@ -1,0 +1,335 @@
+#!/usr/bin/env python3
+# -*- coding: utf-8 -*-
+"""ВЛОЖЕНИЯ ТЕЛЕГРАМ-ПОСТА — ОДНОЙ КОМАНДОЙ, БЕЗ РУЧНОГО РАЗБОРА РАЗМЕТКИ.
+
+    python3 tg_media.py <ссылка на пост> [ещё ссылки ...]
+    python3 tg_media.py --json out.json <ссылки ...>   # машинно, для scenes.json
+
+Печатает по каждому посту: что в нём лежит (фото/видео), ПОЛНЫЙ адрес файла,
+размер кадра и длительность. Ничего не качает (кроме заголовков видео).
+
+ЗАЧЕМ ОТДЕЛЬНЫЙ ИНСТРУМЕНТ. Вкладки разбирали разметку поста руками, каждая
+по-своему, и за один день 26.10 это дало ТРИ разных способа потерять кадр:
+
+1. **Адрес обрезается в консоли.** Токен `cdn4.telesco.pe/file/…mp4?token=`
+   бывает длиной до 400 знаков, печать режет на 110. Скопированный глазами
+   обрезок даёт `HTTP Error 404`, и это читается как «токен истёк» — мы
+   трижды записывали это в скилл именно так. Здесь адрес НИКОГДА не идёт
+   через глаза: `--json` кладёт его в файл, который читает фетч.
+2. **Аватарка канала вместо кадра.** В блоке поста бывает второй адрес —
+   `tgme_widget_message_user_photo`; берём только из `photo_wrap` и
+   `video_thumb`.
+3. **Чужой пост.** Грепать всю страницу нельзя: она отдаёт ленту канала.
+   Режем строго от своего `data-post` до следующего.
+
+И четвёртое, найденное в тот же день: у крупного видео телеграм НЕ публикует
+mp4 в веб-превью вовсе — в разметке стоит `not_supported`, хотя длительность
+рядом живая. Это видно ДО любой попытки скачивания, и круги на `?embed=1`
+тратить незачем — инструмент так и пишет: «видео есть, файла нет».
+"""
+import html as html_mod
+import json
+import re
+import subprocess
+import sys
+import urllib.request
+
+UA = "Mozilla/5.0 (X11; Linux x86_64)"
+
+
+def _get(url, referer=None):
+    req = urllib.request.Request(url, headers={"User-Agent": UA,
+                                               **({"Referer": referer} if referer else {})})
+    with urllib.request.urlopen(req, timeout=25) as r:
+        return r.read().decode("utf-8", errors="ignore")
+
+
+def _block(html, chan, mid):
+    """Кусок разметки РОВНО этого поста: от своего якоря до следующего."""
+    anchor = 'data-post="%s/%s"' % (chan, mid)
+    i = html.find(anchor)
+    if i < 0:
+        return ""
+    j = html.find("data-post=", i + len(anchor))
+    return html[i:j if j > 0 else len(html)]
+
+
+def _probe(url, referer):
+    """Размер кадра и длительность — по заголовку файла, без скачивания."""
+    try:
+        out = subprocess.run(
+            # БЕЗ `-user_agent` ОТВЕТ ПУСТОЙ (проверено 26.10): cdn отдаёт файл
+            # только «браузеру», и ffprobe молча возвращает ничего — а это
+            # читается как «видео битое». Нужны ОБА заголовка.
+            ["ffprobe", "-v", "error", "-user_agent", UA,
+             "-headers", "Referer: %s\r\n" % referer,
+             "-select_streams", "v:0", "-show_entries",
+             "stream=width,height:format=duration", "-of", "json", url],
+            capture_output=True, text=True, timeout=90).stdout
+        d = json.loads(out or "{}")
+        st = (d.get("streams") or [{}])[0]
+        return (st.get("width"), st.get("height"),
+                round(float(d.get("format", {}).get("duration") or 0), 1))
+    except Exception:
+        return (None, None, None)
+
+
+def _text(blk):
+    """ТЕКСТ ПОСТА одной строкой.
+
+    Нужен, чтобы отбирать посты снапшота георадара ПО СМЫСЛУ, а не по имени
+    канала: до 03.11 `--json` клал только адреса, и вкладка, получив 69
+    ссылок дня, не могла проверить, про её ли сюжет пост (улов `usuario-b5`).
+    Границу блока текста ищем счётчиком вложенности, а не первым `</div>`:
+    внутри лежат ссылки, спойлеры и эмодзи своими тегами.
+    """
+    m = re.search(r'class="[^"]*tgme_widget_message_text[^"]*"[^>]*>', blk)
+    if not m:
+        return ""
+    i, depth, j = m.end(), 1, m.end()
+    for t in re.finditer(r"<(/?)div\b", blk[i:]):
+        depth += -1 if t.group(1) else 1
+        if depth == 0:
+            j = i + t.start()
+            break
+    else:
+        j = len(blk)
+    txt = re.sub(r"<br\s*/?>", " ", blk[i:j])
+    txt = re.sub(r"<[^>]+>", "", txt)
+    txt = html_mod.unescape(txt)
+    txt = re.sub(r"\s+", " ", txt).strip()
+    return txt[:1500]
+
+
+def post(url):
+    m = re.search(r"t\.me/(?:s/)?([A-Za-z0-9_]+)/(\d+)", url)
+    if not m:
+        return {"url": url, "error": "не похоже на ссылку поста"}
+    chan, mid = m.group(1), m.group(2)
+    page = _get("https://t.me/s/%s/%s" % (chan, mid))
+    blk = _block(page, chan, mid)
+    if not blk:
+        return {"url": url, "error": "пост не найден на странице канала"}
+
+    res = {"url": url, "channel": chan, "id": mid, "photos": [], "videos": [],
+           "notes": [], "text": _text(blk)}
+
+    # фото: только носители кадра, аватарка канала отсекается классом
+    for mm in re.finditer(r'class="[^"]*(photo_wrap|video_thumb)[^"]*"[^>]*'
+                          r"background-image:url\('([^']+)'\)", blk):
+        res["photos"].append(mm.group(2))
+        # ПОСТЕР ВИДЕО — ТОЖЕ ГОТОВЫЙ КАДР (27.10, улов `usuario-31` на
+        # `OstashkoNews/227315` и `227359`). Когда телеграм не публикует само
+        # видео, его превью всё равно остаётся в разметке — и это кадр
+        # СПИКЕРА со стороны источника, без клейма агрегатора. Раньше он молча
+        # лежал в `photos` вперемешку с обычными фото, и вкладка должна была
+        # сама догадаться, что непубликуемое видео всё-таки дало кадр. Теперь
+        # постеры собраны отдельно и инструмент говорит об этом вслух.
+        if mm.group(1) == "video_thumb":
+            res.setdefault("video_posters", []).append(mm.group(2))
+
+    # видео: настоящий файл лежит в src плеера
+    for mm in re.finditer(r'<video[^>]+src="([^"]+)"', blk):
+        res["videos"].append(mm.group(1).replace("&amp;", "&"))
+
+    # ПРИЗНАК ВИДЕО — ТОЛЬКО ПЛЕЕР ИЛИ ДЛИТЕЛЬНОСТЬ, НЕ СЛОВО `not_supported`
+    # (баг пойман в бою через час после выпуска инструмента, улов `usuario-d9`
+    # на `ZeRada1/32772` и `nabludatels/67220`): это слово стоит в разметке
+    # телеграма ВСЕГДА, в том числе на постах вообще без видео. Инструмент
+    # честно печатал «видео есть, файла нет», вкладка верила и шла искать
+    # несуществующий файл — та самая тихая поломка, против которой он писался.
+    dur = re.search(r'message_video_duration[^>]*>([\d:]+)<', blk)
+    has_player = ("tgme_widget_message_video_player" in blk
+                  or "message_video_thumb" in blk)
+    if not res["videos"] and (has_player or dur):
+        res["notes"].append(
+            "видео в посте ЕСТЬ (%s), а файла нет: телеграм не публикует "
+            "крупное видео в веб-превью. Круги на ?embed=1 не тратить."
+            % (dur.group(1) if dur else "длительность не указана"))
+    # РАЗМЕР КАЖДОГО ВЛОЖЕНИЯ — ОТДЕЛЬНЫМ ПОЛЕМ, А НЕ ТОЛЬКО В ПЕЧАТИ (05.11,
+    # улов `usuario-e1`, стоил сцены и круга правок). Вкладка и координатор
+    # собирали таблицу «ярлык → размер» РАЗБОРОМ СТРОК `notes` — а там на
+    # непромеренном видео строки с размером нет вовсе, и весь список съезжал
+    # на единицу: 848x476 доставалось соседу, в сцену шёл квадрат 640x640,
+    # линт его отбивал. Теперь размер лежит машинно: `media_size[адрес]`.
+    res["media_size"] = {}
+    for v in res["videos"]:
+        w, h, d = _probe(v, "https://t.me/%s/%s" % (chan, mid))
+        res["media_size"][v] = ("%dx%d" % (w, h)) if w else "промер не удался"
+        if w:
+            res.setdefault("media_dur", {})[v] = d
+        if not w:
+            res["notes"].append("видео есть, промерить не удалось — качай и смотри ffprobe сам")
+            continue
+        if w >= 1280:
+            verdict = "годно БАЗОЙ"
+        elif max(w, h) >= 800:
+            verdict = ("годно БАЗОЙ родным размером: поля заливаются размытой "
+                       "копией, во весь экран не растягивается (порог сцены "
+                       "800 px по длинной стороне, правило 05.11)")
+        elif w == h:
+            verdict = ("КВАДРАТ — в 16:9 это апскейл, берём ВСТАВКОЙ, "
+                       "а не фоном на всю сцену")
+        else:
+            verdict = "НИЖЕ 800 px по длинной стороне — только во всплывашку"
+        res["notes"].append("видео %sx%s, %s с — %s" % (w, h, d, verdict))
+    _poster_notes(res, chan, mid)
+    # ФОТО ТОЖЕ ПРОМЕРЯЕМ: по ним решается «сцена или всплывашка» (порог 800
+    # px по длинной стороне с 05.11), а раньше размер фото не считался вовсе
+    # и вкладка либо гадала, либо меряла сама.
+    _posters = set(res.get("video_posters") or [])
+    for ph in res["photos"]:
+        if ph in _posters:
+            res["media_size"][ph] = (res.get("poster_size") or {}).get(ph, "")
+            continue
+        w, h, _d = _probe(ph, "https://t.me/%s/%s" % (chan, mid))
+        res["media_size"][ph] = ("%dx%d" % (w, h)) if w else "промер не удался"
+        if w and max(w, h) >= 800:
+            res["notes"].append(
+                "фото %dx%d — годно БАЗОВОЙ СЦЕНОЙ (порог 800 px по длинной "
+                "стороне, правило 05.11): ставится родным размером, поля — "
+                "размытая копия" % (w, h))
+        elif w:
+            res["notes"].append(
+                "фото %dx%d — ниже 800 px по длинной стороне: это всплывашка, "
+                "не сцена" % (w, h))
+    return res
+
+
+def _poster_notes(res, chan, mid):
+    """Вердикт по постерам видео — считается ВСЕГДА, а не только когда
+    телеграм не отдал файл.
+
+    Улов `usuario-d3`, 01.11: на шести постах постеры 320x180 / 175x320
+    печатались в строку «фото :» наравне с настоящими фото и по печати
+    выглядели пригодными — разницу было видно только промером, то есть
+    инструмент молча предлагал вкладке негодный кадр.
+    ПОСТЕР ПРОМЕРЯЕМ, А НЕ ОБЕЩАЕМ (27.10, улов `usuario-31` на
+    `OstashkoNews`: постеры пришли 320x180, ниже порога фетчера 500x320 — он
+    их просто отклонил, и три сцены пришлось возвращать в поиск).
+    """
+    for u in res.get("video_posters") or []:
+        w, h, _d = _probe(u, "https://t.me/%s/%s" % (chan, mid))
+        res.setdefault("poster_size", {})[u] = (
+            "%sx%s" % (w, h) if w else "промер не удался")
+        if not w:
+            res["notes"].append("постер видео есть, промерить не удалось — "
+                                "смотри размер сам, порог фетчера 500x320")
+        elif w < 500 or h < 320:
+            res["notes"].append(
+                "постер видео %sx%s — МАЛ, фетчер отклонит (порог 500x320). "
+                "Сцену отдавай в поиск, кадра тут нет" % (w, h))
+        elif max(w, h) < 800:
+            res["notes"].append(
+                "постер видео %sx%s — пройдёт фетч, но ниже порога сцены "
+                "800 px по длинной стороне: годен ВО ВСПЛЫВАШКУ, не на "
+                "полный кадр" % (w, h))
+        elif w < 1600:
+            res["notes"].append(
+                "постер видео %sx%s — годен КАДРОМ: с 05.11 порог сцены для "
+                "вложений телеграма 800 px, кадр ставится родным размером по "
+                "центру, поля — размытая копия. Ставь `direct_url`" % (w, h))
+        else:
+            res["notes"].append(
+                "постер видео %sx%s — годен как кадр: это снимок спикера "
+                "от самого источника, без клейма агрегатора. Ставь "
+                "`direct_url`; видео-лидом он НЕ считается." % (w, h))
+
+
+# КАНАЛЫ-ПЕРЕСКАЗЧИКИ (06.11, улов вкладки `usuario-84` на ролике про
+# Абу-Даби). Такой канал не снимает сам: под текст про переговоры он кладёт
+# СКРИНШОТ первоисточника и 3D-РЕНДЕР (флаги над подиумом, орнамент страны).
+# Беда в том, что по новому порогу 800 px это внешне «годное фото»: размер
+# проходит, бан-лист молчит, OCR вёрстку не видит. Ловится только глазами,
+# поэтому инструмент хотя бы ПРЕДУПРЕЖДАЕТ, у кого именно смотреть внимательно.
+RETELLERS = ("ostashkonews", "readovkanews", "rian_ru", "bbbreaking",
+             "news_kiev", "kievinfo", "novostiua", "nexta_live",
+             # 06.11, улов `usuario-a3`: отдал интервью ZDF ПЕРЕСНЯТЫМ
+             # эфиром — плашка «НОВИНИ LIVE» в углу и вшитые украинские
+             # титры ПОСЕРЕДИНЕ кадра (углы срезать можно, середину нет)
+             "media_post_ua", "novyny", "novini")
+
+
+def _reteller(chan):
+    c = str(chan or "").strip().lower().lstrip("@")
+    return any(c.startswith(x) or x in c for x in RETELLERS)
+
+
+def main():
+    args = sys.argv[1:]
+    out = ""
+    if args and args[0] == "--json":
+        out, args = args[1], args[2:]
+    if not args:
+        sys.exit(__doc__)
+    all_res = [post(u) for u in args]
+    for r in all_res:
+        print("— %s" % r["url"])
+        if r.get("error"):
+            print("   ОШИБКА: %s" % r["error"]); continue
+        posters = set(r.get("video_posters") or [])
+        sizes = r.get("poster_size") or {}
+        for p in r["photos"]:
+            if p in posters:
+                print("   ПОСТЕР видео (%s, НЕ фото): %s"
+                      % (sizes.get(p, "размер неизвестен"), p))
+            else:
+                print("   фото (%s): %s"
+                      % ((r.get("media_size") or {}).get(p, "размер неизвестен"), p))
+        for v in r["videos"]:
+            print("   видео: %s" % (v[:60] + "…(%d знаков, полный адрес в --json)" % len(v)
+                                    if len(v) > 60 else v))
+        if r.get("text"):
+            print("   текст: %s" % (r["text"][:200] + ("…" if len(r["text"]) > 200 else "")))
+        for n in r["notes"]:
+            print("   %s" % n)
+        if _reteller(r.get("channel")) and (r["photos"] or r["videos"]):
+            print("   !! КАНАЛ-ПЕРЕСКАЗЧИК (@%s): свои кадры он не снимает. "
+                  "Жди скриншот первоисточника, 3D-рендер или переснятый "
+                  "эфир — по размеру 800 px они проходят, вёрстку в кадре "
+                  "видно ТОЛЬКО глазами. Смотри каждый файл." % r.get("channel"))
+            print("      и отдельно: у таких каналов клейма бывают ТРИ разом "
+                  "— логотип в углу, плашка-перевод ПО СЕРЕДИНЕ ВЫСОТЫ и "
+                  "субтитры снизу. Угол и низ режутся, середина — нет: такой "
+                  "файл выбрасывай сразу (улов 06.11).")
+        if not (r["photos"] or r["videos"] or r["notes"]):
+            print("   вложений нет")
+    # СОСЕД ПО ЗАПИСИ УЖЕ МОГ ОТБРАКОВАТЬ ЭТИ ПОСТЫ (06.11, улов
+    # `usuario-80`). Два ролика дня шли по одному `SOURCE PACKAGE` георадара,
+    # и `tg_rejected.json` соседа снял три поста БЕЗ единого скачивания.
+    # Смотрим журналы отказов в соседних проектах и печатаем совпадения.
+    try:
+        import glob as _g
+        _mine = {r.get("url") for r in all_res}
+        _seen = {}
+        _here = os.path.abspath(".")
+        for _f in _g.glob(os.path.expanduser("~/projects/*/tg_rejected.json")):
+            if os.path.dirname(os.path.abspath(_f)) == _here:
+                continue
+            try:
+                _d = json.load(open(_f, encoding="utf-8"))
+            except (OSError, ValueError):
+                continue
+            _items = _d.items() if isinstance(_d, dict) else \
+                [(x.get("url"), x.get("why") or x.get("reason")) for x in _d
+                 if isinstance(x, dict)]
+            for _u, _why in _items:
+                if _u in _mine:
+                    _seen[_u] = (os.path.basename(os.path.dirname(_f)), _why)
+        if _seen:
+            print("\nСОСЕДНИЙ РОЛИК УЖЕ СМОТРЕЛ ЭТИ ПОСТЫ (%d) — не качай "
+                  "заново:" % len(_seen))
+            for _u, (_proj, _why) in list(_seen.items())[:12]:
+                print("   %s → [%s] %s" % (_u, _proj, str(_why)[:80]))
+    except Exception:
+        pass
+
+    if out:
+        json.dump(all_res, open(out, "w", encoding="utf-8"),
+                  ensure_ascii=False, indent=1)
+        print("\nадреса записаны целиком: %s" % out)
+        print("в scenes.json ставить source=direct_url и адрес ОТТУДА, не из печати")
+
+
+if __name__ == "__main__":
+    main()

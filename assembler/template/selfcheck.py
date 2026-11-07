@@ -1,0 +1,1044 @@
+#!/usr/bin/env python3
+# -*- coding: utf-8 -*-
+"""Полная самопроверка сборки по SKILL.md ПЕРЕД тем как:
+  - отдавать дашборд пользователю,
+  - говорить «готово к собирай»,
+  - запускать build_clips / assemble_final.
+
+Обязательное правило (user, 2026-09-06, после 07.09-2: «делай самопроверку
+каждого своего шага на полный цикл. Не делать ни одного действия лишнего
+без самопроверки»). Косяк из задачи в задачу всплывает потому, что шаги
+скилла пропускаются молча — этот скрипт их ловит.
+
+Запуск:  python3 selfcheck.py <scenes.json> [images_dir]
+Код возврата 0 = всё чисто. !=0 = есть НАРУШЕНИЯ, чинить до отдачи дашборда.
+"""
+import glob, hashlib, io, json, os, subprocess, sys
+
+# ГОЛЫЙ ВЫЗОВ БРАЛ ФАЙЛ ВСПЛЫВАШЕК И СРАВНИВАЛ ЕГО САМ С СОБОЙ (2026-10-20,
+# улов `usuario-40`). В папке ролика лежат ДВА `*.scenes.json`, и `sorted()`
+# ставит `overlays_fetch.scenes.json` первым по алфавиту почти всегда. Итог:
+# на все 24 всплывашки разом печаталось «запрос ТОТ ЖЕ, что у базового кадра»
+# — выглядит как настоящая находка, сигнала ноль, и вкладка чуть не переписала
+# весь слой всплывашек. Теперь файл всплывашек из автовыбора исключён (как это
+# давно делает облачный `setup`), а если после отбора кандидатов не осталось —
+# скрипт честно просит имя файла, а не берёт что попало.
+def _pick_scenes():
+    cands = [p for p in sorted(glob.glob("*.scenes.json"))
+             if "overlays_fetch" not in os.path.basename(p)
+             and "overlay" not in os.path.basename(p).split(".")[0]]
+    if not cands:
+        print("selfcheck: в папке нет основного *.scenes.json (только файл "
+              "всплывашек?) — передай имя файла первым аргументом")
+        sys.exit(2)
+    if len(cands) > 1:
+        print(f"selfcheck: основных файлов сцен несколько {cands} — беру "
+              f"{cands[0]}; если нужен другой, передай его первым аргументом")
+    return cands[0]
+
+
+scenes_path = sys.argv[1] if len(sys.argv) > 1 else _pick_scenes()
+images = sys.argv[2] if len(sys.argv) > 2 else "images"
+proj = os.path.dirname(os.path.abspath(scenes_path)) or "."
+os.chdir(proj)
+
+FAIL, WARN = [], []
+d = json.load(open(scenes_path, encoding="utf-8"))
+scenes = d["scenes"] if isinstance(d, dict) else d
+# Канал в шапке `<niche>.scenes.json` лежит ВЕРХНИМ УРОВНЕМ (`channel`), а не
+# в блоке `meta` — проверено на всех живых проектах 2026-10-16. Раньше читался
+# только `meta`, которого там нет ни у кого: печаталось «канал ?», и проверка
+# `anchor` по каналу МОЛЧА не выполнялась ни разу за всё время. Читаем оба
+# места, чтобы работало и со старыми файлами, где `meta` всё-таки есть.
+meta = {} if not isinstance(d, dict) else {**d, **(d.get("meta") or {})}
+ids = [s["id"] for s in scenes]
+total = sum(s["duration_sec"] for s in scenes)
+
+def asset(i):
+    """Файлы кадра сцены. `.ready` — МЕТКА подготовленного вложения (06.11),
+    а не кадр: вкладка кладёт её рядом по нашей же инструкции, и без этого
+    исключения каждая такая сцена давала ложное «в images/ ДВА файла».
+    Нулевой файл тоже не кадр."""
+    out = []
+    for f in glob.glob(f"{images}/scene_{i:03d}.*"):
+        if f.endswith((".json", ".ready", ".lock")):
+            continue
+        try:
+            if os.path.getsize(f) == 0:
+                continue
+        except OSError:
+            continue
+        out.append(f)
+    return out
+
+needs = {}
+if os.path.exists("needs_upload.json"):
+    needs = json.load(open("needs_upload.json", encoding="utf-8"))
+
+# 1. каждая сцена — либо файл, либо needs_upload
+for i in ids:
+    if not asset(i) and str(i) not in needs:
+        FAIL.append(f"сцена {i}: нет ни картинки, ни записи в needs_upload.json")
+
+# 1b. ДВА ФАЙЛА НА ОДНУ СЦЕНУ — СБОРЩИК ВОЗЬМЁТ НЕ ТОТ (2026-10-27, улов
+# `usuario-31` на `planeta-ultimatum-2810`, одиннадцать пар). Облако кладёт
+# тёмную заглушку `scene_NNN.jpg` на сцены источников, которых оно не
+# обслуживает (карточки, медиатека), а потом поверх ложится настоящий
+# `scene_NNN.mp4` из локального добора — и в папке остаются ОБА. Сцена при
+# этом «с кадром», проверки молчат, а в сборку уезжает тот файл, который
+# первым попал в glob: на одиннадцати сценах это была бы чёрная заглушка.
+# Отличить можно только счётом файлов, поэтому проверка здесь.
+_TMP_SUF = (".wmcrop.jpg", ".ocrcrop.jpg", ".text.jpg", ".ovthumb.jpg")
+for i in ids:
+    _fs = [f for f in asset(i) if not f.endswith(_TMP_SUF)]
+    if len(_fs) > 1:
+        _sizes = ", ".join("%s (%d КБ)" % (os.path.basename(f),
+                                           os.path.getsize(f) // 1024)
+                           for f in sorted(_fs))
+        FAIL.append("сцена %s: в images/ ДВА файла — %s. Сборщик возьмёт "
+                    "первый по алфавиту, а не нужный: убери лишний (тёмные "
+                    "заглушки облака на 30-40 КБ — в .placeholders/)" % (i, _sizes))
+
+# 1b-бис. ТЁМНАЯ ЗАГЛУШКА ОБЛАКА НА МЕСТЕ ЖИВОГО КАДРА (04.11, улов
+# `usuario-75`: чёрный кадр на 1:52 в СДАННОМ ролике). Проверка 1b ловит
+# заглушку только когда рядом лежит второй файл; здесь кадр был ОДИН —
+# заглушка приехала с `get.sh` и затёрла пин медиатеки, а механизм rebuild
+# её законсервировал («сцена не менялась»). Ловим по ЯРКОСТИ, а не по
+# точному размеру: он гуляет 30-40 КБ.
+_ph = []
+for i in ids:
+    for f in asset(i):
+        if f.endswith(_TMP_SUF) or not f.lower().endswith((".jpg", ".jpeg", ".png")):
+            continue
+        try:
+            if os.path.getsize(f) > 60000:
+                continue
+            from PIL import Image, ImageStat
+            with Image.open(f) as _im:
+                _b = ImageStat.Stat(_im.convert("L")).mean[0]
+        except Exception:
+            continue
+        if _b < 45:
+            _ph.append("сцена %s: %s — %d КБ, средняя яркость %.0f из 255"
+                       % (i, os.path.basename(f), os.path.getsize(f) // 1024, _b))
+# КАРТОЧКА БЕЗ КЛИПА — ЭТО НЕ «ЗАГЛУШКА», А НЕНАРИСОВАННЫЙ ЭЛЕМЕНТ (06.11,
+# улов `usuario-a3`). Виды режима `cli` (`bars`, `slider`) рисуются ТОЛЬКО
+# клипом, превью у них не бывает; если задание упало в облаке, в `images/`
+# остаётся прежняя заглушка — и проверка кричала «тёмная заглушка», уводя
+# вкладку искать кадр вместо того, чтобы перерисовать карточку.
+_card_no_clip = []
+for _s in scenes:
+    if not str(_s.get("source", "")).startswith("card"):
+        continue
+    _i = int(_s.get("id", 0))
+    if not glob.glob(f"{images}/scene_{_i:03d}.mp4"):
+        _card_no_clip.append(_i)
+if _card_no_clip:
+    _nums = ", ".join(map(str, _card_no_clip))
+    FAIL.append("КАРТОЧКА НЕ НАРИСОВАНА (сцены %s): источник `card:*`, а клипа "
+                "в images/ нет. Это НЕ брак кадра — задание не отрисовалось "
+                "или не разложено. Прогони `python3 ~/.claude/skills/"
+                "news-video/fullcycle/cards_cloud.py <ролик>.scenes.json` — "
+                "уже готовые карточки заново не рисуются." % _nums)
+    _ph = [x for x in _ph
+           if not any(("сцена %d:" % i) in x for i in _card_no_clip)]
+
+if _ph:
+    FAIL.append("ТЁМНАЯ ЗАГЛУШКА ВМЕСТО КАДРА (" + "; ".join(_ph) +
+                "). Это заглушка облака, а не фотография: в готовом ролике "
+                "будет ЧЁРНЫЙ кадр. Верни кадр локально и пересобери — "
+                "rebuild сам её не переклеит, он считает сцену неизменной.")
+
+# 1c. ИСТОЧНИК СЦЕНЫ И ФАЙЛ НА ДИСКЕ РАСХОДЯТСЯ (2026-10-27, улов `usuario-31`
+# на `planeta-ultimatum-2810`, сцена 20). После кода 1 на фетче запрос был
+# переписан в `press_photo`, а в `images/` остался ПРЕЖНИЙ стоковый `.mp4` —
+# файл валидный, сцена «с кадром», и ни одна проверка этого не видела: сверить
+# можно только источник против расширения. Для `local_library`, `direct_url` и
+# карточек проверка не делается: там законны и фото, и видео.
+_PHOTO_SRC = ("press_photo", "web_search", "wikimedia", "pexels_photo")
+for s_ in scenes:
+    i = s_["id"]
+    src = str(s_.get("source", ""))
+    fs = [f for f in asset(i) if not f.endswith(_TMP_SUF)]
+    if len(fs) != 1:
+        continue          # ноль и дубли уже разобраны выше
+    ext = os.path.splitext(fs[0])[1].lower()
+    is_vid = ext in (".mp4", ".mov", ".webm")
+    if src.startswith("pexels_video") and not is_vid:
+        FAIL.append("сцена %s: источник %s, а на диске КАРТИНКА %s — фетч не "
+                    "заменил файл; сцена покажет не то, что в запросе"
+                    % (i, src, os.path.basename(fs[0])))
+    elif src in _PHOTO_SRC and is_vid:
+        FAIL.append("сцена %s: источник %s, а на диске ВИДЕО %s — остался "
+                    "прежний стоковый клип, запрос переписан впустую"
+                    % (i, src, os.path.basename(fs[0])))
+
+# 2. format sniff — не-JPEG под .jpg (SKILL.md 2d)
+# ВРЕМЕННЫЕ КРОПЫ OCR — НЕ ФАЙЛЫ РОЛИКА (24.10, улов `usuario-68`).
+# `has_heavy_text_overlay` создаёт и тут же удаляет `scene_NNN.jpg.wmcrop.jpg`
+# на каждом кадре. Если selfcheck идёт одновременно с OCR, он ловит такой файл
+# в glob, а к моменту чтения его уже нет — весь прогон падал
+# `FileNotFoundError`, exit 1, и это выглядело как сломанная самопроверка на
+# готовом ролике. Поэтому: имя пропускаем, а исчезнувший файл не роняет прогон.
+TMP_SUFFIX = (".wmcrop.jpg", ".ocrcrop.jpg")
+
+# OCR МОГ НЕ РАБОТАТЬ ВО ВРЕМЯ ФЕТЧА (24.10). Метку кладёт fetch_assets_news,
+# когда tesseract не запускается: тогда «клейм не найдено» ничего не значит.
+if os.path.exists(os.path.join(images, ".ocr_dead")):
+    FAIL.append("OCR НЕ РАБОТАЛ во время фетча (метка images/.ocr_dead) — "
+                "проверка на клейма и текст в кадре НЕ ДЕЛАЛАСЬ. Почини "
+                "tesseract и прогони заново либо отдай кадры на просмотр")
+
+for f in glob.glob(f"{images}/scene_*.jpg"):
+    if f.endswith(TMP_SUFFIX):
+        continue
+    if not os.path.exists(f):
+        continue
+    kind = subprocess.run(["file", "-b", f], capture_output=True, text=True).stdout
+    if "JPEG" not in kind and "JFIF" not in kind:
+        FAIL.append(f"{f}: не JPEG ({kind.strip()[:30]}) — build_clips подавится")
+
+# 2b. oversized video source (user, 2026-09-16, furious — a whole 359s
+# compilation reel got hand-pinned as a "single scene" clip and copied
+# verbatim into images/, which build_clips_1080.py DOES trim correctly at
+# build time (-t duration), but a source this large chokes/slows the live
+# dashboard's thumbnail step and is a sign a long multi-shot compilation was
+# used raw instead of being indexed (SKILL.md rule 3). Catch it before it
+# ever reaches fetch/dashboard, not after.
+for i, s in ((s["id"], s) for s in scenes):
+    if s.get("source") != "local_library":
+        continue  # pexels_video/press stock clips are legitimately longer than the cut; only a library exact-file pin risks being a whole compilation
+    for f in asset(i):
+        if not f.lower().endswith((".mp4", ".mov", ".webm")):
+            continue
+        try:
+            r = subprocess.run(
+                ["ffprobe", "-v", "error", "-show_entries", "format=duration",
+                 "-of", "csv=p=0", f], capture_output=True, text=True, timeout=10)
+            src_dur = float(r.stdout.strip() or 0)
+        except Exception:
+            continue
+        want = s["duration_sec"]
+        if src_dur > max(30, want * 5):
+            FAIL.append(f"{f}: источник {src_dur:.0f}с при нужных {want:.1f}с — похоже на "
+                        f"целую нарезку/компиляцию, взятую как один клип (SKILL.md rule 3, "
+                        f"index_library.py detect до использования, не голым файлом)")
+
+# 3. дубли одного файла (no-repeat, SKILL.md rule 4/5)
+h = {}
+for f in glob.glob(f"{images}/scene_*.*") + glob.glob("overlays/scene_*.*"):
+    # `.ready`/`.lock` — СЛУЖЕБНЫЕ МЕТКИ, А НЕ КАДРЫ (06.11): они пустые и,
+    # естественно, совпадают по md5 между собой — проверка дублей кричала
+    # «одинаковый файл» на метках, которые вкладка ставит по нашей же
+    # инструкции. Нулевой файл в сравнение дублей не берём вообще.
+    if f.endswith((".json", ".text.png", ".ready", ".lock") + TMP_SUFFIX):
+        continue
+    try:
+        if os.path.getsize(f) == 0:
+            continue
+    except OSError:
+        continue
+    # ПУТЬ ЦЕЛИКОМ, А НЕ ОДНО ИМЯ (2026-10-20, улов `usuario-40`). Было
+    # `os.path.basename(f)`, и дубль «images/scene_044.jpg + overlays/scene_073.jpg»
+    # читался как «две базовые сцены» — вкладка искала совпадение не в том слое.
+    # Имена файлов в `images/` и `overlays/` нумеруются независимо, так что без
+    # каталога сообщение не просто неполное, а уводит в сторону.
+    try:
+        _d = open(f, "rb").read()
+    except OSError:
+        continue          # файл исчез между glob и чтением — временный кроп
+    h.setdefault(hashlib.md5(_d).hexdigest(), []).append(f)
+for k, v in h.items():
+    if len(v) > 1:
+        FAIL.append(f"одинаковый файл в: {sorted(v)}")
+
+# 4. overlays.json — ОБЯЗАН быть до дашборда, ~3/мин, anchor по каналу (SKILL.md 3b)
+if not os.path.exists("overlays.json"):
+    FAIL.append("overlays.json НЕТ — всплывашки не расставлены (SKILL.md 3b, обязательно ДО дашборда)")
+else:
+    ov = json.load(open("overlays.json", encoding="utf-8"))
+    n_ov = len([k for k in ov if k != "anchor"])
+    per_min = n_ov / (total / 60)
+    # ПЕРВАЯ ВСПЛЫВАШКА — НЕ ПОЗЖЕ ЧЕТВЁРТОЙ СЦЕНЫ (слово пользователя 26.10:
+    # «всплывашка должна появляться в первых 4 кадрах»). Он смотрит начало
+    # ролика как зритель: пустой старт читается как «ничего не происходит»,
+    # а зритель уходит именно там. Повод: два ролика подряд начинались с
+    # 11-й сцены (`planeta-nato1997-2710` и `planeta-kiev-zima-2710`).
+    # Лечится ОДНОЙ всплывашкой, а не перестановкой — поэтому блокер.
+    _ov_ids = sorted(int(k) for k in ov if k.isdigit())
+    if _ov_ids and _ov_ids[0] > 4:
+        FAIL.append(
+            f"первая всплывашка только на сцене {_ov_ids[0]} — по правилу 26.10 "
+            f"она обязана быть в первых ЧЕТЫРЁХ сценах. Добавь одну на сцену 1-4 "
+            f"(это одна всплывашка, не круг правок)")
+    # Плотность всплывашек — всегда ПРЕДУПРЕЖДЕНИЕ, не блокер: пользователь
+    # удаляет лишние на дашборде (его правки = финал). ПЛАНЕТА целится в ~3/мин,
+    # поиск-только идёт реже (прецедент «Чудовищные потери 2» ~1.3/мин).
+    if per_min < 2.5:
+        WARN.append(f"всплывашек {n_ov} ({per_min:.1f}/мин) — на ПЛАНЕТЕ ~3/мин; меньше — ок, если это твои правки")
+    # ФОТО-ВСПЛЫВАШКИ СЧИТАЮТСЯ ОТДЕЛЬНО (2026-10-20, прямая реакция пользователя:
+    # «очень мало всплывашек» при 38 из 74 сцен, то есть формально больше половины).
+    # Разгадка: из 38 только 4 были ФОТО, остальное текст. Пользователь смотрит
+    # дашборд КАРТИНКАМИ, и текстовый слой для него всплывашкой не читается.
+    # Ориентир — не меньше одной фото-всплывашки на 6-7 сцен.
+    _n_ph = len([1 for k, v in ov.items()
+                 if k != "anchor" and str(v.get("photo") or "").strip()])
+    _n_sc = len(scenes) or 1
+    if _n_ph * 7 < _n_sc:
+        WARN.append(f"ФОТО-всплывашек всего {_n_ph} на {_n_sc} сцен — пользователь "
+                    f"читает дашборд картинками, и текстовый слой ему всплывашкой не "
+                    f"кажется («очень мало всплывашек» при 38 из 74, где фото было 4). "
+                    f"Ориентир: одна фото-всплывашка на 6-7 сцен, то есть ~{_n_sc // 7}.")
+    # у всех всплывашек пустой sound -> видеоряд выйдет без звука всплывашек
+    # (feedback_overlays_sound_field_lost, 2026-09-08). Переприсвоить sound
+    # (['whoosh','zatvor','pop'][i%3]) и локально прогнать build_overlays.py sfx.
+    # ЦВЕТ НАДПИСЕЙ — ОДИН НА ВЕСЬ РОЛИК (2026-10-22, прямое наблюдение
+    # пользователя на дашборде 8793: «все записи пришли одинакового цвета»).
+    # Дефолт теперь считается по кругу от номера сцены, но вкладка может
+    # проставить один цвет РУКАМИ всем подряд — ровно это и случилось, 21 из 21
+    # белых. Это предупреждение, а не блокер: один цвет бывает и осознанным.
+    _tcols = [str((v.get("text") or {}).get("color") or "").lower()
+              for k, v in ov.items() if k != "anchor" and isinstance(v.get("text"), dict)
+              and ((v.get("text") or {}).get("words") or (v.get("text") or {}).get("text"))]
+    _tcols = [c for c in _tcols if c]
+    if len(_tcols) >= 5 and len(set(_tcols)) < 3:
+        WARN.append(
+            "надписей %d, а цветов всего %d (%s) — пользователь просил РАЗНЫЕ "
+            "(белый/жёлтый/красный/зелёный/оранжевый). Пустое поле color дашборд "
+            "и сборка теперь заполняют по кругу от номера сцены сами: проще "
+            "убрать color из overlays.json, чем расставлять руками."
+            % (len(_tcols), len(set(_tcols)), ", ".join(sorted(set(_tcols)))))
+    snd = [v.get("sound") or (v.get("text", {}).get("sound", "") if isinstance(v.get("text"), dict) else "")
+           for k, v in ov.items() if k != "anchor"]
+    if snd and not any(snd):
+        FAIL.append("у ВСЕХ всплывашек sound='' — видеоряд соберётся БЕЗ звука "
+                    "всплывашек. Переприсвоить sound в overlays.json.")
+    # ЗВУКИ НАЗНАЧЕНЫ, А САМИХ ФАЙЛОВ В ПАПКЕ НЕТ (2026-10-20, улов `usuario-40`:
+    # готовый видеоряд приехал с ОДНИМ потоком, без звуковой дорожки вовсе).
+    # Проверка поля `sound` этого не видела: поле заполнено, exit 0. Каталог
+    # `sfx/` есть только у проектов, унаследованных копированием от прошлых
+    # роликов; свежая папка (`scenes_from_srt.py` + свои файлы) его не получает,
+    # и раннер молча собирает немое видео — в логе это тонет среди двух десятков
+    # строк «звук 'whoosh' не найден».
+    if any(snd):
+        _proj_sfx = glob.glob("sfx/*.mp3") + glob.glob("sfx/*.wav")
+        _skill_sfx = glob.glob(os.path.join(
+            os.path.dirname(os.path.abspath(__file__)), "sfx", "*.mp3"))
+        if not _proj_sfx and _skill_sfx:
+            WARN.append("звуки всплывашкам назначены, а каталога sfx/ в папке "
+                        "ролика НЕТ. Для облака не страшно — ship.sh дольёт "
+                        "штатные из скилла; но ЛОКАЛЬНАЯ сборка выйдет НЕМОЙ. "
+                        "Хочешь наверняка: cp -r ~/.claude/skills/news-video/"
+                        "template/sfx .")
+        elif not _proj_sfx and not _skill_sfx:
+            FAIL.append("звуки всплывашкам назначены, но файлов нет НИ в папке "
+                        "ролика, ни в скилле — видеоряд будет немым. Восстанови "
+                        "~/.claude/skills/news-video/template/sfx/ (оригиналы: "
+                        "D:\\YouTube\\МЕДИОТЕКА\\Звуки).")
+    ch = (meta.get("channel") or "").upper()
+    # КАНАЛ ПО ИМЕНИ ПАПКИ, ЕСЛИ В ШАПКЕ ЕГО НЕТ. Поле `channel` ставит не
+    # каждая вкладка (вчера его не было ни в одном живом проекте), а проверки
+    # ниже без канала молча не выполняются — ровно так на ПЛАНЕТУ и приехали
+    # 30 запрещённых надписей.
+    if not ch:
+        # 1) путь к папке ролика на D: — там имя канала есть ВСЕГДА
+        #    (`.source_dir` кладёт ship.sh/вкладка). Имя папки проекта
+        #    ненадёжно: очередь зовётся `isterika-2210`, канал в ней потерян.
+        # Где искать `.source_dir`: в самой папке; в папке замера из кэша
+        # очереди (её пишет ship.sh); в соседней папке, чьё имя ЗАКАНЧИВАЕТСЯ
+        # именем очереди (`planeta-isterika-2210` против `isterika-2210-cloud`).
+        _cwd = os.path.abspath(".")
+        _q = os.path.basename(_cwd)
+        _q = _q[:-6] if _q.endswith("-cloud") else _q
+        _dirs = [_cwd, os.path.join(os.path.dirname(_cwd), _q)]
+        try:
+            _pd = io.open(os.path.expanduser(
+                "~/.cache/videoryad/%s.phasedir" % _q), encoding="utf-8").read().strip()
+            if _pd:
+                _dirs.append(_pd)
+        except Exception:
+            pass
+        try:
+            for _sib in os.listdir(os.path.dirname(_cwd)):
+                if _sib.endswith(_q) and _sib != os.path.basename(_cwd):
+                    _dirs.append(os.path.join(os.path.dirname(_cwd), _sib))
+        except Exception:
+            pass
+        _hay = ""
+        for _d in _dirs:
+            try:
+                _hay = io.open(os.path.join(_d, ".source_dir"),
+                               encoding="utf-8").read().upper()
+                if _hay.strip():
+                    break
+            except Exception:
+                continue
+        _hay += " " + os.path.abspath(".").upper()
+        for _key, _name in (("ПЛАНЕТА", "ПЛАНЕТА"), ("5 МИНУТ", "5 МИНУТ"),
+                            ("5МИНУТ", "5 МИНУТ"), ("ОЛЬКА", "ОЛЬКА"),
+                            ("ДИПЛОМАТИЯ", "ДИПЛОМАТИЯ СИЛЫ"),
+                            ("ПЕРЕВОД", "ПЕРЕВОД")):
+            if _key in _hay:
+                ch = _name
+                break
+        # 2) последний рубеж — префикс имени папки
+        if not ch:
+            _b = os.path.basename(os.path.abspath(".")).lower()
+            for _pref, _name in (("planeta", "ПЛАНЕТА"), ("5min", "5 МИНУТ"),
+                                 ("olka", "ОЛЬКА"), ("ds-", "ДИПЛОМАТИЯ СИЛЫ"),
+                                 ("perevod", "ПЕРЕВОД")):
+                if _b.startswith(_pref) or ("-" + _pref) in _b:
+                    ch = _name
+                    break
+
+    # ТЕКСТОВЫЕ ВСПЛЫВАШКИ — ТОЛЬКО ДЛЯ «5 МИНУТ» (2026-10-21, прямое слово
+    # пользователя: «Планете не применять надписи… без моей команды»).
+    # Правило было в SKILL.md с 2026-10-08 и всё равно нарушилось: вкладка
+    # поставила на ПЛАНЕТУ 30 надписей против 12 фото-всплывашек. Текстом
+    # такое не держится — держит только код.
+    # Разрешение на конкретный ролик: положить в папку файл `.text-overlays-ok`
+    # (пользователь попросил надписи явно). Пустой файл, содержимое не важно.
+    _texts = [k for k, v in ov.items()
+              if str(k).isdigit() and isinstance(v, dict)
+              and (v.get("text") or v.get("words"))]
+    if _texts and ch and "5 МИНУТ" not in ch and not os.path.exists(".text-overlays-ok"):
+        FAIL.append(
+            f"ТЕКСТОВЫЕ ВСПЛЫВАШКИ НА КАНАЛЕ {ch}: их {len(_texts)} "
+            f"(сцены {', '.join(sorted(_texts, key=int)[:10])}"
+            f"{'…' if len(_texts) > 10 else ''}). Надписи — фишка «5 МИНУТ»; "
+            f"на остальных каналах только по ПРЯМОЙ просьбе пользователя. "
+            f"Убрать их из overlays.json, либо — если он попросил явно — "
+            f"создать в папке ролика пустой файл .text-overlays-ok")
+
+    # НА «5 МИНУТ» НАДПИСИ ОБЯЗАТЕЛЬНЫ (06.11, его прямое слово, зло:
+    # «почему при сборке на „Планету“ пропали надписи… надписей не должно
+    # быть ТОЛЬКО на „Планете“, а на „5 минут“ надписи ДОЛЖНЫ быть, я их не
+    # убирал»). Что случилось: 05.11 норму всплывашек переписали на «около
+    # десяти», вкладки стали считать этим числом ВСЁ — и надписи исчезли
+    # совсем. Замер по сданным: до 05.11 их ставили по 30-40 на ролик, с
+    # 05.11 — НОЛЬ на всех роликах подряд, включая «5 МИНУТ».
+    # Запрет на других каналах уже держался кодом, а обязательность здесь —
+    # нет: правило существовало только текстом и поэтому потерялось.
+    # НАДПИСЬ ВНИЗУ — ЭТО МЕСТО СУБТИТРОВ (его слово 28.10 и ещё раз 06.11:
+    # «они должны идти в верхней части или в середине»). `build_overlays.py`
+    # низ поднимает сам, но ловим ДО дашборда: иначе вкладка увидит на экране
+    # не то, что задумала, и спишет это на перекрытие.
+    _low = sorted(k for k, v in ov.items()
+                  if str(k).isdigit() and isinstance(v, dict)
+                  and (v.get("text") or v.get("words"))
+                  and str(v.get("pos", "tc")).lower().startswith("b"))
+    if _low:
+        FAIL.append(
+            "НАДПИСЬ ВНИЗУ КАДРА (сцены %s): там идут субтитры, они будут "
+            "перекрыты. Надписи только ВЕРХ или СЕРЕДИНА — `pos` из "
+            "t*/m* (tl/tc/tr/ml/mc/mr)." % ", ".join(_low[:10]))
+
+    # ИСКЛЮЧЕНИЕ НА КОНКРЕТНЫЙ РОЛИК — ПУСТОЙ ФАЙЛ `.no-text-overlays-ok`
+    # (06.11, его прямое слово по роликам в работе: «это для следующих
+    # сборок, сейчас ничего не меняем, оставляем как есть»). Правило
+    # обязательных надписей вступило в силу посреди смены, и три готовых
+    # ролика переделывать он не захотел — каждый стоил бы полутора часов.
+    if ch and "5 МИНУТ" in ch and not _texts and os.path.exists(".no-text-overlays-ok"):
+        WARN.append("надписей нет, но стоит разрешение `.no-text-overlays-ok` "
+                    "(его решение по этому ролику) — пропускаю")
+    elif ch and "5 МИНУТ" in ch and not _texts:
+        _need = max(10, int(total / 60 * 3)) if total else 30
+        FAIL.append(
+            "НА «5 МИНУТ» НЕТ НИ ОДНОЙ НАДПИСИ. Это фишка канала и его прямое "
+            "требование: норма ~3 на минуту, на этом ролике это около %d штук. "
+            "Ставятся в overlays.json ключом `words` (вид закреплён 21.10: "
+            "тёмная пластина, цветная черта слева, белый Roboto Condensed "
+            "капсом). Фото-всплывашки их не заменяют — это РАЗНЫЕ слои."
+            % _need)
+
+    # НАДПИСИ АГЕНТА ПОТЕРЯЛИСЬ ПО ДОРОГЕ (28.10, улов Flamingo — пользователь
+    # поймал это САМ, двумя заходами). Codex кладёт надписи ВНУТРЬ сцен:
+    # `scenes[].overlays = [{"type":"text","text":{"words":…}}]`. Дашборд и
+    # сборка читают СОВСЕМ ДРУГОЙ файл — `overlays.json` вида
+    # `{"<id>": {"text": {...}}}`, и перенос делается руками. На
+    # `5min-flamingo-2810` в файле агента было 20 надписей, в `overlays.json` —
+    # НОЛЬ, и ролик уехал на дашборд без единой надписи на канале, где они
+    # разрешены и являются фишкой. Это тот же класс «поле в JSON ≠ то, что
+    # читает сборщик», и держать его можно только кодом.
+    _agent_texts = []
+    for _s in scenes:
+        for _o in (_s.get("overlays") or []):
+            if isinstance(_o, dict) and (_o.get("type") == "text"
+                                         or isinstance(_o.get("text"), dict)):
+                _agent_texts.append(_s["id"])
+                break
+    # ВАЖНО: гейт действует ТОЛЬКО там, где надписи РАЗРЕШЕНЫ. На ПЛАНЕТЕ они
+    # запрещены, агент всё равно их предлагает, и вкладка СОЗНАТЕЛЬНО не
+    # переносит — без этого условия гейт валил бы её зря (поймано на своей же
+    # проверке, до раскатки).
+    _texts_allowed = ("5 МИНУТ" in (ch or "")) or os.path.exists(".text-overlays-ok")
+    if _agent_texts and not _texts and _texts_allowed:
+        FAIL.append(
+            f"НАДПИСИ ЕСТЬ В СЦЕНАХ, НО НЕ ПЕРЕНЕСЕНЫ В `overlays.json`: "
+            f"в раскадровке их {len(_agent_texts)} (сцены "
+            f"{', '.join(map(str, _agent_texts[:10]))}"
+            f"{'…' if len(_agent_texts) > 10 else ''}), в overlays.json ноль. "
+            f"Дашборд и сборка читают ТОЛЬКО overlays.json — ролик уедет без "
+            f"надписей. Формат записи: \"<id>\": {{\"text\": {{\"words\": "
+            f"\"…\", \"at\": 3.0}}}}; на сцену, где уже есть фото-всплывашка "
+            f"или карточка, надпись не ставить — вторая запись затирает первую")
+
+    # ОДИН ФАЙЛ В СЦЕНЕ И ВО ВСПЛЫВАШКЕ — БАН ОДНОЙ ВАЛИТ ДРУГУЮ (28.10,
+    # улов вкладки «Переговоры Москва»): сцена 45 и её всплывашка приехали
+    # ОДНИМ кадром Овального кабинета; вкладка меняла всплывашку, `refetch`
+    # забанил md5 на два дня — и `selfcheck` свалил прогон на «ЗАБАНЕННЫЙ КАДР
+    # В СБОРКЕ: images/scene_045.jpg». Сказать об этом надо ДО замены, пока
+    # она дешёвая.
+    import hashlib as _hl
+    def _md5f(_p):
+        try:
+            with open(_p, "rb") as _f:
+                return _hl.md5(_f.read()).hexdigest()
+        except OSError:
+            return ""
+    _img_md5 = {}
+    for _p in glob.glob(os.path.join("images", "scene_*")):
+        if _p.endswith((".json", ".text.png", ".lock")) or ".ovthumb." in _p:
+            continue
+        _h = _md5f(_p)
+        if _h:
+            _img_md5.setdefault(_h, os.path.basename(_p))
+    _same = []
+    for _p in glob.glob(os.path.join("overlays", "scene_*")):
+        if _p.endswith((".json", ".text.png", ".lock")) or ".ovthumb." in _p:
+            continue
+        _h = _md5f(_p)
+        if _h and _h in _img_md5:
+            _same.append(f"{os.path.basename(_p)} = images/{_img_md5[_h]}")
+    if _same:
+        WARN.append("ОДИН И ТОТ ЖЕ ФАЙЛ в сцене и во всплывашке (%d): %s. "
+                    "Меняй — но помни: бан по md5 заденет ОБА места, и "
+                    "`selfcheck` свалит прогон на забаненном кадре в сборке. "
+                    "Сначала замени кадр сцены или всплывашки БЕЗ `--ban`, "
+                    "потом добивай." % (len(_same), "; ".join(_same[:5])))
+
+    want = "bottom" if "ПЛАНЕТА" in ch or "ПЛАНЕТА" == ch else "top"
+    if ch and ov.get("anchor", "bottom") != want:
+        FAIL.append(f"overlays anchor={ov.get('anchor','bottom')}, для канала {ch} нужен {want} (SKILL.md 3b)")
+    for k, v in ov.items():
+        if k == "anchor":
+            continue
+        ph = v.get("photo", "")
+        tb = v.get("text") if isinstance(v.get("text"), dict) else None
+        has_txt = bool(tb and str(tb.get("words") or tb.get("text") or "").strip())
+        if not ph and has_txt:
+            continue                       # чисто текст-всплывашка — фото не нужно
+        if not os.path.exists(ph):
+            # ФАЙЛ МОЖЕТ ЛЕЖАТЬ С ДРУГИМ РАСШИРЕНИЕМ (2026-10-22, улов
+            # `usuario-92`): карта из медиатеки приезжает .png, а в
+            # overlays.json записан привычный .jpg. Сборка теперь такой путь
+            # разрешает сама, но сказать об этом надо — иначе разойдутся
+            # дашборд (показывает по записанному пути) и готовый ролик.
+            _alt = [c for c in sorted(glob.glob(os.path.splitext(ph)[0] + ".*"))
+                    if not c.endswith((".text.png", ".json")) and os.path.getsize(c) > 0]
+            if _alt:
+                WARN.append(f"всплывашка {k}: в overlays.json записан "
+                            f"{os.path.basename(ph)}, а на диске "
+                            f"{os.path.basename(_alt[0])} — сборка возьмёт "
+                            f"файл с диска, но на дашборде всплывашка может "
+                            f"не показаться. Поправь путь в overlays.json")
+                ph = _alt[0]
+            else:
+                FAIL.append(f"всплывашка {k}: файла нет ({ph})")
+                continue
+        oh = hashlib.md5(open(ph, "rb").read()).hexdigest()
+        bf = asset(int(k))
+        if bf and hashlib.md5(open(bf[0], "rb").read()).hexdigest() == oh:
+            FAIL.append(f"всплывашка {k} = базовый кадр сцены (нельзя, SKILL.md 3b)")
+
+    # 4b. всплывашка называет ТОГО ЖЕ человека/институт, что и базовый кадр —
+    # не ловится md5 (два РАЗНЫХ файла одного и того же человека всё ещё
+    # нарушение, user 2026-10-05/08: "Трамп всплывашка иллюстрирует Трампа",
+    # "Сибига иллюстрирует Сибигу"). Сверяем имена собственные в запросах,
+    # а не пиксели — работает даже когда это два разных фото одного лица.
+    import re as _re
+    def _names(text):
+        # includes Ukrainian-only letters (і/ї/є/ґ) — without them a Cyrillic
+        # word truncates mid-letter ("Київ"->"Ки", "Чернігівський"->"Черн")
+        # and those stubs false-match across unrelated scenes (found live,
+        # session 2026-10-08, peer session on an all-Ukrainian "5 МИНУТ" build).
+        # ПУТЬ МЕДИАТЕКИ — НЕ ЗАПРОС (2026-10-22, улов `usuario-82`): у сцен
+        # с источником local_library в source_query лежит путь вида
+        # «ПОЛИТИКА/ПУТИН/файл.jpg». Слова пути брались целиком, и база
+        # «ПОЛИТИКА/ПУТИН/…» со всплывашкой «ПОЛИТИКА/КАРТЫ/УКРАИНА/…»
+        # пересекались по ОБЩЕМУ КОРНЮ «ПОЛИТИКА» — selfcheck валил прогон
+        # «тот же человек/объект», хотя объекты разные. Вкладка обходила это
+        # переименованием пути. Берём только значащие сегменты: без первого
+        # (раздел медиатеки) и без имени файла.
+        t = text or ""
+        if "/" in t:
+            segs = [x for x in t.replace("\\", "/").split("/") if x.strip()]
+            # ПОСЛЕДНИЙ СЕГМЕНТ ОТБРАСЫВАТЬ ТОЛЬКО ЕСЛИ ЭТО ИМЯ ФАЙЛА
+            # (2026-10-29). Сцена БАЗЫ несёт путь ПАПКИ без файла
+            # («БАЗА/БЫТ-УКРАИНА/ТРАНСФОРМАТОРНАЯ-ПОДСТАНЦИЯ-СЕТКОЙ»), и
+            # прежнее правило выбрасывало ровно тот сегмент, в котором смысл,
+            # оставляя раздел «БЫТ-УКРАИНА». Тогда подстанция и эскалатор
+            # метро считались ОДНИМ объектом, и selfcheck ВАЛИЛ прогон. На
+            # 5 МИНУТ, где движение закрывается базой, под это попадала любая
+            # пара кадров из одного раздела.
+            _last = segs[-1] if segs else ""
+            _isfile = "." in _last and len(_last.rsplit(".", 1)[-1]) <= 5
+            if not _isfile:
+                # папка БАЗЫ: смысл только в ИМЕНИ ОБЪЕКТА, раздел («БЫТ-
+                # УКРАИНА», «ВЛАСТЬ-РОССИЯ») общий у десятка разных кадров
+                segs = segs[-1:]
+            elif len(segs) > 2:
+                segs = segs[1:-1]
+            elif len(segs) == 2:
+                segs = segs[:1]
+            t = " ".join(segs)
+        return set(_re.findall(r"[А-ЯЁІЇЄҐ][а-яёіїєґА-ЯЁІЇЄҐ]+", t))
+    _STOP = {"КАРТЫ", "Карты", "Украины", "Украина", "Украине", "Киев", "Киева", "Москва", "Москвы",
+              "России", "Россия", "Верховная", "Рада", "Радой", "Радою", "НАТО",
+              "МИД", "МЗС", "Кремль", "США", "ЕС", "Индии", "Индия",
+              # Ukrainian/other-language forms of the same stop-words — without
+              # these, a scene/overlay pair written in Ukrainian (or naming a
+              # country other than RU/UA) false-flagged as a name collision
+              # just because both mentioned "Україна"/"Ємен" (user_56 report,
+              # cross-session, 2026-10-10). Add more language forms here as
+              # they're caught, same spirit as the a3 cheat-sheet below.
+              "Україна", "України", "Україні", "Україну", "Україною",
+              "Київ", "Києва", "Києві", "Київу", "Москві", "Росія", "Росії",
+              "Росію", "Росією", "ЗСУ", "Кремля", "Кремлі", "Ємен", "Ємену",
+              "Йемен", "Йемену", "Йемена", "ЄС", "Індія", "Індії",
+              # РАСПРОСТРАНЁННЫЕ ЛИЧНЫЕ ИМЕНА — НЕ «ТОТ ЖЕ ЧЕЛОВЕК»
+              # (26.10, улов `usuario-d9`, ложная блокировка перед самой
+              # отдачей дашборда): база «Владимир Путин», всплывашка
+              # «Владимир Зеленский» — люди РАЗНЫЕ, а проверка видела общее
+              # ИМЯ и валила прогон. Вкладка обошла, убрав имя из запроса,
+              # то есть ухудшила запрос ради прохождения проверки. Человека
+              # различает фамилия, поэтому личные имена в сверку не берём;
+              # если совпала ещё и фамилия — пара всё равно упадёт.
+              "Владимир", "Володимир", "Дмитрий", "Дмитро", "Сергей",
+              "Сергій", "Александр", "Олександр", "Андрей", "Андрій",
+              "Виктор", "Віктор", "Михаил", "Михайло", "Николай", "Микола",
+              "Юрий", "Юрій", "Петр", "Пётр", "Петро", "Иван", "Іван",
+              "Алексей", "Олексій", "Валерий", "Валерій", "Игорь", "Ігор",
+              "Денис", "Максим", "Антон", "Павел", "Павло", "Олег", "Роман",
+              "Эмманюэль", "Дональд", "Джо", "Джон", "Кир", "Фридрих",
+              "Реджеп", "Си", "Нарендра", "Биньямин", "Урсула", "Марко"}
+    # ГЕОГРАФИЯ — НЕ «ТОТ ЖЕ ЧЕЛОВЕК» (2026-10-17, БЛОКЕР на
+    # planeta-tri-bukvy-1810: девять FAIL из девяти были совпадением
+    # страноведческого слова — «Германии», «Европейского», «Словакии»,
+    # «Эстонии»). База «здание ЕЦБ во Франкфурте» + всплывашка «Кристин
+    # Лагард глава Европейского центрального банка» — это ОДОБРЕННЫЙ приём
+    # «лицо того, кто в этом здании решает», а проверка его бракует. На
+    # ролике, где все 85 сцен про Германию и ЕС, секция была неработоспособна
+    # и обходилась косметикой запроса, то есть не работала вовсе.
+    # Поэтому из сравнения выбрасываются страны, города и производные от них
+    # прилагательные — по КОРНЮ, а не поимённым списком форм.
+    # Фамилии НЕ трогаем: «Зеленский», «Навальный» и прочие -ский остаются,
+    # иначе проверка потеряет главный свой случай.
+    _GEO_STEMS = (
+        "герман", "немецк", "европ", "евросоюз", "брюссел", "страсбург",
+        "франкфурт", "берлин", "мюнхен", "гамбург", "кёльн", "кельн",
+        "дрезден", "штутгарт", "дюссельдорф", "бонн", "рамштайн",
+        "словак", "словацк", "словен", "чехи", "чешск", "праг", "венгр",
+        "будапешт", "польш", "польск", "варшав", "эстон", "таллин",
+        "латви", "рига", "литв", "вильнюс", "франц", "париж", "итали",
+        "рим", "испан", "мадрид", "португал", "греци", "афин", "турци",
+        "анкар", "стамбул", "румын", "бухарест", "болгар", "софи",
+        "серби", "хорват", "австри", "вен", "швейцар", "женев", "швеци",
+        "стокгольм", "норвег", "осло", "финлянд", "хельсинки", "дани",
+        "копенгаген", "нидерланд", "амстердам", "роттердам", "гааг",
+        "бельги", "люксембург", "ирланд", "британ", "англи", "лондон",
+        "шотланд", "америк", "вашингтон", "сша", "китай", "кита", "пекин",
+        "япони", "токио", "коре", "инди", "иран", "тегеран", "ирак",
+        "израил", "иерусалим", "сири", "египт", "африк", "азербайджан",
+        "армени", "грузи", "казахстан", "белорус", "беларус", "минск",
+        "молдов", "кишинёв", "кишинев", "балти", "крым", "донецк",
+        "луганск", "харьков", "одесс", "львов", "днепр", "запорож",
+        "херсон", "мариупол", "киев", "київ", "москв", "петербург",
+        "украин", "україн", "росси", "росі", "брюссель",
+    )
+
+    def _is_geo(w):
+        lw = w.lower()
+        return any(lw.startswith(st) for st in _GEO_STEMS)
+
+    # КЛИП КАРТОЧКИ СТАРШЕ СВОЕГО ЗАДАНИЯ = ПЕРЕВЫПУСК НЕ ОТРИСОВАН (29.10).
+    # `card_put.py` переписывает задание в `cards/queue`, но клип остаётся
+    # прежним до следующего прогона `cards_cloud.py`. Вкладка едва не отдала
+    # дашборд со старой карточкой, которую пользователь уже забраковал.
+    for _qj in sorted(glob.glob(os.path.join("cards", "queue", "scene_*.json"))):
+        _sid = os.path.basename(_qj)[6:9]
+        _clip = os.path.join("images", "scene_%s.mp4" % _sid)
+        if os.path.exists(_clip) and os.path.getmtime(_clip) < os.path.getmtime(_qj):
+            FAIL.append("карточка сцены %s НЕ ПЕРЕРИСОВАНА: задание новее клипа "
+                        "— прогони `cards_cloud.py`, иначе на экране старая "
+                        "версия" % int(_sid))
+
+    _by_id = {s["id"]: s for s in scenes}
+    _ovq_path = None
+    for _cand in glob.glob("*overlays_fetch*.json") + glob.glob("*overlay*fetch*.scenes.json"):
+        _ovq_path = _cand
+        break
+    if _ovq_path and os.path.exists(_ovq_path):
+        _ovq = {s["id"]: s.get("source_query", "") for s in json.load(open(_ovq_path, encoding="utf-8"))["scenes"]}
+        for k, v in ov.items():
+            if k == "anchor":
+                continue
+            sid = int(k)
+            base_q = _by_id.get(sid, {}).get("source_query", "")
+            ov_q = _ovq.get(sid, "")
+            shared = (_names(base_q) - _STOP) & (_names(ov_q) - _STOP)
+            shared = {w for w in shared if not _is_geo(w)}
+            if shared:
+                FAIL.append(f"всплывашка {k}: тот же человек/объект ({', '.join(sorted(shared))}) "
+                            f"что и базовый кадр — база: {base_q!r}, всплывашка: {ov_q!r}")
+        # 4c. ИМЯ В ТЕКСТОВОЙ ВСПЛЫВАШКЕ ДОЛЖНО СТОЯТЬ НА КАДРЕ ЭТОГО ЧЕЛОВЕКА
+        # (2026-10-18, третий случай за два дня — значит проверять должен код).
+        # Дефект рождается не при расстановке, а при ПРАВКЕ: вкладка меняет
+        # базовый кадр, а именная надпись остаётся от прежнего. Живьём:
+        # «надпись Анна Скороход, а на фотографии Зеленский» (17.10) и
+        # «ВАННАЧЧИ: ЕВРОПА — НЕ БАНКОМАТ» на панораме Рима, куда база уехала
+        # после замены (18.10). Зритель читает это как «подписали не того».
+        #
+        # Как отличаем ИМЯ от обычного слова капсом, не заводя стоп-листа:
+        # слово из надписи считается именем, только если где-то в ТЕКСТАХ сцен
+        # встречается то же слово с ЗАГЛАВНОЙ буквы («Ванначчи», «Скороход»).
+        # «ЗАКОННЫЕ», «НОЯБРЬ», «ГРАНИЦА» в текстах идут со строчной и именами
+        # не считаются. Эвристику «текст без цифры и имени = абстракция» тут
+        # НЕ повторяем — её сняли 17.10 за 26 ложных из 41.
+        # Это WARN, а не FAIL: бывает законный случай (надпись про человека,
+        # которого кадр подразумевает), и блокировать сдачу из-за него нельзя.
+        # ПОЧИНЕНО 2026-10-18 В ТОТ ЖЕ ЧАС: первая версия давала 6 ложных из 6
+        # на живом ролике («ПОДПИСИ», «БАНКОМАТ», «ОПЕРАЦИЯ», «БОЛЬШЕ»,
+        # «ДОХОДЫ»). Причина системная: в закадровом тексте полно слов В НАЧАЛЕ
+        # ПРЕДЛОЖЕНИЯ, и они тоже с заглавной («Банкомат. Подошёл. Вставил
+        # карту»), а надписи вкладка строит из ключевых слов фразы — почти
+        # каждое где-то открывает предложение. Стенд этого не показал, потому
+        # что проверочные надписи в текстах шли со строчной.
+        # Теперь имя засчитывается, только если слово встречается с заглавной
+        # НЕ в начале предложения (фамилия внутри фразы стоит всегда) И нигде
+        # не встречается со строчной (нарицательное хоть раз да будет строчным).
+        _all_text = " ".join(sc.get("text", "") or "" for sc in scenes)
+        _lower_seen = {w.lower() for w in _re.findall(r"[а-яёіїєґ]{5,}", _all_text)}
+        # ДОРАБОТКА 2026-10-18 (вторая правка в тот же час, обе дыры нашла
+        # рабочая вкладка на живом ролике — шума стало 6 → 2 → 0):
+        # (а) ЦИТАТА тоже начинается с заглавной: «Он начал писать "Операция
+        #     отклонена"» — слово внутри фразы, со строчной нигде не встречается,
+        #     оба прежних условия проходит честно. Поэтому открывающая кавычка
+        #     считается началом предложения наравне с точкой.
+        # (б) правило написано про ЛЮДЕЙ («надпись ставится на кадр ЭТОГО
+        #     человека»), а ловило любое имя собственное, включая страны:
+        #     «ЗВОНОК В КАНАДУ И ЯПОНИЮ» — законная надпись, страну достаточно
+        #     НАЗВАТЬ в тексте, в кадре она быть не обязана. Разводим дёшево,
+        #     без справочника стран: имя человека в текстах почти всегда идёт
+        #     ПАРОЙ с другим словом с заглавной («Роберто Ванначчи», «Анна
+        #     Скороход», «Майкл Флинн»), а страна в перечислении стоит одна.
+        _pair_caps = set()
+        _CAP = r"[А-ЯЁІЇЄҐ][а-яёіїєґ]+"
+        for _sc in scenes:
+            for _m in _re.finditer(r"(%s)\s+(%s)" % (_CAP, _CAP), _sc.get("text", "") or ""):
+                for _g in (_m.group(1), _m.group(2)):
+                    if len(_g) >= 5:
+                        _pair_caps.add(_g.lower()[:5])
+        _OPEN_Q = "«\"'„“("
+        _name_pool = set()
+        for _sc in scenes:
+            _t = _sc.get("text", "") or ""
+            for _m in _re.finditer(r"[А-ЯЁІЇЄҐ][а-яёіїєґА-ЯЁІЇЄҐ]{4,}", _t):
+                _w = _m.group(0)
+                _raw = _t[:_m.start()].rstrip(" ")
+                if not _raw or _raw[-1] in ".!?…:;" or _raw[-1] in _OPEN_Q:
+                    continue              # начало предложения ИЛИ цитаты
+                if _w.lower() in _lower_seen:
+                    continue              # где-то со строчной = нарицательное
+                if _is_geo(_w) or _w in _STOP:
+                    continue              # страна, город, институт
+                if _w.lower()[:5] not in _pair_caps:
+                    continue              # одиночное имя собственное = не человек
+                _name_pool.add(_w.lower()[:5])
+        for k, v in ov.items():
+            if k == "anchor" or not isinstance(v, dict):
+                continue
+            _tb = v.get("text") or {}
+            _words = str(_tb.get("words") or "")
+            if not _words:
+                continue
+            sid = int(k)
+            _base_q = (_by_id.get(sid, {}).get("source_query", "") or "").lower()
+            for _tok in _re.findall(r"[А-ЯЁІЇЄҐ]{5,}", _words):
+                _stem = _tok.lower()[:5]
+                if _stem not in _name_pool or _is_geo(_tok):
+                    continue
+                if _stem not in _base_q:
+                    WARN.append(
+                        f"всплывашка {k}: надпись называет «{_tok}», а базовый "
+                        f"кадр этой сцены про другое ({_base_q!r}) — именная "
+                        f"надпись ставится ТОЛЬКО на кадр этого человека; "
+                        f"частая причина: базу меняли, а надпись осталась")
+
+        # ЛИШНИЕ ЗАПИСИ В FETCH-ФАЙЛЕ = ВОСКРЕШЕНИЕ СНЯТОГО (2026-10-16).
+        # Пользователь снимает всплывашки на дашборде, overlays.json худеет,
+        # а overlays_fetch.scenes.json остаётся прежним — и облако набирает
+        # кадры для снятых, после чего они возвращаются в ролик. Правило 13
+        # велит подрезать fetch-файл руками, но проверку легко проскочить:
+        # раньше selfcheck сверял overlays.json только с файлами на диске и
+        # на это не ругался вовсе (поймано живьём на planeta-yalta-1710,
+        # 55 записей против 44). Стоит миллисекунду, закрывает весь класс.
+        _ov_ids = {int(k) for k in ov if k != "anchor"}
+        _extra = sorted(set(_ovq) - _ov_ids)
+        if _extra:
+            FAIL.append(
+                f"{_ovq_path}: лишние {len(_extra)} записей, которых нет в overlays.json "
+                f"(id: {', '.join(map(str, _extra[:12]))}{'…' if len(_extra) > 12 else ''}) — "
+                f"облако наберёт кадры для СНЯТЫХ всплывашек и они вернутся в ролик. "
+                f"Подрезать fetch-файл до состава overlays.json перед ship (SKILL.md п.13)")
+
+# 5. видео-лид (SKILL.md rule 7) — ПРЕДУПРЕЖДЕНИЕ, не блокер: пользователь
+# может сознательно наменять фото в первой трети на дашборде (его правки =
+# финал). Флагаем, чтобы он знал, но сборку не держим.
+# Соседний скрипт — ПО ПОЛНОМУ ПУТИ ОТ СЕБЯ, а не по имени из cwd
+# (2026-10-17): selfcheck теперь гоняется из template при cwd = папка
+# проекта, и голое имя искалось бы в проекте, где копии может не быть.
+_HERE = os.path.dirname(os.path.abspath(__file__))
+r = subprocess.run(["python3", os.path.join(_HERE, "check_lead.py"), scenes_path, images],
+                   capture_output=True, text=True)
+if r.returncode != 0:
+    WARN.append("видео-лид не выполнен (см. ниже) — ок, если это твои правки на дашборде:\n     "
+                + (r.stdout + r.stderr).strip().replace("\n", "\n     ")[:400])
+
+# 4b-бис. СТОК ЗАПРЕЩЁН ПОЛНОСТЬЮ (28.10, прямое слово пользователя после
+# просмотра шести роликов смены: «стоковые кадры вообще не попадают в тему,
+# они просто разрывают смысловой сюжет, нахуй не нужны, удаляем их, не берём
+# больше эти пиксели в новостную сборку»). Был коридор 10-20% хронометража —
+# теперь ни одной сцены. Приёмка раскадровки это уже валит, здесь ФИНАЛЬНЫЙ
+# гейт: сцена могла стать стоковой и после приёмки, руками или рефетчем.
+_stock_scenes = [s["id"] for s in scenes
+                 if str(s.get("source", "")).startswith("pexels")]
+if _stock_scenes:
+    FAIL.append("СТОК В СБОРКЕ (%d сцен: %s) — запрещён полностью с 28.10. "
+                "Замени источник: медиатека (открыта на всех каналах), "
+                "press_photo, web_search, direct_url из досье или карточка"
+                % (len(_stock_scenes),
+                   ", ".join(map(str, _stock_scenes[:12]))))
+
+# 4c. ВИДЕО КОРОЧЕ СВОЕЙ СЦЕНЫ = ВИДИМАЯ ПЕТЛЯ (2026-10-17). build_clips
+# добивает короткий источник `-stream_loop -1`, то есть клип 6,0 с на сцене
+# 10,0 с проигрывается полтора раза подряд — зритель видит повтор движения.
+# В логе фетча при этом честный `ok`: файл скачан, он просто короткий.
+# Ловится только сверкой длительности файла с `duration_sec` сцены.
+_short = []
+for _s in scenes:
+    _a = asset(_s["id"])
+    if not _a or not _a[0].lower().endswith((".mp4", ".mov")):
+        continue
+    try:
+        _pr = subprocess.run(["ffprobe", "-v", "error", "-show_entries",
+                              "format=duration", "-of", "csv=p=0", _a[0]],
+                             capture_output=True, text=True)
+        _d = float((_pr.stdout or "0").strip() or 0)
+    except Exception:
+        continue
+    _need = float(_s.get("duration_sec") or 0)
+    if _d and _need and _d < _need - 0.25:
+        _short.append(f"сцена {_s['id']}: клип {_d:.1f}с на сцену {_need:.1f}с "
+                      f"(петля ×{_need/_d:.1f})")
+# ПОРОГ РАЗВЕДЁН НА ДВА (28.10, улов вкладки 2 на `5min-kiev-obrechen-2810`):
+# клип 4,6 с на сцену 12,0 с — петля ×2,6, движение повторяется два с
+# половиной раза и это видно глазом, а `selfcheck` печатал лишь WARN и
+# отвечал «чисто». Петля до ×2 на глаз почти не читается (её сцена 17: ×1,1),
+# от ×2 — читается всегда. Значит ×2 и выше валит прогон, остальное остаётся
+# предупреждением.
+_loop_hard, _loop_soft = [], []
+for _line in _short:
+    try:
+        _x = float(_line.rsplit("×", 1)[1].rstrip(")"))
+    except (IndexError, ValueError):
+        _x = 0.0
+    (_loop_hard if _x >= 2.0 else _loop_soft).append(_line)
+if _loop_hard:
+    FAIL.append("видео КОРОЧЕ своей сцены БОЛЬШЕ ЧЕМ ВДВОЕ — повтор движения "
+                "виден глазом, заменить файл или укоротить сцену:\n     "
+                + "\n     ".join(_loop_hard[:10]))
+if _loop_soft:
+    WARN.append("видео КОРОЧЕ своей сцены — будет повтор движения, "
+                "заменить или укоротить сцену:\n     "
+                + "\n     ".join(_loop_soft[:10]))
+
+# 5a. ВСПЛЫВАШКА С ТЕМ ЖЕ ЗАПРОСОМ, ЧТО И БАЗОВЫЙ КАДР (2026-10-17).
+# Найдено прямо в журнале отказов: на 5min-gerasimov сцена 7 — и база, и
+# всплывашка «Московский Кремль Спасская башня флаг России», пользователь
+# снял со словами «не понимаю наличие этой всплывашки». Это механическая
+# ошибка классификации, глазами её ловить незачем.
+try:
+    _ovq = {}
+    for _cand in glob.glob("*overlays_fetch*.json") + glob.glob("*overlay*fetch*.scenes.json"):
+        try:
+            for _o in json.load(open(_cand, encoding="utf-8")).get("scenes", []):
+                _ovq[int(_o.get("id", -1))] = (_o.get("source_query") or "").strip().lower()
+        except (OSError, ValueError, TypeError):
+            continue
+    for _s in scenes:
+        _q = (_s.get("source_query") or "").strip().lower()
+        if _q and _ovq.get(_s["id"]) == _q:
+            FAIL.append(f"всплывашка {_s['id']}: запрос ТОТ ЖЕ, что у базового кадра "
+                        f"(«{_q[:50]}») — она ничего не добавляет, переписать или снять")
+except Exception:
+    pass
+
+# 5b. СВЕРКА ВСЕЙ СБОРКИ С АКТИВНЫМ БАН-ЛИСТОМ (2026-10-17). Фетчер баны
+# чтит на всех путях (скачивание, кэш, библиотека, дашбордная замена), и всё
+# же на `planeta-svergnut-1810` забаненный девять дней назад кадр (чужое лицо,
+# выдаваемое поиском за Гончаренко) оказался в готовой сборке. Поймала его
+# только ручная сверка перед ship — ни фетчер, ни selfcheck, ни четыре
+# субагента не увидели: лицо похожее, на плитке не отличить. Путь, которым он
+# прошёл, по логам восстановить не удалось — значит нужен ПОСЛЕДНИЙ рубеж,
+# который не зависит от того, каким путём файл попал в папку.
+_ban_path = os.environ.get("VIDEORYAD_BANNED_FILE") or os.path.expanduser(
+    "~/projects/media-library/.banned_md5.json")
+try:
+    import time as _t
+    _ban_raw = json.load(open(_ban_path, encoding="utf-8"))
+    _today = _t.strftime("%Y-%m-%d")
+    # ЧУЖОЙ ВРЕМЕННЫЙ БАН — НЕ НАШЕ ДЕЛО (06.11, улов `usuario-c8`: восемь
+    # активных чужих банов на чистых кадрах, и ВЕСЬ второй круг ушёл на них).
+    # Временный бан рефетча означает «не возвращай этот кадр В ТОМ ролике»;
+    # с 06.11 в записи стоит `project`. Вечный бан (`--ban`, без срока)
+    # остаётся общим: такой кадр плох сам по себе.
+    _proj_now = os.environ.get("VIDEORYAD_PROJECT") or os.path.basename(os.path.abspath("."))
+    _ban = set()
+    for m, e in _ban_raw.items():
+        if not isinstance(e, dict):
+            _ban.add(m)
+            continue
+        _until = e.get("until")
+        if _until and _until < _today:
+            continue
+        _own = str(e.get("project") or "")
+        if _until and _own and _own != _proj_now \
+                and _own.rstrip("-cloud") != _proj_now.rstrip("-cloud"):
+            continue
+        _ban.add(m)
+except (OSError, ValueError):
+    _ban_raw, _ban = {}, set()
+# СЦЕНЫ-КАРТОЧКИ ИЗ СВЕРКИ ИСКЛЮЧЕНЫ (04.11, улов `usuario-af`). Облако
+# кладёт всем сценам `card:*` ОДНУ И ТУ ЖЕ заглушку ~34 КБ до прогона
+# `cards_cloud.py`. Кто-то её однажды забанил — и предупреждение «забаненный
+# кадр в сборке» стало всплывать на каждой карточной сцене каждого ролика.
+# Это ложная тревога: карточку рисуем мы сами, бан-лист к ней отношения не
+# имеет.
+_card_sids = {int(s["id"]) for s in scenes
+              if str(s.get("source", "")).startswith("card")}
+
+
+def _sid_of(path):
+    import re as _re2
+    m = _re2.search(r"scene_(\d+)", os.path.basename(path))
+    return int(m.group(1)) if m else -1
+
+
+# УБРАННОЕ ИЗ БАЗЫ ПО КЛЕЙМУ АПСКЕЙЛЕРА — ТОТ ЖЕ ПОСЛЕДНИЙ РУБЕЖ (04.11,
+# предложение `usuario-af`, подтверждённое живым случаем в тот же час).
+# Кадры с замощённым «Magnific» убираются из базы в `_БРАК-апскейлер`, но
+# вкладка, зафетчившая кадр ДО уборки, уже держит его у себя и узнает об
+# этом только от пользователя. Сверка по md5 стоит секунды и ловит то, чего
+# не видно на контактном листе. Живой случай: `ЛЮДИ-ОФИСЕ-МОНИТОРАМИ__05`
+# стоял в сцене 44 готового набора.
+_wm_dir = os.environ.get("VIDEORYAD_UPSCALED_DIR") or "/mnt/d/media-library/_БРАК-апскейлер"
+_wm = {}
+try:
+    for _f in sorted(glob.glob(os.path.join(_wm_dir, "*"))):
+        if os.path.isfile(_f):
+            _wm[hashlib.md5(open(_f, "rb").read()).hexdigest()] = os.path.basename(_f)
+except OSError:
+    _wm = {}
+
+if _ban or _wm:
+    _checked = 0
+    for _p in sorted(glob.glob(f"{images}/scene_*.*") + glob.glob("overlays/scene_*.*")):
+        if _p.endswith((".json", ".revframe.jpg", ".ovthumb.jpg") + TMP_SUFFIX):
+            continue
+        if _sid_of(_p) in _card_sids:
+            continue
+        try:
+            _h = hashlib.md5(open(_p, "rb").read()).hexdigest()
+        except OSError:
+            continue
+        _checked += 1
+        if _h in _ban:
+            _why = (_ban_raw.get(_h) or {}).get("reason", "")
+            FAIL.append(f"ЗАБАНЕННЫЙ КАДР В СБОРКЕ: {_p} (md5 {_h[:10]}) — "
+                        f"бан от {(_ban_raw.get(_h) or {}).get('date','?')}: {_why or 'без причины'}. "
+                        f"Заменить до сборки.")
+        if _h in _wm:
+            FAIL.append(f"КАДР С КЛЕЙМОМ АПСКЕЙЛЕРА В СБОРКЕ: {_p} — это "
+                        f"{_wm[_h]}, убранный из базы. На контактном листе "
+                        f"клеймо не видно, в готовом файле видно. Заменить "
+                        f"рефетчем из той же папки.")
+    print(f"[selfcheck] сверка с бан-листом: {_checked} файлов против "
+          f"{len(_ban)} активных банов и {len(_wm)} убранных по клейму"
+          + (f" (сцены-карточки пропущены: {len(_card_sids)})" if _card_sids else ""))
+
+# 6. сцена 1 = видео — БЫЛО hard FAIL, РАЗЖАЛОВАНО В WARN (user, 2026-10-08,
+# зло: "исключаем из правила первый кадр видео... топчетесь на одном месте и
+# какую-то ерунду явную подсовываете" — после того как search-only канал
+# (5 МИНУТ) не смог найти реальное видео конкретного события ни с одной
+# формулировкой запроса, и единственной альтернативой жёсткому гейту было
+# либо нерелевантный сток, либо AI-фабрикация). Правило "видео лучше, если
+# есть осмысленное" остаётся советом (см. ниже), но больше не блокер.
+any_video = any(a and a[0].endswith((".mp4", ".mov")) for a in (asset(i) for i in ids))
+a1 = asset(ids[0])
+if a1 and not a1[0].endswith((".mp4", ".mov")):
+    if any_video:
+        WARN.append(f"сцена {ids[0]} не видео (было бы по старому правилу видео-лида, "
+                    "но правило сцена-1=видео отменено 2026-10-08 — это не блокер)")
+    else:
+        WARN.append("во всём ролике нет ни одного видео — весь видеоряд из фото (Ken Burns). "
+                    "Ок для канала на поиске-только; для ПЛАНЕТЫ так быть не должно.")
+
+# 6-бис. ВСПЛЫВАШКА НА НАШЕМ РИСОВАННОМ КАДРЕ — ОТКАЗ (06.11, прямое слово
+# пользователя по дашборду ролика про Абу-Даби: «наши элементы идут уже без
+# дополнительных спецэффектов, без надписей, без всплывашек, без всего»).
+# `build_overlays.py` такие записи теперь снимает сам, но ловить надо ДО
+# дашборда: на экране у него это выглядит как недоделка, а не как мелочь.
+try:
+    _ovp = "overlays.json"
+    if os.path.exists(_ovp):
+        _ovd = json.load(open(_ovp, encoding="utf-8"))
+        _cards = {int(s.get("id", -1)) for s in scenes
+                  if str(s.get("source", "")).startswith("card")}
+        _bad_ov = sorted(int(k) for k in _ovd
+                         if str(k).isdigit() and int(k) in _cards)
+        if _bad_ov:
+            FAIL.append(
+                "ВСПЛЫВАШКА НА РИСОВАННОМ КАДРЕ (сцены %s) — наш элемент идёт "
+                "без всплывашек, надписей и эффектов (его слово 06.11). Сними "
+                "её (`drop_overlay.py`) и перенеси на соседнюю сцену с обычным "
+                "кадром." % ", ".join(map(str, _bad_ov)))
+except Exception as _e:
+    WARN.append("не проверить всплывашки на карточках (%s)" % _e)
+
+# 7. ОБЯЗАТЕЛЬНЫЕ ЭЛЕМЕНТЫ (06.11, его прямое слово: «сделать эти элементы
+# обязательными при сборке»). Список один на все гейты и лежит отдельно —
+# `template/obyazatelno.py`; здесь только гейт ДАШБОРДА. Перед полной сборкой
+# тот же список спрашивает `cloud/ship.sh`, с гейтом `video`.
+try:
+    sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
+    import obyazatelno as _ob
+    for _b in _ob.check(scenes, str(meta.get("channel", "")), "dashboard"):
+        FAIL.append(_b)
+except Exception as _e:                  # список не прочитался — скажем вслух
+    WARN.append("не проверить обязательные элементы (%s: %s) — посмотри "
+                "`template/obyazatelno.py`" % (type(_e).__name__, _e))
+
+print("=" * 60)
+print(f"САМОПРОВЕРКА: {scenes_path}  ({len(scenes)} сцен, {total:.0f}с, канал {meta.get('channel','?')})")
+print("=" * 60)
+if WARN:
+    print("\n⚠ ПРЕДУПРЕЖДЕНИЯ:")
+    for w in WARN:
+        print("  -", w)
+if FAIL:
+    print(f"\n❌ НАРУШЕНИЙ: {len(FAIL)} — чинить ДО отдачи дашборда:")
+    for x in FAIL:
+        print("  -", x)
+    sys.exit(1)
+print("\n✅ всё чисто — дашборд можно отдавать")

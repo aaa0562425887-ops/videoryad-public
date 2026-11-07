@@ -1,0 +1,1615 @@
+# Free cloud assembler for news видеоряд — GitHub's Ubuntu runners, no cost.
+#
+# THREE jobs so the slow part (WEB image search) runs on many machines at once.
+# The media-library is NOT here and never can be — library scenes are fetched
+# on the user's machine (fast local disk) and their images/ ride along in
+# project-src. The cloud only searches the scenes the library can't cover.
+#
+#   setup    — pick queue/<name>/, (optionally) Claude classifies, then shard
+#              the scenes with no image yet AND source != local_library —
+#              PLUS the pop-up photo searches from overlays_fetch.scenes.json
+#              (tagged _dest:overlays) so they ride the matrix too.
+#   fetch    — a MATRIX: one runner per shard, each on its own IP. Yandex /
+#              Wikimedia rate-limit per IP, so N runners ≈ N× faster search
+#              with no bans. Each runner fetches its main scenes -> images/ and
+#              its overlay scenes -> overlays/. Skipped when nothing to fetch.
+#   assemble — one runner: merge shards into images/ + overlays/ next to the
+#              library frames, rebuild the manifest from disk, then build
+#              clips → pop-ups → concat → sfx, publish mp4 + dashboard as a
+#              Release. The old serial overlay fetch here is now a mop-up only.
+#
+# BUSY file at repo root = "session is working live, don't spend Max quota" —
+# push-triggered runs defer to the nightly cron. Everything is checkpointed.
+#
+# If ANYTHING here fails, the machine-side wrapper (cloud/run.sh) falls back to
+# a normal local build — the cloud is never a single point of failure.
+
+name: videoryad-cloud
+
+on:
+  push:
+    paths: ["queue/**"]
+  schedule:
+    - cron: "0 1 * * *"      # 01:00 UTC nightly — catches anything deferred
+  workflow_dispatch:
+    inputs:
+      force:
+        description: "run even if BUSY flag is set"
+        type: boolean
+        default: false
+
+concurrency:
+  group: videoryad-cloud
+  cancel-in-progress: false   # let a running build finish; queue the next
+
+permissions:
+  contents: write             # commit cleanup + create Releases
+  actions: write              # delete this run's scratch artifacts at the end
+
+jobs:
+  # ------------------------------------------------------------------ setup
+  setup:
+    runs-on: ubuntu-latest
+    timeout-minutes: 40
+    outputs:
+      have:       ${{ steps.pick.outputs.have }}
+      name:       ${{ steps.pick.outputs.name }}
+      shards:     ${{ steps.shard.outputs.shards }}
+      has_token:  ${{ steps.facts.outputs.has_token }}
+      fetch_only: ${{ steps.pick.outputs.fetch_only }}
+      has_overlays: ${{ steps.pick.outputs.has_overlays }}
+    steps:
+      - uses: actions/checkout@v4
+        with: { fetch-depth: 1 }   # HEAD tree ~0.5 MB; full history = 3.5 GB of old queue/ blobs, never needed on a runner
+
+      - name: Respect the BUSY flag (session priority)
+        id: busy
+        run: |
+          if [ -f BUSY ] && [ "${{ github.event_name }}" = "push" ] && [ "${{ inputs.force }}" != "true" ]; then
+            echo "BUSY + push -> defer to nightly"; echo "skip=true" >> "$GITHUB_OUTPUT"
+          else
+            echo "skip=false" >> "$GITHUB_OUTPUT"
+          fi
+
+      - name: Pick the next project in queue/
+        id: pick
+        if: steps.busy.outputs.skip != 'true'
+        run: |
+          proj=$(ls -d queue/*/ 2>/dev/null | head -1 | sed 's:/*$::')
+          if [ -z "$proj" ]; then echo "queue empty"; echo "have=false" >> "$GITHUB_OUTPUT"; exit 0; fi
+          echo "have=true" >> "$GITHUB_OUTPUT"
+          echo "proj=$proj" >> "$GITHUB_OUTPUT"
+          echo "name=$(basename "$proj")" >> "$GITHUB_OUTPUT"
+          fo=false; [ -f "$proj/.fetch-only" ] && fo=true
+          echo "fetch_only=$fo" >> "$GITHUB_OUTPUT"
+          # ЕСТЬ ЛИ ВСПЛЫВАШКИ (23.10, улов вкладки-разработчика). Ролик целиком
+          # из элементов арсенала не имеет `overlays.json` вовсе — а джоб
+          # `overlays` всё равно поднимал ДВЕНАДЦАТЬ машин на работу, которой
+          # не существует, и они же давали «упало: 11» в статусе. Считаем здесь
+          # и пропускаем джоб целиком, как уже пропускается `fetch`.
+          ov=false; [ -s "$proj/overlays.json" ] && ov=true
+          echo "has_overlays=$ov" >> "$GITHUB_OUTPUT"
+          echo "Selected: $proj   (fetch-only: $fo, всплывашки: $ov)"
+
+      - name: Assembler present
+        if: steps.pick.outputs.have == 'true'
+        run: |
+          test -d assembler/template || { echo "assembler/ missing — run cloud/sync_assembler.sh"; exit 1; }
+          ln -sfn assembler _assembler   # classify_prompt.md refers to _assembler/
+
+      - name: Env facts (is the Claude token configured?)
+        id: facts
+        if: steps.pick.outputs.have == 'true'
+        env: { TOK: "${{ secrets.CLAUDE_CODE_OAUTH_TOKEN }}" }
+        run: |
+          tok=no; [ -n "$TOK" ] && tok=yes
+          echo "has_token=$tok" >> "$GITHUB_OUTPUT"
+          echo "claude token configured: $tok"
+
+      - name: Check classification
+        id: cls
+        if: steps.pick.outputs.have == 'true'
+        env: { PROJ: "${{ steps.pick.outputs.proj }}" }
+        run: |
+          classified=$(python3 - "$PROJ" <<'PY'
+          import json, glob, os, sys
+          p = sys.argv[1]
+          sc = [x for x in glob.glob(os.path.join(p, "*.scenes.json")) if "overlays_fetch" not in os.path.basename(x)]
+          if not sc: print("no"); raise SystemExit
+          # most scenes = the real script (ignore leftover retry*/r2.scenes.json)
+          sc.sort(key=lambda q: (-len(json.load(open(q)).get("scenes", [])), len(os.path.basename(q))))
+          d = json.load(open(sc[0]))
+          # card:* — кадр нарисован у нас локально (цитата-лоскут и соседи,
+          # 2026-10-22): запроса у него нет и быть не должно. Без этого
+          # исключения гард считал готовый scenes.json неклассифицированным и
+          # прогон падал на setup за 5 с, жалуясь на отсутствие токена Claude.
+          bad = [s for s in d["scenes"]
+                 if not str(s.get("source") or "").startswith("card")
+                 and (not s.get("source") or not s.get("source_query")
+                      or str(s.get("source_query")).startswith("TODO"))]
+          print("no" if bad else "yes")
+          PY
+          )
+          echo "classified=$classified"
+          echo "classified=$classified" >> "$GITHUB_OUTPUT"
+
+      - name: Guard — need a classified scenes.json (or the Claude token to make one)
+        if: steps.pick.outputs.have == 'true' && steps.cls.outputs.classified == 'no' && steps.facts.outputs.has_token == 'no'
+        run: |
+          echo "::error::scenes.json не классифицирован и секрета CLAUDE_CODE_OAUTH_TOKEN нет."
+          echo "::error::Сцены раскладываю я в сессии (library-first), либо запусти /install-github-app."
+          exit 1
+
+      - name: Set up python deps for classify/shard
+        if: steps.pick.outputs.have == 'true'
+        run: python3 -m pip install --quiet pillow
+
+      - name: Claude Code — split + classify (only if a token is configured)
+        if: steps.pick.outputs.have == 'true' && steps.cls.outputs.classified == 'no' && steps.facts.outputs.has_token == 'yes'
+        uses: anthropics/claude-code-action@v1
+        with:
+          claude_code_oauth_token: ${{ secrets.CLAUDE_CODE_OAUTH_TOKEN }}
+          prompt: |
+            Follow assembler/cloud/classify_prompt.md exactly. The project to
+            classify is at ${{ steps.pick.outputs.proj }} .
+          claude_args: >-
+            --add-dir ${{ steps.pick.outputs.proj }}
+            --add-dir assembler
+
+      - name: Shard the WEB scenes for the matrix (library scenes stay local)
+        id: shard
+        if: steps.pick.outputs.have == 'true'
+        env: { PROJ: "${{ steps.pick.outputs.proj }}" }
+        run: |
+          # КЛЮЧИ В ОЧЕРЕДЬ НЕ ЕДУТ (2026-10-14). Всё, что попало в queue/,
+          # остаётся в истории git НАВСЕГДА и, в публичном репозитории, ещё и
+          # уходит в релиз и в кэш между джобами. .env теперь собирается из
+          # секретов в тех джобах, где он нужен (fetch и build).
+          rm -f "$PROJ/.env"
+          sc=$(python3 - "$PROJ" <<'PY'
+          import json, glob, os, sys
+          cs = [x for x in glob.glob(os.path.join(sys.argv[1], "*.scenes.json")) if "overlays_fetch" not in os.path.basename(x)]
+          cs.sort(key=lambda q: (-len(json.load(open(q)).get("scenes", [])), len(os.path.basename(q))))
+          print(cs[0] if cs else "")
+          PY
+          )
+          python3 - "$sc" <<'PY'
+          import json, sys
+          d = json.load(open(sys.argv[1]))
+          # card:* — кадр рисуется у нас локально (цитата-лоскут и соседи):
+          # запроса у него нет и быть не должно. ВТОРАЯ такая проверка в этом
+          # файле (первая — «Check classification»), и 22.10 она роняла прогон
+          # на setup за 6 секунд: «still not classified: [9, 24, 42, 55, 67, 84]»
+          # — ровно шесть карточек. Чинить надо БЫЛО ОБЕ сразу.
+          bad = [s["id"] for s in d["scenes"]
+                 if not str(s.get("source") or "").startswith("card")
+                 and (not s.get("source") or not s.get("source_query")
+                      or str(s.get("source_query")).startswith("TODO"))]
+          if bad:
+              sys.exit(f"still not classified: {bad[:20]}")
+          PY
+          shards=$(python3 assembler/cloud/shard_scenes.py "$sc" "$PROJ/images/.shards" \
+                    --images-dir "$PROJ/images" --overlays-dir "$PROJ/overlays")
+          echo "shards=$shards"
+          echo "shards=$shards" >> "$GITHUB_OUTPUT"
+
+      - name: Pack the project for the other jobs
+        if: steps.pick.outputs.have == 'true'
+        run: tar czf project-src.tgz --exclude='.env' "${{ steps.pick.outputs.proj }}"
+
+      # project-src rides between jobs via Actions CACHE, not artifacts — cache
+      # storage (10 GB/repo) is free and does NOT count against the 0.5 GB
+      # artifact quota that jammed the free plan (see cleanup job). Key is
+      # per-run; cleanup deletes it at the end.
+      - uses: actions/cache/save@v4
+        if: steps.pick.outputs.have == 'true'
+        with:
+          path: project-src.tgz
+          key: proj-${{ github.run_id }}
+
+  # ------------------------------------------------------------------ fetch (matrix)
+  fetch:
+    needs: setup
+    if: needs.setup.outputs.have == 'true' && needs.setup.outputs.shards != '[]' && needs.setup.outputs.shards != ''
+    runs-on: ubuntu-latest
+    # 15, не 40 (срезано 2026-10-12). Нормальный шард отрабатывает за 1-2 мин
+    # (замеры: самый долгий 1м51с на 2026-10-10, столько же 2026-10-12), так
+    # что 15 — это шестикратный запас, а 40 было двадцатикратным. Цена разницы
+    # выросла вдвое после фикса `clips` ниже: зависший шард теперь не только
+    # держит прогон до таймаута, но и роняет `fetch.result` в failure, из-за
+    # чего `clips` не запускается и `assemble` режет клипы в одиночку (+8 мин).
+    # Живой случай: шард 13 из 20 завис намертво, 19 остальных отработали, а
+    # верхний ярлык прогона всё это время показывал обычный in_progress —
+    # зависание видно ТОЛЬКО поимённо по джобам, иначе читается как «долго
+    # качает». Пропуск клипов при упавшем поиске оставлен намеренно: лучше
+    # медленно и правильно, чем быстро и по недокачанным кадрам.
+    #
+    # ТАЙМАУТ 15 -> 28 МИНУТ, И ВНУТРИ НЕГО МЯГКИЙ ДЕДЛАЙН 24 (2026-10-22).
+    # Замер живьём (olga-pub, прогон 39769452005, ролик «Мерц»): 6 шардов из 20
+    # убиты РОВНО на 918 с, то есть по прежнему таймауту 15 минут, а самый
+    # долгий успешный уложился в 652 с. Отмена по таймауту уносила ВЕСЬ
+    # манифест шарда: 28 сцен приехали заглушками, и в отчёте их не было
+    # вовсе — «фетч не добыл» и «шард не успел» выглядели одинаково, хотя
+    # первое лечится переписыванием запроса, а второе добором.
+    # Минуты на публичных репозиториях не тратятся, поэтому запас по таймауту
+    # ничего не стоит; `FETCH_DEADLINE_SEC` ниже заставляет шард остановиться
+    # на 24-й минуте САМ, записать манифест и честно помечить недоделанное.
+    # 28 → 12 (23.10). 28 подбирались, когда причина зависаний была неизвестна:
+    # пять шардов `planeta-zapad-front-2410` висели в сокете и были срублены
+    # ровно на 29-й минуте (cancelled) — то есть таймаут работал, но стоил
+    # ролику получаса. Корень (чтение без потолка по общему времени) закрыт
+    # `FETCH_READ_LIMIT_SEC`, нормальный шард идёт 76-139 с, поэтому 12 минут
+    # — это уже пятикратный запас. Мягкий дедлайн ниже срабатывает раньше и
+    # СОХРАНЯЕТ манифест, так что обрезание по таймауту больше не теряет работу.
+    # 12 → 18 (23.10, замер `usuario-a7` на 71-сценном ролике: двенадцати
+    # минут мало, таймаут срезал 7 шардов из 20 и оставил 25 сцен пустыми).
+    # Поднимаем вместе с главной правкой — мягкий дедлайн теперь проверяется
+    # ВНУТРИ водопада источников, а не только между сценами, поэтому шард
+    # должен останавливаться сам на 14-й минуте и СОХРАНЯТЬ манифест; 18 —
+    # страховка на случай, если и этого не хватит.
+    timeout-minutes: 18
+    strategy:
+      fail-fast: false
+      max-parallel: 20
+      matrix:
+        shard: ${{ fromJson(needs.setup.outputs.shards) }}
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/cache/restore@v4
+        with:
+          path: project-src.tgz
+          key: proj-${{ github.run_id }}
+          fail-on-cache-miss: true
+      - run: tar xzf project-src.tgz
+
+      # FFMPEG ИЗ КЭША (23.10, вечер). По очереди отвалились apt, стороннее
+      # зеркало и даже pip: на тринадцати машинах ffmpeg вставал, на
+      # четырнадцатой нет — и ролик терялся на последнем шаге. Кэш убирает
+      # зависимость от внешних хостов: бинари скачиваются ОДИН раз на
+      # репозиторий, дальше восстанавливаются за секунды. Каскад ниже остаётся
+      # запасным путём на случай пустого кэша (первый прогон на новой цели).
+      - name: ffmpeg из кэша
+        uses: actions/cache@v4
+        with:
+          path: ~/ffbin
+          key: ffmpeg-static-v9-${{ runner.os }}
+
+      - name: Set up tools
+        # 5 → 10 (23.10, тем же вечером). Пять минут оказались СЛИШКОМ
+        # жёстки: на `planeta-merc` семь шардов из двадцати легли именно на
+        # этом шаге и оставили 29 сцен пустыми — это инфраструктура раннера,
+        # не наши запросы. Обычная установка идёт 30-60 с, залипание, ради
+        # которого таймаут и ставился, длилось 23 минуты; десять минут
+        # разделяют эти два случая надёжно.
+        timeout-minutes: 6    # внутри короткие попытки, висеть нечему (23.10)
+        run: |
+          # GitHub runners occasionally ship a broken 3rd-party apt repo (google-chrome
+          # 'Hash Sum mismatch'); don't let that kill the build — drop those repos and retry.
+          # НЕ ПОЛАГАЕМСЯ НА APT (23.10, блокер: три прогона подряд легли).
+          # Картина была двойная: `apt-get install ffmpeg` либо висел до
+          # таймаута (13-14 джобов с «Set up tools has timed out»), либо
+          # завершался УСПЕШНО, не поставив пакет — и сборка падала позже и
+          # непонятно, на `FileNotFoundError: 'ffprobe'`. Воспроизводилось на
+          # двух аккаунтах, то есть дело не в цели. Поэтому: сперва смотрим,
+          # нет ли ffmpeg уже в образе; потом короткая попытка apt; если и
+          # она не дала бинарей — тянем статическую сборку одним файлом, она
+          # приезжает за секунды и от зеркал не зависит. В конце ОБЯЗАТЕЛЬНАЯ
+          # проверка: нет ffmpeg/ffprobe — падаем здесь и понятно, а не через
+          # десять минут в чужом джобе.
+          # кэш распаковываем ПЕРВЫМ делом и сразу кладём в PATH
+          mkdir -p "$HOME/ffbin"
+          echo "$HOME/ffbin" >> "$GITHUB_PATH"
+          export PATH="$HOME/ffbin:$PATH"
+          # КЭШ ПРОВЕРЯЕМ ЗАПУСКОМ, А НЕ НАЛИЧИЕМ ФАЙЛА (24.10, корень найден).
+          # В кэш клали бинарь, скопированный из apt, — он ДИНАМИЧЕСКИЙ, и на
+          # следующем прогоне восстанавливался без своих библиотек:
+          # «ffmpeg: error while loading shared libraries: libavdevice.so.60».
+          # Файл при этом есть и исполняемый, поэтому `command -v ffmpeg`
+          # проходил, каскад установки не включался, и КАЖДЫЙ клип падал
+          # FAILED. Джоб всё равно завершался success (сборщик клипов не роняет
+          # прогон), кэш клипов не сохранялся, и `assemble` переделывал всё в
+          # одиночку: 387 с на клипы и 70 с на всплывашки при 21-секундных
+          # «успешных» машинах. Теперь битую копию выбрасываем сразу.
+          if [ -x "$HOME/ffbin/ffmpeg" ] && [ -x "$HOME/ffbin/ffprobe" ]; then
+            if "$HOME/ffbin/ffmpeg" -version >/dev/null 2>&1 \
+               && "$HOME/ffbin/ffprobe" -version >/dev/null 2>&1; then
+              echo "ffmpeg взят из кэша: $("$HOME/ffbin/ffmpeg" -version 2>/dev/null | head -1)"
+            else
+              echo "КЭШ ffmpeg БИТЫЙ (не запускается) — выбрасываю, ставлю заново" >&2
+              rm -f "$HOME/ffbin/ffmpeg" "$HOME/ffbin/ffprobe"
+            fi
+          fi
+          need_apt=0
+          command -v ffmpeg >/dev/null 2>&1 && command -v ffprobe >/dev/null 2>&1 \
+            && echo "ffmpeg на месте: $(ffmpeg -version 2>/dev/null | head -1)" \
+            || need_apt=1
+          command -v tesseract >/dev/null 2>&1 || need_apt=1
+          if [ "$need_apt" = 1 ]; then
+            sudo rm -f /etc/apt/sources.list.d/*google* /etc/apt/sources.list.d/*chrome* /etc/apt/sources.list.d/*microsoft* 2>/dev/null || true
+            timeout 120 sudo apt-get update -qq || true
+            timeout 180 sudo apt-get install -y -qq ffmpeg tesseract-ocr tesseract-ocr-rus fonts-dejavu || echo "apt не справился — беру статический ffmpeg" >&2
+          fi
+          # PIP — ВТОРОЙ ИСТОЧНИК И ТЕПЕРЬ ГЛАВНЫЙ ЗАПАСНОЙ (23.10, вечер).
+          # Днём отвалился apt, к вечеру отвалилось и стороннее зеркало
+          # johnvansickle: на одном прогоне 10 джобов из 23 легли уже на нашей
+          # собственной проверке. `static-ffmpeg` тянет бинари с github.com —
+          # то есть с хоста, который на раннере заведомо доступен, раз оттуда
+          # приехал сам код. Кладёт И ffmpeg, И ffprobe (imageio-ffmpeg не
+          # годится: там только ffmpeg).
+          if ! command -v ffmpeg >/dev/null 2>&1 || ! command -v ffprobe >/dev/null 2>&1; then
+            echo "ставлю ffmpeg через pip (static-ffmpeg, бинари с github)"
+            python3 -m pip install --quiet --disable-pip-version-check static-ffmpeg || true
+            python3 - <<'PYFF' || true
+          import subprocess, sys
+          try:
+              import static_ffmpeg.run as r
+              a, b = r.get_or_fetch_platform_executables_else_raise()
+              for src in (a, b):
+                  subprocess.run(["sudo", "install", "-m755", src, "/usr/local/bin/"], check=False)
+              print("static-ffmpeg положил бинари в /usr/local/bin")
+          except Exception as e:
+              print("static-ffmpeg не дал бинарей: %s" % e, file=sys.stderr)
+          PYFF
+          fi
+          if ! command -v ffmpeg >/dev/null 2>&1 || ! command -v ffprobe >/dev/null 2>&1; then
+            echo "ставлю статическую сборку ffmpeg (apt и pip не дали бинарей)"
+            curl -fsSL --retry 3 --max-time 180 \
+              https://johnvansickle.com/ffmpeg/releases/ffmpeg-release-amd64-static.tar.xz \
+              -o /tmp/ff.tar.xz \
+              && mkdir -p /tmp/ffbin && tar -xJf /tmp/ff.tar.xz -C /tmp/ffbin --strip-components=1 \
+              && sudo install -m755 /tmp/ffbin/ffmpeg /tmp/ffbin/ffprobe /usr/local/bin/ \
+              || echo "статическая сборка тоже не поехала" >&2
+          fi
+          if ! command -v ffmpeg >/dev/null 2>&1 || ! command -v ffprobe >/dev/null 2>&1; then
+            echo "::error::ffmpeg/ffprobe не добыт НИ ОДНИМ из четырёх путей (кэш, apt, pip static-ffmpeg, johnvansickle)"
+            exit 1
+          fi
+          # кладём рядом копию для кэша — следующий прогон возьмёт её за секунды
+          # В КЭШ — ТОЛЬКО СТАТИЧЕСКИЙ БИНАРЬ (24.10). Динамический (из apt)
+          # на чужой машине не запустится: библиотеки рядом не лежат.
+          for b in ffmpeg ffprobe; do
+            src="$(command -v $b)"
+            [ -n "$src" ] || continue
+            [ -x "$HOME/ffbin/$b" ] && continue
+            if ldd "$src" 2>&1 | grep -q "not a dynamic executable"; then
+              cp "$src" "$HOME/ffbin/$b" && chmod +x "$HOME/ffbin/$b"
+            else
+              echo "$b динамический ($src) — в кэш не кладу" >&2
+            fi
+          done
+          echo "инструменты на месте: $(ffmpeg -version 2>/dev/null | head -1)"
+          python3 -m pip install --quiet pillow
+
+      - name: Ключи из Secrets (в репозиторий они не попадают никогда)
+        env:
+          PEXELS_API_KEY: ${{ secrets.PEXELS_API_KEY }}
+          FLICKR_API_KEY: ${{ secrets.FLICKR_API_KEY }}
+          DVIDS_API_KEY: ${{ secrets.DVIDS_API_KEY }}
+        run: |
+          proj="queue/${{ needs.setup.outputs.name }}"
+          mkdir -p "$proj"
+          { printf 'PEXELS_API_KEY=%s\n' "$PEXELS_API_KEY"
+            printf 'FLICKR_API_KEY=%s\n' "$FLICKR_API_KEY"
+            printf 'DVIDS_API_KEY=%s\n'  "$DVIDS_API_KEY"; } > "$proj/.env"
+          chmod 600 "$proj/.env"
+          # видно в логе, не раскрывая значения: без этой строки пустой секрет
+          # выглядит как «просто не нашлось кадров»
+          k=$(grep -c '^PEXELS_API_KEY=.\+' "$proj/.env" || true)
+          [ "$k" = 1 ] && echo "ключ Pexels: есть" || echo "::warning::ключ Pexels ПУСТ — проверь секрет PEXELS_API_KEY в настройках репозитория"
+
+      - name: Fetch this shard (own IP — no shared rate limit; main scenes + pop-up photos)
+        env:
+          MANIFEST_NAME: manifest.shard${{ matrix.shard }}.json
+          # остановиться САМОМУ за 4 минуты до таймаута джоба (28 мин) и
+          # записать манифест — иначе отмена уносит его целиком (2026-10-22)
+          FETCH_DEADLINE_SEC: "840"   # 14 мин: на 4 минуты раньше таймаута 18
+          # ПОТОЛОК НА ОДНО СКАЧИВАНИЕ (23.10). Пять шардов из двадцати висели
+          # до самого timeout-minutes на `planeta-zapad-front-2410`: сервер
+          # отдавал тело по чуть-чуть, таймаут БЕЗДЕЙСТВИЯ сокета не нарушался
+          # ни разу, а мягкий дедлайн проверяется между сценами и внутрь одной
+          # не заглядывает. Теперь чтение обрывается по общему времени.
+          FETCH_READ_LIMIT_SEC: "90"
+        run: |
+          proj="queue/${{ needs.setup.outputs.name }}"
+          python3 assembler/cloud/fetch_shard.py \
+            "$proj/images/.shards/shard${{ matrix.shard }}.scenes.json" \
+            "$proj" "$proj/.env"
+
+      - name: Stage this shard's output
+        run: |
+          proj="queue/${{ needs.setup.outputs.name }}"
+          mkdir -p out out/overlays out/cands
+          # ONLY this shard's own scenes — the project unpack drags in all the
+          # library frames too, and copying those into every shard blew each
+          # artifact up to ~280 МБ (13× the same 87 files). Read the ids this
+          # runner actually fetched from its shard file and copy just those.
+          python3 - "$proj" "${{ matrix.shard }}" <<'PY'
+          import glob, json, os, shutil, sys
+          proj, k = sys.argv[1], sys.argv[2]
+          sf = os.path.join(proj, "images", ".shards", "shard%s.scenes.json" % k)
+          sc = json.load(open(sf, encoding="utf-8")).get("scenes", [])
+          n_main = n_ov = 0
+          for s in sc:
+              ov = s.get("_dest") == "overlays"
+              src = os.path.join(proj, "overlays" if ov else "images")
+              dst = "out/overlays" if ov else "out"
+              for p in glob.glob(os.path.join(src, "scene_%03d.*" % s["id"])):
+                  shutil.copy2(p, dst)
+              n_ov += ov
+              n_main += not ov
+          # ЗАПАС ПРОИГРАВШИХ КАНДИДАТОВ ЕДЕТ ДОМОЙ (2026-10-29). Фетч кладёт
+          # их в images/cands/, но выкладывались только scene_NNN.* — папка
+          # умирала вместе с раннером, и шаг «пять кандидатов» на облачном
+          # пути был мёртв: `refetch.py --next` подставлять было нечего, замен
+          # из запаса на двух роликах вышло 0. Файлы мелкие, по 4 на сцену.
+          n_c = 0
+          for s in sc:
+              if s.get("_dest") == "overlays":
+                  continue
+              for p in glob.glob(os.path.join(proj, "images", "cands",
+                                              "scene_%03d__*" % s["id"])):
+                  shutil.copy2(p, "out/cands")
+                  n_c += 1
+          print("staged main=%d overlays=%d кандидатов=%d" % (n_main, n_ov, n_c))
+          # ЗАПРЕТ ЛОЖНОГО УСПЕХА НА ФЕТЧЕ (04.11, улов `usuario-af`: шард
+          # дважды подряд молча не добыл всплывашку, и в отчёте стояло «их
+          # никто не фетчил» — то есть вкладка не могла отличить «упал шард»
+          # от «сцену не раздали»). У клипов такой запрет стоит с 24.10, у
+          # фетча его не было. `assemble` идёт с `if: always()`, поэтому
+          # красный шард сборку не валит — он её ЗАМЕТНЫМ делает.
+          owed = [s for s in sc
+                  if not str(s.get("source", "")).startswith("card")]
+          got = 0
+          for d in ("out", "out/overlays"):
+              got += len([f for f in os.listdir(d)
+                          if f.startswith("scene_")]) if os.path.isdir(d) else 0
+          if owed and got == 0:
+              print("::error::шард %s взял %d сцен и не принёс НИ ОДНОГО "
+                    "файла — это не «сцену никто не фетчил», это упавший "
+                    "шард" % (k, len(owed)))
+              sys.exit(1)
+          PY
+          cp "$proj"/images/manifest.shard${{ matrix.shard }}.json out/ 2>/dev/null || true
+          # ЖУРНАЛЫ ФЕТЧА ЕДУТ ДОМОЙ (31.10): .lowres — что фетч сам
+          # признал мелким, .stale — кадр не той эпохи, когда свежего в
+          # выдаче не было. Их читает photo_quality.py; на облачном пути
+          # они раньше умирали вместе с раннером, то есть монитор был
+          # мёртв именно там, где собираются все ролики.
+          cp "$proj"/images/.lowres.* out/ 2>/dev/null || true
+          cp "$proj"/images/.stale.* out/ 2>/dev/null || true
+          cp "$proj"/overlays/manifest.shard${{ matrix.shard }}.ov.json out/overlays/ 2>/dev/null || true
+          ls -lR out
+
+      - uses: actions/upload-artifact@v4
+        with:
+          name: shard-${{ needs.setup.outputs.name }}-${{ matrix.shard }}
+          path: out/
+          if-no-files-found: warn
+          retention-days: 1
+
+  # ------------------------------------------------------------------ clips (matrix)
+  # Ken-Burns / blur-fill clip rendering is the slow step (~30-40 min for 80-90
+  # scenes on one runner). Fan it out over 12 runners; build_clips_1080.py shards
+  # on WORKER_COUNT/WORKER_ID and skips existing clips. assemble collects the
+  # rendered clips. Skipped on a fetch-only run.
+  clips:
+    needs: [setup, fetch]
+    # ВНИМАНИЕ НА `always()` — без него этот джоб МОЛЧА ВЫКЛЮЧАЕТСЯ на основном
+    # сценарии работы (найдено 2026-10-12, прогон 38247742395).
+    # GitHub пропускает джоб, у которого пропущена зависимость из `needs`, НЕ
+    # заглядывая в его собственный `if`. А на ПЛАНЕТА-сценарии (сначала
+    # --fetch-only, потом ревью дашборда, потом ship) ко второму прогону все
+    # кадры уже лежат в очереди → setup отдаёт пустой список шардов → джоб
+    # `fetch` штатно скипается по своему условию → и `clips` скипался следом.
+    # Итог: вся 12-воркерная параллельность выключалась, и `assemble` резал
+    # все клипы в одиночку — 493с против 53с на 76 сценах, ~8 минут на каждом
+    # ролике, собранном через ревью-гейт (то есть на каждом ролике ПЛАНЕТЫ).
+    # Симптом в логе assemble: «Cache not found for input keys: clip-<run>-0»
+    # по всем 12 ключам и «clips gathered: 0».
+    # `fetch.result` проверяем явно: идём дальше и когда поиск отработал, и
+    # когда он штатно пропущен, но НЕ когда он упал или был отменён — иначе
+    # начнём резать клипы по недокачанным кадрам.
+    if: >-
+      always()
+      && needs.setup.result == 'success'
+      && needs.setup.outputs.have == 'true'
+      && needs.setup.outputs.fetch_only != 'true'
+      && (needs.fetch.result == 'success' || needs.fetch.result == 'skipped')
+    runs-on: ubuntu-latest
+    # 12 workers × ~6-7 scenes each ≈ 3-5 min wall. 20 caps the damage when one
+    # worker hangs on a bad fetched image (a hung worker burned a full hour in
+    # testing — 60 wasted compute-minutes against the free 2000/mo cap). Never
+    # overlaps the fetch matrix (needs: fetch), so this stays well under the
+    # account's 20-concurrent-job ceiling on its own.
+    # 25 -> 14 МИНУТ (2026-10-22). Три ролика подряд показали одно и то же:
+    # распределение ДВУГОРБОЕ — почти все машины в норме, ровно одна виснет и
+    # держит весь прогон до таймаута. Замеры: «Польша» clips 53…1066 с;
+    # «Переговоры» 11 шардов по ~10 мин и хвост 25 мин; «Европа» 11 success
+    # (61…1077 с, разброс ×17,7) и один ОТМЕНЁННЫЙ по лимиту на 1518 с.
+    # В последнем случае полная сборка заняла 29 минут, из которых полезной
+    # работы 4: `assemble` подхватил всё, включая работу отменённой машины, и
+    # уложился в 235 с. То есть ожидание зависшего шарда стоит дороже, чем
+    # досборка его клипов в assemble. Снижаем потолок: зависший убивается на
+    # 14-й минуте, редкий ЧЕСТНО долгий шард тоже — и его доделает assemble
+    # (цена ~4 мин, измерено). Прежние 25 минут защищали медленную машину, но
+    # платил за это каждый прогон.
+    timeout-minutes: 14
+    strategy:
+      fail-fast: false
+      max-parallel: 12
+      matrix:
+        shard: [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11]
+    steps:
+      - uses: actions/checkout@v4
+        with: { fetch-depth: 1 }
+      - uses: actions/cache/restore@v4
+        with:
+          path: project-src.tgz
+          key: proj-${{ github.run_id }}
+          fail-on-cache-miss: true
+      - run: tar xzf project-src.tgz
+
+      - name: Collect every shard's images
+        if: needs.setup.outputs.shards != '[]' && needs.setup.outputs.shards != ''
+        uses: actions/download-artifact@v4
+        with:
+          pattern: shard-${{ needs.setup.outputs.name }}-*
+          path: queue/${{ needs.setup.outputs.name }}/images
+          merge-multiple: true
+
+      # FFMPEG ИЗ КЭША (23.10, вечер). По очереди отвалились apt, стороннее
+      # зеркало и даже pip: на тринадцати машинах ffmpeg вставал, на
+      # четырнадцатой нет — и ролик терялся на последнем шаге. Кэш убирает
+      # зависимость от внешних хостов: бинари скачиваются ОДИН раз на
+      # репозиторий, дальше восстанавливаются за секунды. Каскад ниже остаётся
+      # запасным путём на случай пустого кэша (первый прогон на новой цели).
+      - name: ffmpeg из кэша
+        uses: actions/cache@v4
+        with:
+          path: ~/ffbin
+          key: ffmpeg-static-v9-${{ runner.os }}
+
+      - name: Set up tools
+        # 5 → 10 (23.10, тем же вечером). Пять минут оказались СЛИШКОМ
+        # жёстки: на `planeta-merc` семь шардов из двадцати легли именно на
+        # этом шаге и оставили 29 сцен пустыми — это инфраструктура раннера,
+        # не наши запросы. Обычная установка идёт 30-60 с, залипание, ради
+        # которого таймаут и ставился, длилось 23 минуты; десять минут
+        # разделяют эти два случая надёжно.
+        timeout-minutes: 6    # внутри короткие попытки, висеть нечему (23.10)
+        run: |
+          # GitHub runners occasionally ship a broken 3rd-party apt repo (google-chrome
+          # 'Hash Sum mismatch'); don't let that kill the build — drop those repos and retry.
+          # НЕ ПОЛАГАЕМСЯ НА APT (23.10, блокер: три прогона подряд легли).
+          # Картина была двойная: `apt-get install ffmpeg` либо висел до
+          # таймаута (13-14 джобов с «Set up tools has timed out»), либо
+          # завершался УСПЕШНО, не поставив пакет — и сборка падала позже и
+          # непонятно, на `FileNotFoundError: 'ffprobe'`. Воспроизводилось на
+          # двух аккаунтах, то есть дело не в цели. Поэтому: сперва смотрим,
+          # нет ли ffmpeg уже в образе; потом короткая попытка apt; если и
+          # она не дала бинарей — тянем статическую сборку одним файлом, она
+          # приезжает за секунды и от зеркал не зависит. В конце ОБЯЗАТЕЛЬНАЯ
+          # проверка: нет ffmpeg/ffprobe — падаем здесь и понятно, а не через
+          # десять минут в чужом джобе.
+          # кэш распаковываем ПЕРВЫМ делом и сразу кладём в PATH
+          mkdir -p "$HOME/ffbin"
+          echo "$HOME/ffbin" >> "$GITHUB_PATH"
+          export PATH="$HOME/ffbin:$PATH"
+          # КЭШ ПРОВЕРЯЕМ ЗАПУСКОМ, А НЕ НАЛИЧИЕМ ФАЙЛА (24.10, корень найден).
+          # В кэш клали бинарь, скопированный из apt, — он ДИНАМИЧЕСКИЙ, и на
+          # следующем прогоне восстанавливался без своих библиотек:
+          # «ffmpeg: error while loading shared libraries: libavdevice.so.60».
+          # Файл при этом есть и исполняемый, поэтому `command -v ffmpeg`
+          # проходил, каскад установки не включался, и КАЖДЫЙ клип падал
+          # FAILED. Джоб всё равно завершался success (сборщик клипов не роняет
+          # прогон), кэш клипов не сохранялся, и `assemble` переделывал всё в
+          # одиночку: 387 с на клипы и 70 с на всплывашки при 21-секундных
+          # «успешных» машинах. Теперь битую копию выбрасываем сразу.
+          if [ -x "$HOME/ffbin/ffmpeg" ] && [ -x "$HOME/ffbin/ffprobe" ]; then
+            if "$HOME/ffbin/ffmpeg" -version >/dev/null 2>&1 \
+               && "$HOME/ffbin/ffprobe" -version >/dev/null 2>&1; then
+              echo "ffmpeg взят из кэша: $("$HOME/ffbin/ffmpeg" -version 2>/dev/null | head -1)"
+            else
+              echo "КЭШ ffmpeg БИТЫЙ (не запускается) — выбрасываю, ставлю заново" >&2
+              rm -f "$HOME/ffbin/ffmpeg" "$HOME/ffbin/ffprobe"
+            fi
+          fi
+          need_apt=0
+          command -v ffmpeg >/dev/null 2>&1 && command -v ffprobe >/dev/null 2>&1 \
+            && echo "ffmpeg на месте: $(ffmpeg -version 2>/dev/null | head -1)" \
+            || need_apt=1
+          # tesseract этому джобу не нужен
+          if [ "$need_apt" = 1 ]; then
+            sudo rm -f /etc/apt/sources.list.d/*google* /etc/apt/sources.list.d/*chrome* /etc/apt/sources.list.d/*microsoft* 2>/dev/null || true
+            timeout 120 sudo apt-get update -qq || true
+            timeout 180 sudo apt-get install -y -qq ffmpeg fonts-dejavu || echo "apt не справился — беру статический ffmpeg" >&2
+          fi
+          # PIP — ВТОРОЙ ИСТОЧНИК И ТЕПЕРЬ ГЛАВНЫЙ ЗАПАСНОЙ (23.10, вечер).
+          # Днём отвалился apt, к вечеру отвалилось и стороннее зеркало
+          # johnvansickle: на одном прогоне 10 джобов из 23 легли уже на нашей
+          # собственной проверке. `static-ffmpeg` тянет бинари с github.com —
+          # то есть с хоста, который на раннере заведомо доступен, раз оттуда
+          # приехал сам код. Кладёт И ffmpeg, И ffprobe (imageio-ffmpeg не
+          # годится: там только ffmpeg).
+          if ! command -v ffmpeg >/dev/null 2>&1 || ! command -v ffprobe >/dev/null 2>&1; then
+            echo "ставлю ffmpeg через pip (static-ffmpeg, бинари с github)"
+            python3 -m pip install --quiet --disable-pip-version-check static-ffmpeg || true
+            python3 - <<'PYFF' || true
+          import subprocess, sys
+          try:
+              import static_ffmpeg.run as r
+              a, b = r.get_or_fetch_platform_executables_else_raise()
+              for src in (a, b):
+                  subprocess.run(["sudo", "install", "-m755", src, "/usr/local/bin/"], check=False)
+              print("static-ffmpeg положил бинари в /usr/local/bin")
+          except Exception as e:
+              print("static-ffmpeg не дал бинарей: %s" % e, file=sys.stderr)
+          PYFF
+          fi
+          if ! command -v ffmpeg >/dev/null 2>&1 || ! command -v ffprobe >/dev/null 2>&1; then
+            echo "ставлю статическую сборку ffmpeg (apt и pip не дали бинарей)"
+            curl -fsSL --retry 3 --max-time 180 \
+              https://johnvansickle.com/ffmpeg/releases/ffmpeg-release-amd64-static.tar.xz \
+              -o /tmp/ff.tar.xz \
+              && mkdir -p /tmp/ffbin && tar -xJf /tmp/ff.tar.xz -C /tmp/ffbin --strip-components=1 \
+              && sudo install -m755 /tmp/ffbin/ffmpeg /tmp/ffbin/ffprobe /usr/local/bin/ \
+              || echo "статическая сборка тоже не поехала" >&2
+          fi
+          if ! command -v ffmpeg >/dev/null 2>&1 || ! command -v ffprobe >/dev/null 2>&1; then
+            echo "::error::ffmpeg/ffprobe не добыт НИ ОДНИМ из четырёх путей (кэш, apt, pip static-ffmpeg, johnvansickle)"
+            exit 1
+          fi
+          # кладём рядом копию для кэша — следующий прогон возьмёт её за секунды
+          # В КЭШ — ТОЛЬКО СТАТИЧЕСКИЙ БИНАРЬ (24.10). Динамический (из apt)
+          # на чужой машине не запустится: библиотеки рядом не лежат.
+          for b in ffmpeg ffprobe; do
+            src="$(command -v $b)"
+            [ -n "$src" ] || continue
+            [ -x "$HOME/ffbin/$b" ] && continue
+            if ldd "$src" 2>&1 | grep -q "not a dynamic executable"; then
+              cp "$src" "$HOME/ffbin/$b" && chmod +x "$HOME/ffbin/$b"
+            else
+              echo "$b динамический ($src) — в кэш не кладу" >&2
+            fi
+          done
+          echo "инструменты на месте: $(ffmpeg -version 2>/dev/null | head -1)"
+          python3 -m pip install --quiet pillow
+
+      # No clip cache on the parallel path: a rebuild re-renders every clip
+      # (80 scenes / 12 shards ≈ 3-5 min wall) — faster than the old single-runner
+      # incremental build AND always correct (no stale clip for a changed scene).
+      - name: Build this shard's clips
+        run: |
+          proj="queue/${{ needs.setup.outputs.name }}"
+          sc=$(python3 - "$proj" <<'PY'
+          import json, glob, os, sys
+          cs = [x for x in glob.glob(os.path.join(sys.argv[1], "*.scenes.json")) if "overlays_fetch" not in os.path.basename(x)]
+          cs.sort(key=lambda q: (-len(json.load(open(q)).get("scenes", [])), len(os.path.basename(q))))
+          print(cs[0] if cs else "")
+          PY
+          )
+          mkdir -p "$proj/clips"
+          # СУБТИТРЫ — ВЫКЛЮЧЕНЫ ПО УМОЛЧАНИЮ (2026-10-14, прямое требование
+          # пользователя: «подключать только по отдельной команде»).
+          # Включатель один: наличие файла captions.ass в проекте. Его кладу
+          # туда только я и только когда попросили. Нет файла — переменная
+          # CAPTIONS_DIR не выставляется, и build_clips_1080.py работает ровно
+          # как раньше (проверено: 0 пикселей текста против 25926 при
+          # включённых). Вжигание стоит +2% к кодированию клипа, то есть на
+          # 12 машинах — около двух секунд на весь ролик.
+          caps=""
+          if [ -f "$proj/captions.ass" ]; then
+            python3 assembler/template/captions_shard.py "$sc" "$proj/captions.ass" "$proj/.caps"
+            caps="$PWD/$proj/.caps"
+            echo "субтитры: ВКЛЮЧЕНЫ (найден captions.ass)"
+          else
+            echo "субтитры: выключены (captions.ass в проекте нет)"
+          fi
+          # Эффекты (виньетка/дыхание/блик) — выключатель тот же по духу, что у
+          # субтитров: файл fx.json в папке ролика. Путь отдаём АБСОЛЮТНЫЙ:
+          # рабочий каталог этого шага — корень репозитория, а не папка
+          # проекта, и относительный путь молча не находится.
+          fxd=""
+          if [ -f "$proj/fx.json" ]; then
+            fxd="$PWD/$proj"
+            echo "эффекты: ВКЛЮЧЕНЫ (найден fx.json)"
+          else
+            echo "эффекты: выключены (fx.json в проекте нет)"
+          fi
+          # ЭФФЕКТ №3 «ВРЕЗКА + КРУГИ» (04.11). Врезки лежат в $proj/insets/,
+          # build_clips_1080.py ищет их ОТ FX_DIR — значит путь нужен и тогда,
+          # когда fx.json в проекте нет (световые эффекты и врезка включаются
+          # независимо друг от друга).
+          if [ -d "$proj/insets" ]; then
+            fxd="$PWD/$proj"
+            echo "эффект-врезка: врезок в проекте $(ls "$proj/insets" | wc -l)"
+          fi
+          # CAPTIONS_DIR клипам БОЛЬШЕ НЕ ОТДАЁМ (03.11): субтитры жжёт
+          # build_overlays.py последним слоем, поверх всплывашек.
+          FX_DIR="$fxd" BUILD_APPROVED=1 WORKER_COUNT=12 WORKER_ID=${{ matrix.shard }} \
+            python3 assembler/template/build_clips_1080.py "$sc" "$proj/images" "$proj/clips"
+          made=$(ls "$proj/clips"/clip_*.mp4 2>/dev/null | wc -l)
+          echo "shard ${{ matrix.shard }}: $made clips"
+          # ЗАПРЕТ ЛОЖНОГО УСПЕХА (24.10). Шард, которому досталась работа, но
+          # не собравший НИ ОДНОГО клипа, обязан падать. Иначе джоб зелёный, и
+          # всю его работу молча переделывает `assemble` — так битый ffmpeg из
+          # кэша сутки стоил по 6-8 минут каждому ролику, а в отчёте было
+          # двенадцать «success» по 20 секунд.
+          mine=$(python3 - "$sc" ${{ matrix.shard }} <<'PYC'
+          import json, sys
+          sc = json.load(open(sys.argv[1], encoding="utf-8"))
+          scenes = sc["scenes"] if isinstance(sc, dict) else sc
+          shard = int(sys.argv[2])
+          # СЧЁТ ТЕМ ЖЕ КЛЮЧОМ, ЧТО И СБОРЩИК (05.11, улов `usuario-35`).
+          # Было `i % 12` — по НОМЕРУ В СПИСКЕ, а build_clips_1080.py делит
+          # работу по НОМЕРУ СЦЕНЫ (`sid % WORKER_COUNT`). Номера начинаются
+          # с 1, индексы с 0, поэтому охранник считал ЧУЖИЕ сцены: на малом
+          # ролике шард 0 падал с «пришлось 1 сцен, клипов ноль» при целом и
+          # правильном видео. Тот же сдвиг у любого ролика с дырами в номерах.
+          print(sum(1 for s in scenes
+                    if int(s.get("id", 0)) % 12 == shard
+                    and not str(s.get("source", "")).startswith("card")))
+          PYC
+          )
+          if [ "${mine:-0}" -gt 0 ] && [ "$made" = "0" ]; then
+            echo "::error::шард ${{ matrix.shard }}: на него пришлось $mine сцен, а клипов ноль — работа НЕ сделана. Смотри строки FAILED выше (чаще всего это неработающий ffmpeg)."
+            exit 1
+          fi
+
+      - name: Stage this worker's clips
+        id: stage
+        run: |
+          mkdir -p clips-out
+          cp queue/${{ needs.setup.outputs.name }}/clips/clip_*.mp4 clips-out/ 2>/dev/null || true
+          n=$(ls clips-out/clip_*.mp4 2>/dev/null | wc -l)
+          echo "staged $n clips"
+          echo "count=$n" >> "$GITHUB_OUTPUT"
+
+      # rendered clips (the heavy payload) ride via CACHE, not artifacts —
+      # 12 fixed workers -> 12 fixed keys. cleanup deletes them at run end.
+      # A worker with no clips (scenes < 12) saves nothing.
+      - uses: actions/cache/save@v4
+        if: steps.stage.outputs.count != '0'
+        with:
+          path: clips-out
+          key: clip-${{ github.run_id }}-${{ matrix.shard }}
+
+  # ------------------------------------------------------------------ overlays (matrix)
+  # Всплывашки были ПОСЛЕДНИМ этапом, который работал на одной машине по
+  # очереди: 146с на 33 всплывашки (замер 2026-10-14, публичный раннер) —
+  # самый дорогой кусок assemble после того, как клипы разнесли на 12 машин.
+  # Режем так же. Ключевая экономия: build_clips_1080.py и build_overlays.py
+  # делят работу по ОДНОМУ правилу (sid % WORKER_COUNT == WORKER_ID), поэтому
+  # машине k нужны ровно те клипы, которые отрисовала клип-машина k — один
+  # restore вместо двенадцати.
+  overlays:
+    needs: [setup, fetch, clips]
+    # `always()` — та же мина, что ловили на clips 2026-10-12: GitHub скипает
+    # джоб с пропущенной зависимостью, не читая его собственный `if`.
+    # 23.10: было `needs.clips.result == 'success'`, и ОДИН зависший шард из
+    # двенадцати (срублен таймаутом) делал результат всей матрицы не-success —
+    # `overlays` пропускался целиком, и ВСЕ всплывашки ролика пекла `assemble`
+    # в одиночку, последовательно. Замер на `evropa-stol-2410`: одиннадцать
+    # шардов отработали за минуту, двенадцатый висел 15 минут, и из-за него
+    # параллельная отрисовка всплывашек не состоялась вовсе. Теперь условие —
+    # «clips вообще запускался»: клипы отстающего шарда доделает assemble, а
+    # всплывашки на уже готовые клипы лягут параллельно, как и задумано.
+    if: >-
+      always()
+      && needs.setup.result == 'success'
+      && needs.setup.outputs.have == 'true'
+      && needs.setup.outputs.fetch_only != 'true'
+      && needs.clips.result != 'skipped'
+      && needs.setup.outputs.has_overlays == 'true'
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    strategy:
+      fail-fast: false
+      max-parallel: 12
+      matrix:
+        shard: [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11]
+    steps:
+      - uses: actions/checkout@v4
+        with: { fetch-depth: 1 }
+      - uses: actions/cache/restore@v4
+        with:
+          path: project-src.tgz
+          key: proj-${{ github.run_id }}
+          fail-on-cache-miss: true
+      - run: tar xzf project-src.tgz
+
+      # кадры всплывашек обычно уже лежат в очереди (сценарий --fetch-only ->
+      # ship), но на одноразовой сквозной сборке их добыла матрица
+      - name: Collect every shard's images
+        if: needs.setup.outputs.shards != '[]' && needs.setup.outputs.shards != ''
+        uses: actions/download-artifact@v4
+        with:
+          pattern: shard-${{ needs.setup.outputs.name }}-*
+          path: queue/${{ needs.setup.outputs.name }}/images
+          merge-multiple: true
+
+      - name: Restore this worker's own clips
+        uses: actions/cache/restore@v4
+        with:
+          path: clips-out
+          key: clip-${{ github.run_id }}-${{ matrix.shard }}
+
+      - name: Put clips in place
+        id: have
+        run: |
+          proj="queue/${{ needs.setup.outputs.name }}"
+          mkdir -p "$proj/clips"
+          cp clips-out/clip_*.mp4 "$proj/clips/" 2>/dev/null || true
+          n=$(ls "$proj/clips"/clip_*.mp4 2>/dev/null | wc -l)
+          echo "клипов у этой машины: $n"
+          echo "count=$n" >> "$GITHUB_OUTPUT"
+
+      # FFMPEG ИЗ КЭША (23.10, вечер). По очереди отвалились apt, стороннее
+      # зеркало и даже pip: на тринадцати машинах ffmpeg вставал, на
+      # четырнадцатой нет — и ролик терялся на последнем шаге. Кэш убирает
+      # зависимость от внешних хостов: бинари скачиваются ОДИН раз на
+      # репозиторий, дальше восстанавливаются за секунды. Каскад ниже остаётся
+      # запасным путём на случай пустого кэша (первый прогон на новой цели).
+      - name: ffmpeg из кэша
+        uses: actions/cache@v4
+        with:
+          path: ~/ffbin
+          key: ffmpeg-static-v9-${{ runner.os }}
+
+      - name: Set up tools
+        # 5 → 10 (23.10, тем же вечером). Пять минут оказались СЛИШКОМ
+        # жёстки: на `planeta-merc` семь шардов из двадцати легли именно на
+        # этом шаге и оставили 29 сцен пустыми — это инфраструктура раннера,
+        # не наши запросы. Обычная установка идёт 30-60 с, залипание, ради
+        # которого таймаут и ставился, длилось 23 минуты; десять минут
+        # разделяют эти два случая надёжно.
+        timeout-minutes: 6    # внутри короткие попытки, висеть нечему (23.10)
+        if: steps.have.outputs.count != '0'
+        run: |
+          # НЕ ПОЛАГАЕМСЯ НА APT (23.10, блокер: три прогона подряд легли).
+          # Картина была двойная: `apt-get install ffmpeg` либо висел до
+          # таймаута (13-14 джобов с «Set up tools has timed out»), либо
+          # завершался УСПЕШНО, не поставив пакет — и сборка падала позже и
+          # непонятно, на `FileNotFoundError: 'ffprobe'`. Воспроизводилось на
+          # двух аккаунтах, то есть дело не в цели. Поэтому: сперва смотрим,
+          # нет ли ffmpeg уже в образе; потом короткая попытка apt; если и
+          # она не дала бинарей — тянем статическую сборку одним файлом, она
+          # приезжает за секунды и от зеркал не зависит. В конце ОБЯЗАТЕЛЬНАЯ
+          # проверка: нет ffmpeg/ffprobe — падаем здесь и понятно, а не через
+          # десять минут в чужом джобе.
+          # кэш распаковываем ПЕРВЫМ делом и сразу кладём в PATH
+          mkdir -p "$HOME/ffbin"
+          echo "$HOME/ffbin" >> "$GITHUB_PATH"
+          export PATH="$HOME/ffbin:$PATH"
+          # КЭШ ПРОВЕРЯЕМ ЗАПУСКОМ, А НЕ НАЛИЧИЕМ ФАЙЛА (24.10, корень найден).
+          # В кэш клали бинарь, скопированный из apt, — он ДИНАМИЧЕСКИЙ, и на
+          # следующем прогоне восстанавливался без своих библиотек:
+          # «ffmpeg: error while loading shared libraries: libavdevice.so.60».
+          # Файл при этом есть и исполняемый, поэтому `command -v ffmpeg`
+          # проходил, каскад установки не включался, и КАЖДЫЙ клип падал
+          # FAILED. Джоб всё равно завершался success (сборщик клипов не роняет
+          # прогон), кэш клипов не сохранялся, и `assemble` переделывал всё в
+          # одиночку: 387 с на клипы и 70 с на всплывашки при 21-секундных
+          # «успешных» машинах. Теперь битую копию выбрасываем сразу.
+          if [ -x "$HOME/ffbin/ffmpeg" ] && [ -x "$HOME/ffbin/ffprobe" ]; then
+            if "$HOME/ffbin/ffmpeg" -version >/dev/null 2>&1 \
+               && "$HOME/ffbin/ffprobe" -version >/dev/null 2>&1; then
+              echo "ffmpeg взят из кэша: $("$HOME/ffbin/ffmpeg" -version 2>/dev/null | head -1)"
+            else
+              echo "КЭШ ffmpeg БИТЫЙ (не запускается) — выбрасываю, ставлю заново" >&2
+              rm -f "$HOME/ffbin/ffmpeg" "$HOME/ffbin/ffprobe"
+            fi
+          fi
+          need_apt=0
+          command -v ffmpeg >/dev/null 2>&1 && command -v ffprobe >/dev/null 2>&1 \
+            && echo "ffmpeg на месте: $(ffmpeg -version 2>/dev/null | head -1)" \
+            || need_apt=1
+          # tesseract этому джобу не нужен
+          if [ "$need_apt" = 1 ]; then
+            sudo rm -f /etc/apt/sources.list.d/*google* /etc/apt/sources.list.d/*chrome* /etc/apt/sources.list.d/*microsoft* 2>/dev/null || true
+            timeout 120 sudo apt-get update -qq || true
+            timeout 180 sudo apt-get install -y -qq ffmpeg fonts-dejavu || echo "apt не справился — беру статический ffmpeg" >&2
+          fi
+          # PIP — ВТОРОЙ ИСТОЧНИК И ТЕПЕРЬ ГЛАВНЫЙ ЗАПАСНОЙ (23.10, вечер).
+          # Днём отвалился apt, к вечеру отвалилось и стороннее зеркало
+          # johnvansickle: на одном прогоне 10 джобов из 23 легли уже на нашей
+          # собственной проверке. `static-ffmpeg` тянет бинари с github.com —
+          # то есть с хоста, который на раннере заведомо доступен, раз оттуда
+          # приехал сам код. Кладёт И ffmpeg, И ffprobe (imageio-ffmpeg не
+          # годится: там только ffmpeg).
+          if ! command -v ffmpeg >/dev/null 2>&1 || ! command -v ffprobe >/dev/null 2>&1; then
+            echo "ставлю ffmpeg через pip (static-ffmpeg, бинари с github)"
+            python3 -m pip install --quiet --disable-pip-version-check static-ffmpeg || true
+            python3 - <<'PYFF' || true
+          import subprocess, sys
+          try:
+              import static_ffmpeg.run as r
+              a, b = r.get_or_fetch_platform_executables_else_raise()
+              for src in (a, b):
+                  subprocess.run(["sudo", "install", "-m755", src, "/usr/local/bin/"], check=False)
+              print("static-ffmpeg положил бинари в /usr/local/bin")
+          except Exception as e:
+              print("static-ffmpeg не дал бинарей: %s" % e, file=sys.stderr)
+          PYFF
+          fi
+          if ! command -v ffmpeg >/dev/null 2>&1 || ! command -v ffprobe >/dev/null 2>&1; then
+            echo "ставлю статическую сборку ffmpeg (apt и pip не дали бинарей)"
+            curl -fsSL --retry 3 --max-time 180 \
+              https://johnvansickle.com/ffmpeg/releases/ffmpeg-release-amd64-static.tar.xz \
+              -o /tmp/ff.tar.xz \
+              && mkdir -p /tmp/ffbin && tar -xJf /tmp/ff.tar.xz -C /tmp/ffbin --strip-components=1 \
+              && sudo install -m755 /tmp/ffbin/ffmpeg /tmp/ffbin/ffprobe /usr/local/bin/ \
+              || echo "статическая сборка тоже не поехала" >&2
+          fi
+          if ! command -v ffmpeg >/dev/null 2>&1 || ! command -v ffprobe >/dev/null 2>&1; then
+            echo "::error::ffmpeg/ffprobe не добыт НИ ОДНИМ из четырёх путей (кэш, apt, pip static-ffmpeg, johnvansickle)"
+            exit 1
+          fi
+          # кладём рядом копию для кэша — следующий прогон возьмёт её за секунды
+          # В КЭШ — ТОЛЬКО СТАТИЧЕСКИЙ БИНАРЬ (24.10). Динамический (из apt)
+          # на чужой машине не запустится: библиотеки рядом не лежат.
+          for b in ffmpeg ffprobe; do
+            src="$(command -v $b)"
+            [ -n "$src" ] || continue
+            [ -x "$HOME/ffbin/$b" ] && continue
+            if ldd "$src" 2>&1 | grep -q "not a dynamic executable"; then
+              cp "$src" "$HOME/ffbin/$b" && chmod +x "$HOME/ffbin/$b"
+            else
+              echo "$b динамический ($src) — в кэш не кладу" >&2
+            fi
+          done
+          echo "инструменты на месте: $(ffmpeg -version 2>/dev/null | head -1)"
+          python3 -m pip install --quiet pillow
+
+      - name: Prepare per-scene captions (burned LAST, above pop-ups)
+        id: caps
+        if: steps.have.outputs.count != '0'
+        run: |
+          # СУБТИТРЫ — ВЕРХНИЙ СЛОЙ (03.11, прямое слово пользователя).
+          # Раньше их жёг build_clips_1080.py, то есть ДО всплывашек, и
+          # всплывашка могла лечь поверх строки. Теперь куски .ass готовятся
+          # здесь, а жжёт их build_overlays.py последним проходом по сцене.
+          proj="queue/${{ needs.setup.outputs.name }}"
+          caps=""
+          if [ -f "$proj/captions.ass" ]; then
+            sc=$(ls "$proj"/*.scenes.json 2>/dev/null | grep -v overlays_fetch | head -1)
+            python3 assembler/template/captions_shard.py "$sc" "$proj/captions.ass" "$proj/.caps"
+            caps="$PWD/$proj/.caps"
+            echo "субтитры: ВКЛЮЧЕНЫ, вожгу их ПОВЕРХ всплывашек"
+          else
+            echo "субтитры: выключены (captions.ass в проекте нет)"
+          fi
+          echo "dir=$caps" >> "$GITHUB_OUTPUT"
+
+      - name: Render this worker's pop-ups
+        if: steps.have.outputs.count != '0'
+        env:
+          OVL_SHARD_COUNT: "12"
+          OVL_SHARD_ID: ${{ matrix.shard }}
+          CLOUD_WORKERS: "4"
+          CAPTIONS_DIR: ${{ steps.caps.outputs.dir }}
+        run: python3 assembler/cloud/cloud_pipeline.py "queue/${{ needs.setup.outputs.name }}" --only overlays
+
+      - name: Stage overlaid clips
+        id: stage
+        if: steps.have.outputs.count != '0'
+        run: |
+          proj="queue/${{ needs.setup.outputs.name }}"
+          mkdir -p ovl-out
+          cp "$proj/clips"/clip_*.mp4 ovl-out/ 2>/dev/null || true
+          # отпечатки готовых всплывашек этой машины — по ним assemble поймёт,
+          # что переделывать нечего (а чего нет — дорисует сам)
+          cp "$proj/clips"/.overlaid.*.json ovl-out/ 2>/dev/null || true
+          n=$(ls ovl-out/clip_*.mp4 2>/dev/null | wc -l)
+          echo "отдаю клипов: $n"
+          echo "count=$n" >> "$GITHUB_OUTPUT"
+
+      - uses: actions/cache/save@v4
+        if: steps.stage.outputs.count != '0' && steps.stage.outputs.count != ''
+        with:
+          path: ovl-out
+          key: ovl-${{ github.run_id }}-${{ matrix.shard }}
+
+  # ------------------------------------------------------------------ assemble
+  assemble:
+    needs: [setup, fetch, clips, overlays]
+    if: always() && needs.setup.result == 'success' && needs.setup.outputs.have == 'true'
+    runs-on: ubuntu-latest
+    # 180 → 30 (23.10). На `planeta`-прогоне шаг «Set up tools» завис на 23
+    # минуты, и при трёхчасовом таймауте джоб висел бы дальше: все последующие
+    # шаги `pending`, релиз не создан, `get.sh` отвечает «release not found» —
+    # то есть зависший assemble ОБНУЛЯЕТ работу всех успевших шардов. Сам шаг
+    # теперь режется пятью минутами, но и джобу нужен честный потолок:
+    # измеренная сборка 58 сцен заняла 326 с.
+    timeout-minutes: 30
+    steps:
+      - uses: actions/checkout@v4
+        with: { fetch-depth: 1 }
+      - uses: actions/cache/restore@v4
+        with:
+          path: project-src.tgz
+          key: proj-${{ github.run_id }}
+          fail-on-cache-miss: true
+      - run: tar xzf project-src.tgz
+
+      - name: Collect every shard's images
+        if: needs.setup.outputs.shards != '[]' && needs.setup.outputs.shards != ''
+        uses: actions/download-artifact@v4
+        with:
+          pattern: shard-${{ needs.setup.outputs.name }}-*
+          path: queue/${{ needs.setup.outputs.name }}/images
+          merge-multiple: true
+
+      # rendered clips come back from CACHE — 12 fixed worker keys. A worker that
+      # produced nothing simply has no cache -> restore misses and moves on
+      # (fail-on-cache-miss defaults false).
+      - name: Restore worker 0 clips
+        if: hashFiles(format('queue/{0}/.fetch-only', needs.setup.outputs.name)) == ''
+        uses: actions/cache/restore@v4
+        with:
+          path: clips-out
+          key: clip-${{ github.run_id }}-0
+      - name: Restore worker 1 clips
+        if: hashFiles(format('queue/{0}/.fetch-only', needs.setup.outputs.name)) == ''
+        uses: actions/cache/restore@v4
+        with:
+          path: clips-out
+          key: clip-${{ github.run_id }}-1
+      - name: Restore worker 2 clips
+        if: hashFiles(format('queue/{0}/.fetch-only', needs.setup.outputs.name)) == ''
+        uses: actions/cache/restore@v4
+        with:
+          path: clips-out
+          key: clip-${{ github.run_id }}-2
+      - name: Restore worker 3 clips
+        if: hashFiles(format('queue/{0}/.fetch-only', needs.setup.outputs.name)) == ''
+        uses: actions/cache/restore@v4
+        with:
+          path: clips-out
+          key: clip-${{ github.run_id }}-3
+      - name: Restore worker 4 clips
+        if: hashFiles(format('queue/{0}/.fetch-only', needs.setup.outputs.name)) == ''
+        uses: actions/cache/restore@v4
+        with:
+          path: clips-out
+          key: clip-${{ github.run_id }}-4
+      - name: Restore worker 5 clips
+        if: hashFiles(format('queue/{0}/.fetch-only', needs.setup.outputs.name)) == ''
+        uses: actions/cache/restore@v4
+        with:
+          path: clips-out
+          key: clip-${{ github.run_id }}-5
+      - name: Restore worker 6 clips
+        if: hashFiles(format('queue/{0}/.fetch-only', needs.setup.outputs.name)) == ''
+        uses: actions/cache/restore@v4
+        with:
+          path: clips-out
+          key: clip-${{ github.run_id }}-6
+      - name: Restore worker 7 clips
+        if: hashFiles(format('queue/{0}/.fetch-only', needs.setup.outputs.name)) == ''
+        uses: actions/cache/restore@v4
+        with:
+          path: clips-out
+          key: clip-${{ github.run_id }}-7
+      - name: Restore worker 8 clips
+        if: hashFiles(format('queue/{0}/.fetch-only', needs.setup.outputs.name)) == ''
+        uses: actions/cache/restore@v4
+        with:
+          path: clips-out
+          key: clip-${{ github.run_id }}-8
+      - name: Restore worker 9 clips
+        if: hashFiles(format('queue/{0}/.fetch-only', needs.setup.outputs.name)) == ''
+        uses: actions/cache/restore@v4
+        with:
+          path: clips-out
+          key: clip-${{ github.run_id }}-9
+      - name: Restore worker 10 clips
+        if: hashFiles(format('queue/{0}/.fetch-only', needs.setup.outputs.name)) == ''
+        uses: actions/cache/restore@v4
+        with:
+          path: clips-out
+          key: clip-${{ github.run_id }}-10
+      - name: Restore worker 11 clips
+        if: hashFiles(format('queue/{0}/.fetch-only', needs.setup.outputs.name)) == ''
+        uses: actions/cache/restore@v4
+        with:
+          path: clips-out
+          key: clip-${{ github.run_id }}-11
+      - name: Restore overlaid clips 0
+        if: hashFiles(format('queue/{0}/.fetch-only', needs.setup.outputs.name)) == ''
+        uses: actions/cache/restore@v4
+        with:
+          path: ovl-out
+          key: ovl-${{ github.run_id }}-0
+      - name: Restore overlaid clips 1
+        if: hashFiles(format('queue/{0}/.fetch-only', needs.setup.outputs.name)) == ''
+        uses: actions/cache/restore@v4
+        with:
+          path: ovl-out
+          key: ovl-${{ github.run_id }}-1
+      - name: Restore overlaid clips 2
+        if: hashFiles(format('queue/{0}/.fetch-only', needs.setup.outputs.name)) == ''
+        uses: actions/cache/restore@v4
+        with:
+          path: ovl-out
+          key: ovl-${{ github.run_id }}-2
+      - name: Restore overlaid clips 3
+        if: hashFiles(format('queue/{0}/.fetch-only', needs.setup.outputs.name)) == ''
+        uses: actions/cache/restore@v4
+        with:
+          path: ovl-out
+          key: ovl-${{ github.run_id }}-3
+      - name: Restore overlaid clips 4
+        if: hashFiles(format('queue/{0}/.fetch-only', needs.setup.outputs.name)) == ''
+        uses: actions/cache/restore@v4
+        with:
+          path: ovl-out
+          key: ovl-${{ github.run_id }}-4
+      - name: Restore overlaid clips 5
+        if: hashFiles(format('queue/{0}/.fetch-only', needs.setup.outputs.name)) == ''
+        uses: actions/cache/restore@v4
+        with:
+          path: ovl-out
+          key: ovl-${{ github.run_id }}-5
+      - name: Restore overlaid clips 6
+        if: hashFiles(format('queue/{0}/.fetch-only', needs.setup.outputs.name)) == ''
+        uses: actions/cache/restore@v4
+        with:
+          path: ovl-out
+          key: ovl-${{ github.run_id }}-6
+      - name: Restore overlaid clips 7
+        if: hashFiles(format('queue/{0}/.fetch-only', needs.setup.outputs.name)) == ''
+        uses: actions/cache/restore@v4
+        with:
+          path: ovl-out
+          key: ovl-${{ github.run_id }}-7
+      - name: Restore overlaid clips 8
+        if: hashFiles(format('queue/{0}/.fetch-only', needs.setup.outputs.name)) == ''
+        uses: actions/cache/restore@v4
+        with:
+          path: ovl-out
+          key: ovl-${{ github.run_id }}-8
+      - name: Restore overlaid clips 9
+        if: hashFiles(format('queue/{0}/.fetch-only', needs.setup.outputs.name)) == ''
+        uses: actions/cache/restore@v4
+        with:
+          path: ovl-out
+          key: ovl-${{ github.run_id }}-9
+      - name: Restore overlaid clips 10
+        if: hashFiles(format('queue/{0}/.fetch-only', needs.setup.outputs.name)) == ''
+        uses: actions/cache/restore@v4
+        with:
+          path: ovl-out
+          key: ovl-${{ github.run_id }}-10
+      - name: Restore overlaid clips 11
+        if: hashFiles(format('queue/{0}/.fetch-only', needs.setup.outputs.name)) == ''
+        uses: actions/cache/restore@v4
+        with:
+          path: ovl-out
+          key: ovl-${{ github.run_id }}-11
+      - name: Gather restored clips
+        if: hashFiles(format('queue/{0}/.fetch-only', needs.setup.outputs.name)) == ''
+        run: |
+          mkdir -p "queue/${{ needs.setup.outputs.name }}/clips"
+          cp clips-out/clip_*.mp4 "queue/${{ needs.setup.outputs.name }}/clips/" 2>/dev/null || true
+          echo "clips gathered: $(ls "queue/${{ needs.setup.outputs.name }}/clips"/clip_*.mp4 2>/dev/null | wc -l)"
+          # ПОВЕРХ голых клипов кладём те, на которых матрица уже нарисовала
+          # всплывашки (порядок важен: клип со всплывашкой должен победить).
+          # Вместе с ними приезжают .overlaid.<N>.json — отпечатки готового,
+          # по ним step_overlays поймёт, что переделывать нечего. Чего матрица
+          # не осилила — здесь дорисуется как раньше, ролик не ломается.
+          if ls ovl-out/clip_*.mp4 >/dev/null 2>&1; then
+            cp ovl-out/clip_*.mp4 "queue/${{ needs.setup.outputs.name }}/clips/" 2>/dev/null || true
+            cp ovl-out/.overlaid.*.json "queue/${{ needs.setup.outputs.name }}/clips/" 2>/dev/null || true
+            echo "со всплывашками пришло: $(ls ovl-out/clip_*.mp4 2>/dev/null | wc -l), отпечатков: $(ls ovl-out/.overlaid.*.json 2>/dev/null | wc -l)"
+          else
+            echo "матрица всплывашек ничего не отдала — рисую здесь, как раньше"
+          fi
+
+      # FFMPEG ИЗ КЭША (23.10, вечер). По очереди отвалились apt, стороннее
+      # зеркало и даже pip: на тринадцати машинах ffmpeg вставал, на
+      # четырнадцатой нет — и ролик терялся на последнем шаге. Кэш убирает
+      # зависимость от внешних хостов: бинари скачиваются ОДИН раз на
+      # репозиторий, дальше восстанавливаются за секунды. Каскад ниже остаётся
+      # запасным путём на случай пустого кэша (первый прогон на новой цели).
+      - name: ffmpeg из кэша
+        uses: actions/cache@v4
+        with:
+          path: ~/ffbin
+          key: ffmpeg-static-v9-${{ runner.os }}
+
+      - name: Set up tools
+        # 5 → 10 (23.10, тем же вечером). Пять минут оказались СЛИШКОМ
+        # жёстки: на `planeta-merc` семь шардов из двадцати легли именно на
+        # этом шаге и оставили 29 сцен пустыми — это инфраструктура раннера,
+        # не наши запросы. Обычная установка идёт 30-60 с, залипание, ради
+        # которого таймаут и ставился, длилось 23 минуты; десять минут
+        # разделяют эти два случая надёжно.
+        timeout-minutes: 6    # внутри короткие попытки, висеть нечему (23.10)
+        run: |
+          # GitHub runners occasionally ship a broken 3rd-party apt repo (google-chrome
+          # 'Hash Sum mismatch'); don't let that kill the build — drop those repos and retry.
+          # НЕ ПОЛАГАЕМСЯ НА APT (23.10, блокер: три прогона подряд легли).
+          # Картина была двойная: `apt-get install ffmpeg` либо висел до
+          # таймаута (13-14 джобов с «Set up tools has timed out»), либо
+          # завершался УСПЕШНО, не поставив пакет — и сборка падала позже и
+          # непонятно, на `FileNotFoundError: 'ffprobe'`. Воспроизводилось на
+          # двух аккаунтах, то есть дело не в цели. Поэтому: сперва смотрим,
+          # нет ли ffmpeg уже в образе; потом короткая попытка apt; если и
+          # она не дала бинарей — тянем статическую сборку одним файлом, она
+          # приезжает за секунды и от зеркал не зависит. В конце ОБЯЗАТЕЛЬНАЯ
+          # проверка: нет ffmpeg/ffprobe — падаем здесь и понятно, а не через
+          # десять минут в чужом джобе.
+          # кэш распаковываем ПЕРВЫМ делом и сразу кладём в PATH
+          mkdir -p "$HOME/ffbin"
+          echo "$HOME/ffbin" >> "$GITHUB_PATH"
+          export PATH="$HOME/ffbin:$PATH"
+          # КЭШ ПРОВЕРЯЕМ ЗАПУСКОМ, А НЕ НАЛИЧИЕМ ФАЙЛА (24.10, корень найден).
+          # В кэш клали бинарь, скопированный из apt, — он ДИНАМИЧЕСКИЙ, и на
+          # следующем прогоне восстанавливался без своих библиотек:
+          # «ffmpeg: error while loading shared libraries: libavdevice.so.60».
+          # Файл при этом есть и исполняемый, поэтому `command -v ffmpeg`
+          # проходил, каскад установки не включался, и КАЖДЫЙ клип падал
+          # FAILED. Джоб всё равно завершался success (сборщик клипов не роняет
+          # прогон), кэш клипов не сохранялся, и `assemble` переделывал всё в
+          # одиночку: 387 с на клипы и 70 с на всплывашки при 21-секундных
+          # «успешных» машинах. Теперь битую копию выбрасываем сразу.
+          if [ -x "$HOME/ffbin/ffmpeg" ] && [ -x "$HOME/ffbin/ffprobe" ]; then
+            if "$HOME/ffbin/ffmpeg" -version >/dev/null 2>&1 \
+               && "$HOME/ffbin/ffprobe" -version >/dev/null 2>&1; then
+              echo "ffmpeg взят из кэша: $("$HOME/ffbin/ffmpeg" -version 2>/dev/null | head -1)"
+            else
+              echo "КЭШ ffmpeg БИТЫЙ (не запускается) — выбрасываю, ставлю заново" >&2
+              rm -f "$HOME/ffbin/ffmpeg" "$HOME/ffbin/ffprobe"
+            fi
+          fi
+          need_apt=0
+          command -v ffmpeg >/dev/null 2>&1 && command -v ffprobe >/dev/null 2>&1 \
+            && echo "ffmpeg на месте: $(ffmpeg -version 2>/dev/null | head -1)" \
+            || need_apt=1
+          command -v tesseract >/dev/null 2>&1 || need_apt=1
+          if [ "$need_apt" = 1 ]; then
+            sudo rm -f /etc/apt/sources.list.d/*google* /etc/apt/sources.list.d/*chrome* /etc/apt/sources.list.d/*microsoft* 2>/dev/null || true
+            timeout 120 sudo apt-get update -qq || true
+            timeout 180 sudo apt-get install -y -qq ffmpeg tesseract-ocr tesseract-ocr-rus fonts-dejavu || echo "apt не справился — беру статический ffmpeg" >&2
+          fi
+          # PIP — ВТОРОЙ ИСТОЧНИК И ТЕПЕРЬ ГЛАВНЫЙ ЗАПАСНОЙ (23.10, вечер).
+          # Днём отвалился apt, к вечеру отвалилось и стороннее зеркало
+          # johnvansickle: на одном прогоне 10 джобов из 23 легли уже на нашей
+          # собственной проверке. `static-ffmpeg` тянет бинари с github.com —
+          # то есть с хоста, который на раннере заведомо доступен, раз оттуда
+          # приехал сам код. Кладёт И ffmpeg, И ffprobe (imageio-ffmpeg не
+          # годится: там только ffmpeg).
+          if ! command -v ffmpeg >/dev/null 2>&1 || ! command -v ffprobe >/dev/null 2>&1; then
+            echo "ставлю ffmpeg через pip (static-ffmpeg, бинари с github)"
+            python3 -m pip install --quiet --disable-pip-version-check static-ffmpeg || true
+            python3 - <<'PYFF' || true
+          import subprocess, sys
+          try:
+              import static_ffmpeg.run as r
+              a, b = r.get_or_fetch_platform_executables_else_raise()
+              for src in (a, b):
+                  subprocess.run(["sudo", "install", "-m755", src, "/usr/local/bin/"], check=False)
+              print("static-ffmpeg положил бинари в /usr/local/bin")
+          except Exception as e:
+              print("static-ffmpeg не дал бинарей: %s" % e, file=sys.stderr)
+          PYFF
+          fi
+          if ! command -v ffmpeg >/dev/null 2>&1 || ! command -v ffprobe >/dev/null 2>&1; then
+            echo "ставлю статическую сборку ffmpeg (apt и pip не дали бинарей)"
+            curl -fsSL --retry 3 --max-time 180 \
+              https://johnvansickle.com/ffmpeg/releases/ffmpeg-release-amd64-static.tar.xz \
+              -o /tmp/ff.tar.xz \
+              && mkdir -p /tmp/ffbin && tar -xJf /tmp/ff.tar.xz -C /tmp/ffbin --strip-components=1 \
+              && sudo install -m755 /tmp/ffbin/ffmpeg /tmp/ffbin/ffprobe /usr/local/bin/ \
+              || echo "статическая сборка тоже не поехала" >&2
+          fi
+          if ! command -v ffmpeg >/dev/null 2>&1 || ! command -v ffprobe >/dev/null 2>&1; then
+            echo "::error::ffmpeg/ffprobe не добыт НИ ОДНИМ из четырёх путей (кэш, apt, pip static-ffmpeg, johnvansickle)"
+            exit 1
+          fi
+          # кладём рядом копию для кэша — следующий прогон возьмёт её за секунды
+          # В КЭШ — ТОЛЬКО СТАТИЧЕСКИЙ БИНАРЬ (24.10). Динамический (из apt)
+          # на чужой машине не запустится: библиотеки рядом не лежат.
+          for b in ffmpeg ffprobe; do
+            src="$(command -v $b)"
+            [ -n "$src" ] || continue
+            [ -x "$HOME/ffbin/$b" ] && continue
+            if ldd "$src" 2>&1 | grep -q "not a dynamic executable"; then
+              cp "$src" "$HOME/ffbin/$b" && chmod +x "$HOME/ffbin/$b"
+            else
+              echo "$b динамический ($src) — в кэш не кладу" >&2
+            fi
+          done
+          echo "инструменты на месте: $(ffmpeg -version 2>/dev/null | head -1)"
+          python3 -m pip install --quiet pillow
+
+      - name: Ключи из Secrets (в репозиторий они не попадают никогда)
+        env:
+          PEXELS_API_KEY: ${{ secrets.PEXELS_API_KEY }}
+          FLICKR_API_KEY: ${{ secrets.FLICKR_API_KEY }}
+          DVIDS_API_KEY: ${{ secrets.DVIDS_API_KEY }}
+        run: |
+          proj="queue/${{ needs.setup.outputs.name }}"
+          mkdir -p "$proj"
+          { printf 'PEXELS_API_KEY=%s\n' "$PEXELS_API_KEY"
+            printf 'FLICKR_API_KEY=%s\n' "$FLICKR_API_KEY"
+            printf 'DVIDS_API_KEY=%s\n'  "$DVIDS_API_KEY"; } > "$proj/.env"
+          chmod 600 "$proj/.env"
+          # видно в логе, не раскрывая значения: без этой строки пустой секрет
+          # выглядит как «просто не нашлось кадров»
+          k=$(grep -c '^PEXELS_API_KEY=.\+' "$proj/.env" || true)
+          [ "$k" = 1 ] && echo "ключ Pexels: есть" || echo "::warning::ключ Pexels ПУСТ — проверь секрет PEXELS_API_KEY в настройках репозитория"
+
+      - name: Merge shards + rebuild manifest + mark fetch done
+        run: |
+          proj="queue/${{ needs.setup.outputs.name }}"
+          sc=$(python3 - "$proj" <<'PY'
+          import json, glob, os, sys
+          cs = [x for x in glob.glob(os.path.join(sys.argv[1], "*.scenes.json")) if "overlays_fetch" not in os.path.basename(x)]
+          cs.sort(key=lambda q: (-len(json.load(open(q)).get("scenes", [])), len(os.path.basename(q))))
+          print(cs[0] if cs else "")
+          PY
+          )
+          python3 assembler/cloud/merge_shards.py "$sc" "$proj/images" "$proj/.env" "$proj"
+
+      # СУБТИТРЫ НУЖНЫ И ЗДЕСЬ (04.11, корень потери субтитров на «Газе»).
+      # `CAPTIONS_DIR` выставлялся ТОЛЬКО матричному джобу `overlays`, а шаг
+      # `assemble` гоняет те же всплывашки добором (`--from clips`) — и про
+      # субтитры не знал ВООБЩЕ. Если матрица свою часть пропустила (у неё
+      # совпали отпечатки) или не покрыла все сцены, строка не вжигалась
+      # нигде, а в логе стояло безобидное «ничего не изменилось». Готовим
+      # куски `.ass` здесь заново (операция идемпотентная) и отдаём путь.
+      - name: Prepare per-scene captions for the mop-up pass
+        id: caps2
+        if: hashFiles(format('queue/{0}/.fetch-only', needs.setup.outputs.name)) == ''
+        run: |
+          proj="queue/${{ needs.setup.outputs.name }}"
+          caps=""
+          if [ -f "$proj/captions.ass" ]; then
+            sc=$(ls "$proj"/*.scenes.json 2>/dev/null | grep -v overlays_fetch | head -1)
+            python3 assembler/template/captions_shard.py "$sc" "$proj/captions.ass" "$proj/.caps"
+            caps="$PWD/$proj/.caps"
+            echo "субтитры: ВКЛЮЧЕНЫ, вожгу их ПОВЕРХ всплывашек"
+          else
+            echo "субтитры: выключены (captions.ass в проекте нет)"
+          fi
+          echo "dir=$caps" >> "$GITHUB_OUTPUT"
+
+      - name: Assemble (clips ready -> pop-ups -> concat -> sfx -> dashboard -> qa)
+        id: assemble
+        if: hashFiles(format('queue/{0}/.fetch-only', needs.setup.outputs.name)) == ''
+        env:
+          CLOUD_WORKERS: "4"
+          CAPTIONS_DIR: ${{ steps.caps2.outputs.dir }}
+        run: python3 assembler/cloud/cloud_pipeline.py "queue/${{ needs.setup.outputs.name }}" --from clips
+
+      - name: Fetch-only — stop before the build (dashboard review happens locally)
+        if: hashFiles(format('queue/{0}/.fetch-only', needs.setup.outputs.name)) != ''
+        run: |
+          proj="queue/${{ needs.setup.outputs.name }}"
+          mkdir -p "$proj/_cloud"
+          n_img=$(ls "$proj"/images/scene_* 2>/dev/null | wc -l)
+          n_ov=$(ls "$proj"/overlays/scene_* 2>/dev/null | wc -l)
+          # ЧЕСТНЫЙ ОТЧЁТ О ПОТЕРЯХ (2026-10-22, улов `usuario-5a`): прежние
+          # две строки считали ФАЙЛЫ и ничего не знали ни про сценарий, ни про
+          # манифесты шардов — отчёт был зелёный при девяти пустых сценах.
+          # fetch_report.py различает три природы потери: шард не отработал
+          # (записи нет вовсе), фетч ходил и не добыл (FAILED + причина),
+          # заглушка облака (файл есть, кадр почти чёрный).
+          python3 assembler/cloud/fetch_report.py "$proj" \
+            --md "$proj/_cloud/FETCH-report.md" || true
+          {
+            echo "# FETCH-ONLY — кадры собраны на матрице, сборка НЕ запускалась"
+            echo
+            echo "- картинок сцен:   $n_img"
+            echo "- фото всплывашек: $n_ov"
+            echo
+            echo "ЧТО НЕ ДОЕХАЛО — в \`_cloud/FETCH-report.md\` (сверка со"
+            echo "сценарием и манифестами шардов, а не счёт файлов)."
+            echo
+            echo "Дальше в сессии: get.sh <name> -> локальный дашборд (review.py --live)"
+            echo "-> правки/«собирай» -> ship.sh <dir> <name>  (БЕЗ --fetch-only) -> облако собирает."
+          } > "$proj/_cloud/QA-report.md"
+          cat "$proj/_cloud/QA-report.md"
+
+      - name: QA report on a partial build (if assemble failed)
+        if: failure()
+        run: python3 assembler/cloud/cloud_pipeline.py "queue/${{ needs.setup.outputs.name }}" --only qa || true
+
+      - name: Pack the logs (always)
+        if: success() || failure()
+        run: tar czf cloud-logs.tgz -C "queue/${{ needs.setup.outputs.name }}" _cloud progress.json 2>/dev/null || true
+
+      # КОНТАКТНЫЕ ЛИСТЫ СОБИРАЕТ ОБЛАКО (24.10, нулевой пункт OPEN-ITEMS).
+      # До этого листы были ЕДИНСТВЕННЫМ шагом аудита, который физически
+      # считался на машине пользователя, и нужны они КАЖДОМУ ролику — в
+      # отличие от доборов, карт и превью. Кадры у раннера уже есть, лист это
+      # один проход PIL; кладём рядом с отчётами, вкладка забирает готовым.
+      # Шаг никогда не роняет сборку: нет кадров или нет pillow — просто нет
+      # листов, ролик от этого не страдает.
+      - name: Контактные листы для аудита
+        if: success() || failure()
+        continue-on-error: true
+        env:
+          NAME: ${{ needs.setup.outputs.name }}
+        run: |
+          proj="queue/$NAME"
+          sc=$(ls "$proj"/*.scenes.json 2>/dev/null | grep -v overlays_fetch | head -1)
+          if [ -z "$sc" ] || [ ! -d "$proj/images" ]; then
+            echo "листы не собираю: нет файла сцен или папки кадров"; exit 0
+          fi
+          python3 -m pip install --quiet pillow 2>/dev/null || true
+          python3 assembler/template/contact_sheet.py "$sc" "$proj/images" "$proj/thumbs" \
+            || echo "contact_sheet не отработал — листов не будет, сборку не роняю"
+          n=$(ls "$proj"/thumbs/sheet_*.jpg 2>/dev/null | wc -l)
+          echo "контактных листов собрано: $n"
+          # ЛИСТ ЭФФЕКТОВ ИЗ ГОТОВОГО ВИДЕО (05.11, улов `usuario-35`): кадры
+          # сцен перехода не показывают, а вытащить их из mp4 на машине
+          # пользователя запрещено. Три кадра на каждый эффект — вход,
+          # середина, выход — чтобы вкладка смотрела приём глазами ДО показа.
+          _vid=$(ls "$proj"/*ВИДЕОРЯД.mp4 "$proj"/*-.mp4 2>/dev/null | head -1)
+          if [ -n "$_vid" ]; then
+            python3 assembler/template/fx_sheet.py "$sc" "$_vid" \
+              "$proj/thumbs/fx_sheet.jpg" \
+              || echo "лист эффектов не собрался — сборку не роняю"
+          else
+            echo "лист эффектов: готового видео в папке нет, пропускаю"
+          fi
+          [ -d "$proj/thumbs" ] && tar czf "$NAME-thumbs.tgz" -C "$proj" thumbs || true
+
+      - name: Publish result as a Release
+        if: success() || failure()
+        env:
+          GH_TOKEN: ${{ github.token }}
+          NAME: ${{ needs.setup.outputs.name }}
+        run: |
+          shopt -s nullglob
+          proj="queue/$NAME"
+          # ГОТОВОЕ ВИДЕО В АРХИВ НЕ КЛАДЁМ (28.10, улов вкладки «Круговая
+          # оборона»): оно уже едет в релиз ОТДЕЛЬНЫМ ассетом, а внутри
+          # архива уезжало ВТОРЫМ экземпляром — 297 МБ лишнего трафика на
+          # каждый ролик и два одинаковых mp4 в папке забора (проверено
+          # md5: байт в байт). При восьми роликах в день это 2,4 ГБ
+          # впустую, а у пользователя на диске свободно 146 ГБ.
+          tar czf "$NAME-project.tgz" --exclude='clips' --exclude='_silent.mp4' \
+            --exclude='.env' --exclude='*ВИДЕОРЯД.mp4' --exclude='*-.mp4' \
+            -C queue "$NAME"
+          # only attach files that actually exist — gh release create errors on a missing asset
+          assets=()
+          for f in "$proj"/*ВИДЕОРЯД.mp4 "$proj"/*дашборд.html "$proj"/*.scenes.json \
+                   "$proj"/overlays.json "$proj"/_cloud/QA-report.md \
+                   "$proj"/_cloud/pipeline.log "$proj"/_cloud/report.json \
+                   "$proj"/_cloud/classify_report.md "$NAME-project.tgz" \
+                   "$NAME-thumbs.tgz" cloud-logs.tgz; do
+            [ -f "$f" ] && assets+=("$f")
+          done
+          echo "attaching: ${assets[*]}"
+          notes="$proj/_cloud/QA-report.md"; [ -f "$notes" ] || { echo "build incomplete" > /tmp/n.md; notes=/tmp/n.md; }
+          # РЕЛИЗ СОЗДАЁМ ПУСТЫМ, АССЕТЫ ЛЬЁМ ПО ОДНОМУ С ПОВТОРАМИ
+          # (04.11, улов `usuario-eb`). Было: `delete` + `create` со всеми
+          # ассетами одной командой — и одна сетевая осечка на выгрузке
+          # (`HTTP 404` на `overlays.json`) снесла ВЕСЬ результат: старого
+          # релиза уже нет, новый не создан, шесть зелёных джобов фетча
+          # потеряны целиком, `gh release view` отвечает «not found».
+          # Снаружи это читается как «упала сборка», хотя упала ДОСТАВКА
+          # готовой работы. Теперь: релиз появляется сразу, каждый ассет
+          # грузится отдельно и трижды, падение шага — только если не доехал
+          # КРИТИЧЕСКИЙ ассет (готовое видео или архив проекта).
+          gh release delete "$NAME" -y --cleanup-tag 2>/dev/null || true
+          gh release create "$NAME" --title "$NAME" --notes-file "$notes"
+          _lost=()
+          for f in "${assets[@]}"; do
+            for _try in 1 2 3; do
+              gh release upload "$NAME" "$f" --clobber && break
+              echo "::warning::ассет не загрузился ($f), попытка $_try из 3"
+              sleep 5
+              [ "$_try" = 3 ] && _lost+=("$f")
+            done
+          done
+          if [ ${#_lost[@]} -gt 0 ]; then
+            echo "::warning::не доехали ассеты: ${_lost[*]}"
+            for f in "${_lost[@]}"; do
+              case "$f" in
+                *ВИДЕОРЯД.mp4|*-project.tgz)
+                  echo "::error::КРИТИЧЕСКИЙ ассет не доехал: $f"; exit 1;;
+              esac
+            done
+            echo "некритичные ассеты потеряны, релиз на месте — забирай"
+          fi
+
+      - name: Clear the queue slot
+        if: success() || failure()
+        run: |
+          git config user.name  "videoryad-cloud"
+          git config user.email "actions@users.noreply.github.com"
+          # the assemble step writes untracked files into queue/<name> (overlay
+          # mop-up, _cloud logs) which made `git pull --rebase` abort on
+          # "unstaged changes" and leave the slot stuck (2026-09-08). The build
+          # is already on the Release, so just discard the runner tree and
+          # delete the slot from a fresh remote state.
+          git fetch --quiet origin "${{ github.ref_name }}" || true
+          git reset --hard "origin/${{ github.ref_name }}" --quiet || true
+          git clean -fdq queue/ || true
+          git rm -rf --quiet --ignore-unmatch "queue/${{ needs.setup.outputs.name }}"
+          git commit -q -m "built ${{ needs.setup.outputs.name }} -> Release" || { echo "nothing to clear"; exit 0; }
+          for i in 1 2 3; do
+            git push && break
+            git fetch --quiet origin "${{ github.ref_name }}" && git rebase --quiet "origin/${{ github.ref_name }}" || true
+            sleep 3
+          done
+
+      - name: Re-trigger if more projects are queued
+        if: success()
+        env: { GH_TOKEN: "${{ github.token }}" }
+        run: |
+          git fetch -q origin ${{ github.ref_name }}
+          if git ls-tree -d --name-only origin/${{ github.ref_name }} queue/ | grep -q . ; then
+            echo "queue still has projects -> re-triggering"
+            gh workflow run videoryad-cloud.yml || true
+          fi
+
+  # ---------------------------------------------------------------- cleanup
+  # The deliverable ships as a Release (get.sh pulls from there). Everything
+  # this run passed between jobs is throwaway scratch the moment it ends:
+  #   - the heavy payloads (project-src, rendered clips) go via Actions CACHE
+  #     now — free, 10 GB/repo, NOT counted against the 0.5 GB artifact quota
+  #     that used to jam the free plan. Deleted here by run-id key.
+  #   - shard-* (fetched images) are still small artifacts — deleted here too.
+  # Runs on every path (full build or --fetch-only) and even if a job failed.
+  cleanup:
+    needs: [setup, fetch, clips, assemble]
+    if: always()
+    # Это дворник: он стирает временные файлы, а не делает видео. Его падение
+    # НИКОГДА не должно красить вердикт всей сборки — иначе читаешь «run
+    # failed/cancelled» и идёшь выяснять, цел ли ролик, хотя ролик давно готов
+    # и лежит в релизе (поймано 2026-10-12 на planeta-8-mostov-1310: дворник
+    # упал за 2 секунды, не дойдя до собственных шагов — сбой запуска джоба на
+    # стороне GitHub, чинить внутри нечего). В интерфейсе он всё равно будет
+    # помечен упавшим, так что систематические падения видно — а это важно:
+    # именно переполненное хранилище артефактов 2026-09-10 положило день.
+    continue-on-error: true
+    runs-on: ubuntu-latest
+    permissions:
+      actions: write
+    steps:
+      - name: Delete this run's scratch artifacts
+        env:
+          GH_TOKEN: ${{ github.token }}
+          REPO: ${{ github.repository }}
+          RUN_ID: ${{ github.run_id }}
+        run: |
+          ids=$(gh api --paginate "/repos/$REPO/actions/runs/$RUN_ID/artifacts" \
+                  --jq '.artifacts[].id' || true)
+          n=0
+          for id in $ids; do
+            gh api -X DELETE "/repos/$REPO/actions/artifacts/$id" >/dev/null 2>&1 && n=$((n+1)) || true
+          done
+          echo "deleted $n artifact(s) from run $RUN_ID"
+          # belt-and-suspenders: prune anything older than 1 day still lingering
+          old=$(gh api --paginate "/repos/$REPO/actions/artifacts" \
+                  --jq ".artifacts[] | select(.created_at < \"$(date -u -d '1 day ago' +%Y-%m-%dT%H:%M:%SZ)\") | .id" || true)
+          for id in $old; do
+            gh api -X DELETE "/repos/$REPO/actions/artifacts/$id" >/dev/null 2>&1 || true
+          done
+
+      - name: Delete this run's scratch caches
+        env:
+          GH_TOKEN: ${{ github.token }}
+          REPO: ${{ github.repository }}
+          RUN_ID: ${{ github.run_id }}
+        run: |
+          # our per-run keys: proj-<id>, clip-<id>-0..5
+          keys=$(gh api --paginate "/repos/$REPO/actions/caches" \
+                  --jq ".actions_caches[] | select(.key | test(\"-${RUN_ID}(-|$)\")) | .key" || true)
+          n=0
+          for k in $keys; do
+            gh api -X DELETE "/repos/$REPO/actions/caches?key=$k" >/dev/null 2>&1 && n=$((n+1)) || true
+          done
+          echo "deleted $n cache(s) for run $RUN_ID"
+          # belt-and-suspenders: prune any proj-/clip- cache older than 1 day
+          old=$(gh api --paginate "/repos/$REPO/actions/caches" \
+                  --jq ".actions_caches[] | select((.key|startswith(\"proj-\")) or (.key|startswith(\"clip-\"))) | select(.created_at < \"$(date -u -d '1 day ago' +%Y-%m-%dT%H:%M:%SZ)\") | .key" || true)
+          for k in $old; do
+            gh api -X DELETE "/repos/$REPO/actions/caches?key=$k" >/dev/null 2>&1 || true
+          done

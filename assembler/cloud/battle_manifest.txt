@@ -1,0 +1,130 @@
+#
+#
+#
+# `template/` и `cloud/` с этим списком. Нашёл файл, которого здесь нет, —
+# `template/` или `cloud/`: `sync_assembler.sh` раскатывает ЭТИ ДВЕ ПАПКИ на
+# Добавил НАСТОЯЩИЙ боевой файл (новый инструмент конвейера)? Впиши его сюда
+# Зачем. Второй сборщик (арсенал, `fullcycle/`) разрабатывается ОТДЕЛЬНОЙ
+# Как работает. Перед раскаткой `sync_assembler.sh` сверяет содержимое
+# МАНИФЕСТ БОЕВОГО КОДА — что разрешено раскатывать в облако (2026-10-23)
+# Путь — от корня скилла, ровно как печатает `find template cloud -type f`.
+# вкладкой, и его код в боевую сборку попадать не должен. Единственная дорога,
+# все восемь целей, и с этого момента новый код работает в каждом ролике.
+# и в облако оно не едет.
+# ограничена: в `fullcycle/` клади что угодно, туда предохранитель не смотрит
+# одной строкой — это осознанное действие диспетчера, а не формальность.
+# по которой он туда физически может попасть, — файл, положенный в
+# раскатка ОСТАНОВЛЕНА, файл назван. Разработка арсенала при этом ничем не
+cloud/.gitignore
+cloud/README-CLOUD.md
+cloud/base_harvest.py
+cloud/base_video.py
+cloud/battle_manifest.txt
+cloud/busy.sh
+cloud/classify_prompt.md
+cloud/cloud_pipeline.py
+cloud/config.sh
+cloud/dash.sh
+cloud/dash_watch.sh
+cloud/fetch_report.py
+cloud/fetch_shard.py
+cloud/get.sh
+cloud/harvest.sh
+cloud/harvest_get.sh
+cloud/harvest_video.sh
+cloud/merge_shards.py
+cloud/notify.sh
+cloud/preflight.sh
+cloud/run.sh
+cloud/setup_rezerv.sh
+cloud/shard_scenes.py
+cloud/ship.sh
+cloud/switch_account.sh
+cloud/sync_assembler.sh
+cloud/traffic.sh
+cloud/use_account.sh
+cloud/va.sh
+cloud/workflows/base-harvest.yml
+cloud/workflows/base-video.yml
+cloud/workflows/cards-render.yml
+cloud/workflows/videoryad-cloud.yml
+cloud/youtube_upload.py
+template/.env.example
+template/accept_scenes.py
+template/autofix_scenes.py
+template/adopt_cloud.py
+template/ai_batch.py
+template/autodedup.py
+template/ban_file.py
+template/build_capcut_draft.py
+template/build_clips_1080.py
+template/build_overlays.py
+template/build_ticker.py
+template/build_usage_log.py
+template/captions_from_srt.py
+template/captions_shard.py
+template/cards_queue.py
+template/check_lead.py
+template/check_library_updates.py
+template/check_overlay_overlap.py
+template/check_pins.py
+template/codex_ask.sh
+template/codex_brief.py
+template/contact_sheet.py
+template/crop_brand.py
+template/dossier_use.py
+template/fetch_assets_news.py
+template/fetch_maps.py
+template/fetch_parallel.py
+template/file_away_segodnia.py
+template/folder_sheet.py
+template/fonts/Arimo-Bold.ttf
+template/fonts/Montserrat-Bold.ttf
+template/fonts/OFL-arimo-tinos-oswald-montserrat-robotocondensed.txt
+template/fonts/Oswald-Bold.ttf
+template/fonts/README.md
+template/fonts/RobotoCondensed-Bold.ttf
+template/fonts/Tinos-Bold.ttf
+template/fx/fx_flare.png
+template/fx/haze.mp4
+template/fx/particles.mp4
+template/fx/preset-news-max.json
+template/fx/preset-news.json
+template/fx_inset.py
+template/fx_put.py
+template/fx_rings.py
+template/fx_trans.py
+template/fx_trans5.py
+template/geo_links.py
+template/grab_stream_frame.py
+template/grab_video_frame.py
+template/pair_sheet.py
+template/phase.py
+template/photo_quality.py
+template/query_lint.py
+template/quote_card.py
+template/refetch.py
+template/rejections.py
+template/review.py
+template/scenes_from_srt.py
+template/search_options.py
+template/selfcheck.py
+template/sfx/ding.mp3
+template/sfx/mashinka.mp3
+template/sfx/pop.mp3
+template/sfx/pshik.mp3
+template/sfx/whoosh.mp3
+template/sfx/zatvor.mp3
+template/style_card.py
+template/tg_media.py
+template/voice_note.py
+template/wm_sheet.py
+template/zoom.py
+template/ozvuchka.py
+template/take_folder.py
+template/final_sheet.py
+template/fx_sheet.py
+template/fx_subscribe.py
+template/fx_subscribe2.py
+template/obyazatelno.py
+template/element_put.py
