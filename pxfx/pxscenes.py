@@ -134,11 +134,11 @@ def s03(t):
                 _P3["f"].emit(1, bx + sx * (0.7 + 0.5 * abs(n)) + n * 10, by,
                               speed=(150, 330), ang=(-math.pi * 0.66, -math.pi * 0.34),
                               life=(0.45, 1.15), size=(7, 17), rp=rpf, kind="flame", drift=85)
-        if _P3["es"] >= 0.075:
+        if _P3["es"] >= 0.045:
             _P3["es"] = 0.0
-            _P3["s"].emit(1, bx + n * 70 + (_P3["t"] * 97 % 120 - 60), by - 300,
-                          speed=(30, 95), ang=(-math.pi * 0.85, -math.pi * 0.15),
-                          life=(2.6, 4.6), size=(20, 44), rp=rps, kind="smoke", drift=120)
+            _P3["s"].emit(1, bx + n * 26 + (_P3["t"] * 97 % 90 - 45), by - 120,
+                          speed=(40, 130), ang=(-math.pi * 0.78, -math.pi * 0.22),
+                          life=(2.2, 4.0), size=(14, 34), rp=rps, kind="smoke", drift=130)
         _P3["f"].step(dt)
         _P3["s"].step(dt)
         _P3["t"] += dt
