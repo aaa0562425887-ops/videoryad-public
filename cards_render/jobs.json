@@ -393,20 +393,16 @@
  },
  {
   "scene": 61,
-  "view": "photo",
+  "view": "film.film_single",
   "dur": 11.6,
-  "anim": 11.6,
-  "tail_zoom": 0.0,
+  "anim": 2.6,
+  "tail_zoom": 0.045,
   "watermark": "ПЛАНЕТА",
   "channel": "ПЛАНЕТА",
   "kwargs": {
-   "watermark": "ПЛАНЕТА",
    "photo": "images/scene_061.jpg",
-   "title": "СЧЁТ, КОТОРЫЙ НЕ ВИДЕН",
-   "lines": [
-    "Погасший район виден сразу",
-    "Нерождённый ребёнок — нет"
-   ]
+   "kick": "Ни стены, ни денег, ни сна",
+   "watermark": "ПЛАНЕТА"
   }
  },
  {
@@ -501,16 +497,17 @@
  },
  {
   "scene": 75,
-  "view": "tape",
+  "view": "cinematic.depth_of_field",
   "dur": 11.7,
-  "anim": 2.4,
-  "tail_zoom": 0.04,
+  "anim": 11.7,
+  "tail_zoom": 0.0,
   "watermark": "ПЛАНЕТА",
   "channel": "ПЛАНЕТА",
   "kwargs": {
-   "text": "Есть лишь пустота, которую государство заметит через двадцать лет,",
+   "photo": "images/scene_075.jpg",
    "watermark": "ПЛАНЕТА"
-  }
+  },
+  "mode": "frame"
  },
  {
   "scene": 78,
