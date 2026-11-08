@@ -1,0 +1,127 @@
+{
+  "anchor": "bottom",
+  "4": {
+    "photo": "overlays/scene_004.jpg",
+    "sound": "pop",
+    "at": 2.2,
+    "shape": "rect",
+    "scale": 1.0,
+    "style": "left",
+    "anchor": "top",
+    "approved": true
+  },
+  "8": {
+    "photo": "overlays/scene_008.jpg",
+    "sound": "whoosh",
+    "at": 2.4,
+    "shape": "rect",
+    "scale": 1.0,
+    "style": "right",
+    "approved": true
+  },
+  "14": {
+    "photo": "overlays/scene_014.jpg",
+    "sound": "ding",
+    "at": 2.6,
+    "shape": "rect",
+    "scale": 1.0,
+    "style": "left",
+    "approved": true
+  },
+  "20": {
+    "photo": "overlays/scene_020.jpg",
+    "sound": "pop",
+    "at": 2.8,
+    "shape": "square",
+    "scale": 1.0,
+    "style": "right",
+    "approved": true
+  },
+  "23": {
+    "photo": "overlays/scene_023.jpg",
+    "sound": "whoosh",
+    "at": 3.0,
+    "shape": "rect",
+    "scale": 1.0,
+    "style": "left",
+    "approved": true
+  },
+  "29": {
+    "photo": "overlays/scene_029.jpg",
+    "sound": "ding",
+    "at": 2.2,
+    "shape": "rect",
+    "scale": 1.0,
+    "style": "right",
+    "approved": true
+  },
+  "36": {
+    "photo": "overlays/scene_036.jpg",
+    "sound": "pop",
+    "at": 2.4,
+    "shape": "rect",
+    "scale": 1.0,
+    "style": "left",
+    "approved": true
+  },
+  "44": {
+    "photo": "overlays/scene_044.jpg",
+    "sound": "whoosh",
+    "at": 2.6,
+    "shape": "square",
+    "scale": 1.0,
+    "style": "right",
+    "approved": true
+  },
+  "76": {
+    "photo": "overlays/scene_076.jpg",
+    "sound": "whoosh",
+    "at": 2.2,
+    "shape": "rect",
+    "scale": 1.0,
+    "style": "left",
+    "approved": true
+  },
+  "12": {
+    "text": {
+      "words": "ПРЕДЕЛ ЗАПАСА",
+      "color": "red",
+      "pos": "ml",
+      "font": "default",
+      "sound": "pshik",
+      "at": 0.5,
+      "scale": 1.0,
+      "style": "mask_plate",
+      "sub": "у Германии своя страна",
+      "approved": true
+    }
+  },
+  "30": {
+    "text": {
+      "words": "ДЕМОГРАФИЯ",
+      "color": "white",
+      "pos": "ml",
+      "font": "default",
+      "sound": "pop",
+      "at": 0.5,
+      "scale": 1.0,
+      "style": "mask_plate",
+      "sub": "счёт, который не видно",
+      "approved": true
+    }
+  },
+  "65": {
+    "text": {
+      "words": "МЕХАНИЗМ",
+      "color": "white",
+      "pos": "ml",
+      "font": "default",
+      "sound": "pop",
+      "at": 0.5,
+      "scale": 1.0,
+      "style": "mask_plate",
+      "sub": "кормит сам себя",
+      "approved": true
+    }
+  }
+}
