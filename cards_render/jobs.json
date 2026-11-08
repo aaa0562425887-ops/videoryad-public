@@ -1,0 +1,561 @@
+[
+ {
+  "scene": 1,
+  "view": "film.film_single",
+  "dur": 9.8,
+  "anim": 2.6,
+  "tail_zoom": 0.045,
+  "watermark": "ПЛАНЕТА",
+  "channel": "ПЛАНЕТА",
+  "kwargs": {
+   "photo": "images/scene_001.jpg",
+   "watermark": "ПЛАНЕТА"
+  }
+ },
+ {
+  "scene": 2,
+  "view": "tape",
+  "dur": 9.6,
+  "anim": 2.4,
+  "tail_zoom": 0.04,
+  "watermark": "ПЛАНЕТА",
+  "channel": "ПЛАНЕТА",
+  "kwargs": {
+   "text": "И чем ближе вода к подбородку, тем увереннее звучит команда гребём дальше.",
+   "watermark": "ПЛАНЕТА"
+  }
+ },
+ {
+  "scene": 3,
+  "view": "pull",
+  "dur": 12.4,
+  "anim": 2.6,
+  "tail_zoom": 0.05,
+  "watermark": "ПЛАНЕТА",
+  "channel": "ПЛАНЕТА",
+  "kwargs": {
+   "text": "Какое событие всё-таки способно прервать этот заплыв",
+   "watermark": "ПЛАНЕТА"
+  }
+ },
+ {
+  "scene": 6,
+  "view": "film.film_single",
+  "dur": 9.9,
+  "anim": 2.6,
+  "tail_zoom": 0.045,
+  "watermark": "ПЛАНЕТА",
+  "channel": "ПЛАНЕТА",
+  "kwargs": {
+   "photo": "images/scene_006.jpg",
+   "watermark": "ПЛАНЕТА"
+  }
+ },
+ {
+  "scene": 9,
+  "view": "split",
+  "dur": 12.6,
+  "anim": 2.0,
+  "tail_zoom": 0.06,
+  "watermark": "ПЛАНЕТА",
+  "channel": "ПЛАНЕТА",
+  "kwargs": {
+   "photo": "images/scene_009.jpg",
+   "text": "Новых комплексов Берлин передавать не собирается",
+   "author": "Борис Писториус",
+   "role": "министр обороны Германии",
+   "accent": "передавать не собирается",
+   "watermark": "ПЛАНЕТА"
+  }
+ },
+ {
+  "scene": 10,
+  "view": "tape",
+  "dur": 9.8,
+  "anim": 2.4,
+  "tail_zoom": 0.04,
+  "watermark": "ПЛАНЕТА",
+  "channel": "ПЛАНЕТА",
+  "kwargs": {
+   "text": "Вот так международная солидарность встречается с инвентаризацией.",
+   "watermark": "ПЛАНЕТА"
+  }
+ },
+ {
+  "scene": 13,
+  "view": "charts.cartogram",
+  "dur": 12.7,
+  "anim": 12.7,
+  "tail_zoom": 0.045,
+  "watermark": "ПЛАНЕТА",
+  "channel": "ПЛАНЕТА",
+  "kwargs": {
+   "data": [
+    "Германия",
+    "Украина"
+   ],
+   "title": "ГДЕ КОНЧИЛСЯ ЗАПАС",
+   "watermark": "ПЛАНЕТА"
+  }
+ },
+ {
+  "scene": 15,
+  "view": "bars",
+  "dur": 13.2,
+  "anim": 13.2,
+  "tail_zoom": 0.0,
+  "watermark": "ПЛАНЕТА",
+  "channel": "ПЛАНЕТА",
+  "kwargs": {},
+  "mode": "cli",
+  "script": "build_chart_bars.py",
+  "cfg": {
+   "title": "НАЛЁТ И ПЕРЕХВАТЫ",
+   "caption": "",
+   "seconds": 13.2,
+   "bars": [
+    {
+     "label": "РАКЕТ В НАЛЁТЕ",
+     "value": 1.0,
+     "color": "B92526"
+    },
+    {
+     "label": "ПЕРЕХВАЧЕНО",
+     "value": 0.11,
+     "color": "EABD23"
+    }
+   ]
+  }
+ },
+ {
+  "scene": 17,
+  "view": "vyrezka.gazeta",
+  "dur": 12.5,
+  "anim": 2.6,
+  "tail_zoom": 0.045,
+  "watermark": "ПЛАНЕТА",
+  "channel": "ПЛАНЕТА",
+  "kwargs": {
+   "photo": "images/scene_017.jpg",
+   "author": "Владимир Зеленский",
+   "watermark": "ПЛАНЕТА"
+  }
+ },
+ {
+  "scene": 18,
+  "view": "photo",
+  "dur": 9.8,
+  "anim": 9.8,
+  "tail_zoom": 0.0,
+  "watermark": "ПЛАНЕТА",
+  "channel": "ПЛАНЕТА",
+  "kwargs": {
+   "watermark": "ПЛАНЕТА",
+   "photo": "images/scene_018.jpg",
+   "title": "ЧТО УПЁРЛОСЬ В ПРЕДЕЛ",
+   "lines": [
+    "Склад",
+    "Бюджет",
+    "Энергосеть"
+   ]
+  }
+ },
+ {
+  "scene": 25,
+  "view": "cinematic.depth_of_field",
+  "dur": 13.1,
+  "anim": 13.1,
+  "tail_zoom": 0.0,
+  "watermark": "ПЛАНЕТА",
+  "channel": "ПЛАНЕТА",
+  "kwargs": {
+   "photo": "images/scene_025.jpg",
+   "watermark": "ПЛАНЕТА"
+  },
+  "mode": "frame"
+ },
+ {
+  "scene": 26,
+  "view": "vyrezka.figura",
+  "dur": 9.6,
+  "anim": 2.6,
+  "tail_zoom": 0.045,
+  "watermark": "ПЛАНЕТА",
+  "channel": "ПЛАНЕТА",
+  "kwargs": {
+   "photo": "images/scene_026.jpg",
+   "author": "Владимир Зеленский",
+   "watermark": "ПЛАНЕТА"
+  }
+ },
+ {
+  "scene": 28,
+  "view": "cinematic.depth_of_field",
+  "dur": 11.1,
+  "anim": 11.1,
+  "tail_zoom": 0.0,
+  "watermark": "ПЛАНЕТА",
+  "channel": "ПЛАНЕТА",
+  "kwargs": {
+   "photo": "images/scene_028.jpg",
+   "watermark": "ПЛАНЕТА"
+  },
+  "mode": "frame"
+ },
+ {
+  "scene": 31,
+  "view": "poster.poster",
+  "dur": 11.6,
+  "anim": 11.6,
+  "tail_zoom": 0.0,
+  "watermark": "ПЛАНЕТА",
+  "channel": "ПЛАНЕТА",
+  "kwargs": {
+   "title": "РОЖДЕНИЯ ЗА ГОД",
+   "hero_photo": "dossier/poster_ze2.jpg",
+   "bottom": "Разницу не вернуть новым пакетом помощи",
+   "facts": [
+    {
+     "label": "2021 год",
+     "value": "274 тысячи"
+    },
+    {
+     "label": "2025 год",
+     "value": "169 тысяч"
+    },
+    {
+     "label": "Падение",
+     "value": "38,4 процента"
+    }
+   ],
+   "watermark": "ПЛАНЕТА"
+  },
+  "mode": "frame"
+ },
+ {
+  "scene": 33,
+  "view": "slider",
+  "dur": 11.4,
+  "anim": 11.4,
+  "tail_zoom": 0.0,
+  "watermark": "ПЛАНЕТА",
+  "channel": "ПЛАНЕТА",
+  "kwargs": {},
+  "mode": "cli",
+  "script": "build_chart_slider.py",
+  "cfg": {
+   "title": "ГОРИЗОНТ ПОСЛЕДСТВИЙ, ЛЕТ",
+   "min": 0.0,
+   "max": 20.0,
+   "low": 0.0,
+   "high": 20.0,
+   "marker_value": 20.0,
+   "marker_display": "20",
+   "seconds": 11.4,
+   "range_label": "РАЗБРОС ОЦЕНОК",
+   "caption": "",
+   "source": ""
+  }
+ },
+ {
+  "scene": 39,
+  "view": "photo",
+  "dur": 11.8,
+  "anim": 11.8,
+  "tail_zoom": 0.0,
+  "watermark": "ПЛАНЕТА",
+  "channel": "ПЛАНЕТА",
+  "kwargs": {
+   "watermark": "ПЛАНЕТА",
+   "photo": "images/scene_039.jpg",
+   "title": "ЧЕМ ДАЛЬШЕ, ТЕМ ДОРОЖЕ",
+   "lines": [
+    "Семьи укореняются за границей",
+    "Возвращение теряет смысл"
+   ]
+  }
+ },
+ {
+  "scene": 41,
+  "view": "marker_serif",
+  "dur": 11.6,
+  "anim": 2.6,
+  "tail_zoom": 0.045,
+  "watermark": "ПЛАНЕТА",
+  "channel": "ПЛАНЕТА",
+  "kwargs": {
+   "text": "Календарь работает без выходных и ни у кого не спрашивает разрешения",
+   "accent": "без выходных",
+   "watermark": "ПЛАНЕТА"
+  }
+ },
+ {
+  "scene": 42,
+  "view": "film.film_single",
+  "dur": 12.0,
+  "anim": 2.6,
+  "tail_zoom": 0.045,
+  "watermark": "ПЛАНЕТА",
+  "channel": "ПЛАНЕТА",
+  "kwargs": {
+   "photo": "images/scene_042.jpg",
+   "watermark": "ПЛАНЕТА"
+  }
+ },
+ {
+  "scene": 48,
+  "view": "cinematic.depth_of_field",
+  "dur": 11.1,
+  "anim": 11.1,
+  "tail_zoom": 0.0,
+  "watermark": "ПЛАНЕТА",
+  "channel": "ПЛАНЕТА",
+  "kwargs": {
+   "photo": "images/scene_048.jpg",
+   "watermark": "ПЛАНЕТА"
+  },
+  "mode": "frame"
+ },
+ {
+  "scene": 50,
+  "view": "film.film_strip",
+  "dur": 12.3,
+  "anim": 12.3,
+  "tail_zoom": 0.045,
+  "watermark": "ПЛАНЕТА",
+  "channel": "ПЛАНЕТА",
+  "kwargs": {
+   "shots": [
+    "images/scene_045.jpg",
+    "images/scene_047.jpg",
+    "images/scene_051.jpg"
+   ],
+   "watermark": "ПЛАНЕТА"
+  }
+ },
+ {
+  "scene": 53,
+  "view": "paper_typed",
+  "dur": 11.4,
+  "anim": 2.8,
+  "tail_zoom": 0.04,
+  "watermark": "ПЛАНЕТА",
+  "channel": "ПЛАНЕТА",
+  "kwargs": {
+   "text": "Самым доступным расходным материалом начинают считать человека",
+   "watermark": "ПЛАНЕТА"
+  }
+ },
+ {
+  "scene": 54,
+  "view": "paper_hand",
+  "dur": 12.2,
+  "anim": 2.8,
+  "tail_zoom": 0.04,
+  "watermark": "ПЛАНЕТА",
+  "channel": "ПЛАНЕТА",
+  "kwargs": {
+   "text": "Ракета имеет цену. Комплекс проходит по контракту. Человеческая жизнь в такой арифметике растворяется",
+   "watermark": "ПЛАНЕТА"
+  }
+ },
+ {
+  "scene": 55,
+  "view": "film.film_single",
+  "dur": 11.7,
+  "anim": 2.6,
+  "tail_zoom": 0.045,
+  "watermark": "ПЛАНЕТА",
+  "channel": "ПЛАНЕТА",
+  "kwargs": {
+   "photo": "images/scene_055.jpg",
+   "watermark": "ПЛАНЕТА"
+  }
+ },
+ {
+  "scene": 59,
+  "view": "photo",
+  "dur": 11.8,
+  "anim": 11.8,
+  "tail_zoom": 0.0,
+  "watermark": "ПЛАНЕТА",
+  "channel": "ПЛАНЕТА",
+  "kwargs": {
+   "watermark": "ПЛАНЕТА",
+   "photo": "images/scene_059.jpg",
+   "title": "ЗНАКОМАЯ ЛОГИКА",
+   "lines": [
+    "Слишком много вложили",
+    "Слишком много потеряли",
+    "Значит, надо идти дальше"
+   ]
+  }
+ },
+ {
+  "scene": 61,
+  "view": "photo",
+  "dur": 11.6,
+  "anim": 11.6,
+  "tail_zoom": 0.0,
+  "watermark": "ПЛАНЕТА",
+  "channel": "ПЛАНЕТА",
+  "kwargs": {
+   "watermark": "ПЛАНЕТА",
+   "photo": "images/scene_061.jpg",
+   "title": "СЧЁТ, КОТОРЫЙ НЕ ВИДЕН",
+   "lines": [
+    "Погасший район виден сразу",
+    "Нерождённый ребёнок — нет"
+   ]
+  }
+ },
+ {
+  "scene": 67,
+  "view": "cinematic.evidence_wall",
+  "dur": 11.5,
+  "anim": 11.5,
+  "tail_zoom": 0.0,
+  "watermark": "ПЛАНЕТА",
+  "channel": "ПЛАНЕТА",
+  "kwargs": {
+   "shots": [
+    [
+     "images/scene_065.jpg",
+     240,
+     380,
+     -4,
+     "Механизм кормит сам себя"
+    ],
+    [
+     "images/scene_066.jpg",
+     800,
+     380,
+     3,
+     "Встречи политиков"
+    ],
+    [
+     "images/scene_047.jpg",
+     1360,
+     380,
+     -2,
+     "Следующий политический цикл"
+    ]
+   ],
+   "watermark": "ПЛАНЕТА"
+  },
+  "mode": "frame"
+ },
+ {
+  "scene": 68,
+  "view": "cinematic.depth_of_field",
+  "dur": 11.1,
+  "anim": 11.1,
+  "tail_zoom": 0.0,
+  "watermark": "ПЛАНЕТА",
+  "channel": "ПЛАНЕТА",
+  "kwargs": {
+   "photo": "images/scene_068.jpg",
+   "watermark": "ПЛАНЕТА"
+  },
+  "mode": "frame"
+ },
+ {
+  "scene": 70,
+  "view": "tape",
+  "dur": 12.3,
+  "anim": 2.4,
+  "tail_zoom": 0.04,
+  "watermark": "ПЛАНЕТА",
+  "channel": "ПЛАНЕТА",
+  "kwargs": {
+   "text": "Демография за этот год отвечает уменьшением числа рождений.",
+   "watermark": "ПЛАНЕТА"
+  }
+ },
+ {
+  "scene": 71,
+  "view": "cinematic.depth_of_field",
+  "dur": 11.6,
+  "anim": 11.6,
+  "tail_zoom": 0.0,
+  "watermark": "ПЛАНЕТА",
+  "channel": "ПЛАНЕТА",
+  "kwargs": {
+   "photo": "images/scene_071.jpg",
+   "watermark": "ПЛАНЕТА"
+  },
+  "mode": "frame"
+ },
+ {
+  "scene": 73,
+  "view": "tape",
+  "dur": 11.4,
+  "anim": 2.4,
+  "tail_zoom": 0.04,
+  "watermark": "ПЛАНЕТА",
+  "channel": "ПЛАНЕТА",
+  "kwargs": {
+   "text": "Поэтому падение рождаемости на тридцать восемь целых четыре десятых процента звучит тише ракетного удара,",
+   "watermark": "ПЛАНЕТА"
+  }
+ },
+ {
+  "scene": 75,
+  "view": "tape",
+  "dur": 11.7,
+  "anim": 2.4,
+  "tail_zoom": 0.04,
+  "watermark": "ПЛАНЕТА",
+  "channel": "ПЛАНЕТА",
+  "kwargs": {
+   "text": "Есть лишь пустота, которую государство заметит через двадцать лет,",
+   "watermark": "ПЛАНЕТА"
+  }
+ },
+ {
+  "scene": 78,
+  "view": "photo",
+  "dur": 11.1,
+  "anim": 11.1,
+  "tail_zoom": 0.0,
+  "watermark": "ПЛАНЕТА",
+  "channel": "ПЛАНЕТА",
+  "kwargs": {
+   "watermark": "ПЛАНЕТА",
+   "photo": "images/scene_078.jpg",
+   "title": "ЧТО МОЖНО ВЕРНУТЬ",
+   "lines": [
+    "Линию — можно",
+    "Мост — можно",
+    "Двадцать лет — нельзя"
+   ]
+  }
+ },
+ {
+  "scene": 81,
+  "view": "tape",
+  "dur": 11.6,
+  "anim": 2.4,
+  "tail_zoom": 0.04,
+  "watermark": "ПЛАНЕТА",
+  "channel": "ПЛАНЕТА",
+  "kwargs": {
+   "text": "Людей в этой конструкции всё заметнее считают обычным расходником.",
+   "watermark": "ПЛАНЕТА"
+  }
+ },
+ {
+  "scene": 82,
+  "view": "strike",
+  "dur": 12.3,
+  "anim": 3.0,
+  "tail_zoom": 0.045,
+  "watermark": "ПЛАНЕТА",
+  "channel": "ПЛАНЕТА",
+  "kwargs": {
+   "text": "Склада нет, просто кладовщик пока плохо искал",
+   "struck": "просто кладовщик пока плохо искал",
+   "watermark": "ПЛАНЕТА"
+  }
+ }
+]
