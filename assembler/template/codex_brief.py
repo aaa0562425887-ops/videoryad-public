@@ -774,10 +774,17 @@ def main():
         zam_src, zam_why = _zam_sheets()
         # листы замен в общий счёт аудита не идут: иначе одно и то же имя
         # `sheet_1.jpg` копируется в `thumbs/` дважды и затирает лист аудита
-        # и сама ПАПКА замен из счёта аудита выпадает: иначе её `sheet_1.jpg`
-        # занимал имя и аудитный лист с тем же именем терялся
-        sheets = _find("sheet_*.jpg",
-                       skip={os.path.dirname(f) or "." for f in zam_src})
+        # ПАПКА замен из счёта аудита выпадает (иначе её `sheet_1.jpg` занимал
+        # имя и аудитный лист с тем же именем терялся), а вот когда лист замен
+        # лежит В САМОЙ `thumbs/` под именем `sheet-zameny*.jpg`, выбрасывать
+        # всю папку нельзя — там же и аудитные листы. Поэтому папку отбрасываем
+        # только если «замены» слышно в ЕЁ имени, а сами файлы — всегда.
+        _zs = {os.path.abspath(f) for f in zam_src}
+        _skip = {d for d in (os.path.dirname(f) or "." for f in zam_src)
+                 if any(w in os.path.basename(os.path.abspath(d)).lower()
+                        for w in ("zamen", "замен"))}
+        sheets = [f for f in _find("sheet_*.jpg", skip=_skip)
+                  if os.path.abspath(f) not in _zs]
     if a.stage == "audit" and not sheets:
         sys.exit("листов нет — сначала contact_sheet.py (и pair_sheet.py)")
     if a.stage == "zamena" and not zam_src:

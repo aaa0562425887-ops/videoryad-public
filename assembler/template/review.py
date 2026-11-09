@@ -328,7 +328,115 @@ def _scene_hint(sid):
     return {}
 
 
+# ───────────────────────────────────────────────────────────────────────────
+# НА НАШЕМ ЭЛЕМЕНТЕ СЛОЁВ НЕ БЫВАЕТ — И ДАШБОРД НЕ ИСКЛЮЧЕНИЕ (09.11)
+#
+# Его прямое слово, дважды за полчаса, второй раз с «зашей в память и в
+# скиллы, зашей жёстким правилом»: «На наших элементах не должны быть ни
+# надписей, ни всплывашек… там уже всё есть, там полный цикл законченный
+# всего, там не надо ничего больше иллюстрировать».
+#
+# Гейты стояли у дашборда (`selfcheck`) и у полной сборки (`ship.sh`), но
+# МЕЖДУ ними лежала дыра: он сам голосовым поиском ставит кадр, попадает на
+# плитку с нашим элементом — и слой ложится УЖЕ ПОСЛЕ чистого `selfcheck`.
+# Дальше его ловит только `ship.sh`, и для него это выглядит так: «я нажал
+# кнопку, всё было чисто, а сборка не идёт». Кнопка обязана сказать «нельзя»
+# СРАЗУ.
+#
+# Текст отказа берётся из `cards_queue.отказ_слои` — одна формулировка во всех
+# трёх местах. Поле `fx` дашборд не пишет вовсе (только читает для бейджа),
+# поэтому прикрывать нужно ровно записи `overlays.json`.
+_КАРТОЧКИ_КЭШ = {"path": "", "mtime": -1.0, "views": {}}
+
+
+def _файл_сцен(scenes_path=""):
+    """Главный `*.scenes.json` папки: у него БОЛЬШЕ ВСЕГО сцен.
+
+    В папке ролика их бывает три-четыре (`overlays_fetch.scenes.json`,
+    обрезки вроде `ov33.scenes.json`), и брать первый по алфавиту нельзя —
+    именно так проверка однажды читала файл из одной сцены.
+    """
+    if scenes_path and os.path.isfile(scenes_path):
+        return scenes_path
+    лучший, n = "", -1
+    for f in glob.glob("*.scenes.json"):
+        if "overlays_fetch" in f:
+            continue
+        try:
+            d = json.load(open(f, encoding="utf-8"))
+        except (OSError, ValueError):
+            continue
+        сц = d.get("scenes", []) if isinstance(d, dict) else d
+        if len(сц) > n:
+            лучший, n = f, len(сц)
+    return лучший
+
+
+def карточки_ролика(scenes_path=""):
+    """{номер сцены: вид} для сцен с источником `card:*`, свежее по mtime.
+
+    Вкладка ставит карточки, пока дашборд уже поднят, поэтому список
+    перечитывается по времени правки файла, а не запоминается на запуск.
+    """
+    путь = _файл_сцен(scenes_path)
+    if not путь:
+        return {}
+    try:
+        mt = os.path.getmtime(путь)
+    except OSError:
+        return {}
+    if _КАРТОЧКИ_КЭШ["path"] == путь and _КАРТОЧКИ_КЭШ["mtime"] == mt:
+        return _КАРТОЧКИ_КЭШ["views"]
+    виды = {}
+    try:
+        d = json.load(open(путь, encoding="utf-8"))
+        сц = d.get("scenes", []) if isinstance(d, dict) else d
+        for s in сц:
+            src = str(s.get("source", ""))
+            if src.startswith("card:"):
+                виды[int(s.get("id", -1))] = src[5:].strip()
+    except (OSError, ValueError, TypeError):
+        return _КАРТОЧКИ_КЭШ["views"]
+    _КАРТОЧКИ_КЭШ.update({"path": путь, "mtime": mt, "views": виды})
+    return виды
+
+
+def отказ_на_карточке(sid, род="слой", scenes_path=""):
+    """Текст отказа, если сцена рисованная; иначе пустая строка.
+
+    Формулировка — из `template/cards_queue.py`, чтобы она была ОДНА в
+    `selfcheck`, в `ship.sh` и здесь, плюс строка «что делать» для дашборда.
+    """
+    виды = карточки_ролика(scenes_path)
+    try:
+        sid = int(sid)
+    except (TypeError, ValueError):
+        return ""
+    if sid not in виды:
+        return ""
+    вид = виды[sid] or "…"
+    текст = ""
+    try:
+        sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
+        import cards_queue as _cq
+        текст = _cq.отказ_слои([(sid, [род])])
+    except Exception:
+        текст = ("НА НАШИХ ЭЛЕМЕНТАХ СЛОЁВ НЕ БЫВАЕТ, КАРТОЧКА — ЗАКОНЧЕННЫЙ "
+                 "КАДР. Сцена %d." % sid)
+    return (текст + "\n   Сцена %d — наш элемент `card:%s`. Хочешь слой "
+            "именно здесь: поставь его на СОСЕДНЮЮ обычную сцену, либо "
+            "попроси вкладку сначала снять карточку с этой сцены."
+            % (sid, вид))
+
+
 def save_overlay(sid, patch, create=False):
+    # ПОСЛЕДНИЙ РУБЕЖ, А НЕ СООБЩЕНИЕ: понятную строку отдают роуты ниже,
+    # здесь только физически не пишем. Страхует любой путь, который я мог
+    # не прикрыть, и ничего не ломает — запись просто не появляется.
+    if отказ_на_карточке(sid, "всплывашка"):
+        print("  !! слой на рисованный кадр (сцена %s) НЕ записан: карточка — "
+              "законченный кадр" % sid, flush=True)
+        return load_overlays().get(str(sid), {}) or {}
     with _overlays_txn() as ov:
         is_new = str(sid) not in ov
         cur = ov.get(str(sid), {})
@@ -2631,6 +2739,7 @@ async function ovTextSave(id, approvedVal){{
   try{{
     const r=await fetch("overlay_text?id="+id,{{method:"POST",
       headers:{{"Content-Type":"application/json"}},body:JSON.stringify(body)}});
+    if(await _otkaz(r, m)) return;
     if(m) m.textContent = r.ok ? "сохранено ✓" : "ошибка";
     if(r.ok){{
       const mk=document.getElementById("txtmark"+id), mi=document.getElementById("txtmarkimg"+id);
@@ -2657,6 +2766,7 @@ async function ovPhotoPos(id,c){{
     const r = await fetch("overlay?id="+id, {{method:"POST",
       headers:{{"Content-Type":"application/json"}},
       body: JSON.stringify({{pos: H, anchor: V}})}});
+    if(await _otkaz(r, m)) return;
     if(m) m.textContent = r.ok ? "сохранено ✓" : "ошибка";
   }}catch(e){{ if(m) m.textContent = "ошибка"; }}
   setTimeout(()=>{{ if(m) m.textContent = ""; }}, 1800);
@@ -2727,12 +2837,28 @@ async function tkClear(id){{
     headers:{{"Content-Type":"application/json"}}, body: JSON.stringify({{clear:1}})}}); }}catch(e){{}}
   const w=document.getElementById("tkwrap"+id); if(w) w.remove();
 }}
+// ОТКАЗ С СЕРВЕРА — НА ЭКРАН ЦЕЛИКОМ, А НЕ «ошибка» (09.11). Сервер отвечает
+// 409 и телом {{ok:false, reason:"…"}}: ровно тот формат, которым уже отвечает
+// кнопка «выбрать вариант». Возвращает true, если это был отказ.
+async function _otkaz(r, el){{
+  if(r.ok) return false;
+  let j = null;
+  try{{ j = await r.json(); }}catch(e){{}}
+  const why = (j && (j.reason || j.warn)) || "";
+  if(why){{
+    if(el) el.textContent = "✗ нельзя: " + why.split("\n")[0];
+    alert(why);
+    return true;
+  }}
+  return false;
+}}
 async function ovPhoto(id, inp){{
   const f = inp.files[0]; if(!f) return;
   const fn = document.getElementById("ovfile"+id); fn.textContent = "… загрузка";
   try{{
     const r = await fetch("overlay_photo?id="+id, {{method:"POST",
       headers:{{"X-Filename": encodeURIComponent(f.name)}}, body: f}});
+    if(await _otkaz(r, fn)){{ inp.value = ""; return; }}
     fn.textContent = r.ok ? f.name : "✗ не вышло";
     if(r.ok){{
       const pv = document.getElementById("ovprev"+id);
@@ -3038,7 +3164,9 @@ async function ovFind(id){{
       fn.textContent = "✓ нашёл: " + q;
       const pv = document.getElementById("ovprev"+id);
       pv.src = j.photo + "?t=" + Date.now(); pv.hidden = false;
-    }} else {{ fn.textContent = "✗ не нашёл — переформулируй или загрузи файл"; }}
+    }} else if(!(await _otkaz(r, fn))){{
+      fn.textContent = "✗ не нашёл — переформулируй или загрузи файл";
+    }}
   }}catch(e){{ fn.textContent = "✗ ошибка поиска"; }}
 }}
 function ovEdit(id){{
@@ -3609,6 +3737,26 @@ def run_live(scenes_path, images_dir, port):
             self.end_headers()
             self.wfile.write(body)
 
+        def _otkaz(self, text, extra=None):
+            """ОТКАЗ, КОТОРЫЙ ВИДЕН ПОЛЬЗОВАТЕЛЮ, А НЕ «500» (09.11).
+
+            Формат тот же, что у кнопки «выбрать вариант» выше в этом файле:
+            JSON с полем `reason` — его дашборд уже умеет показывать. Код 409
+            («не положено»), а не 500: на экране появляется строка, а не
+            «ошибка».
+            """
+            тело = {"ok": False, "reason": text, "warn": text}
+            if extra:
+                тело.update(extra)
+            body = json.dumps(тело, ensure_ascii=False).encode()
+            self.send_response(409)
+            self.send_header("Content-Type", "application/json")
+            self.send_header("Access-Control-Allow-Origin", "*")
+            self.send_header("Content-Length", str(len(body)))
+            self.end_headers()
+            self.wfile.write(body)
+            print("  !! отказ дашборду: %s" % text.splitlines()[0], flush=True)
+
         def do_POST(self):
             _touch_dashboard()      # любой POST = пользователь работает руками
             base = self.path.split("?", 1)
@@ -3647,6 +3795,11 @@ def run_live(scenes_path, images_dir, port):
                         pass
                     return self._reply(200, json.dumps(
                         {"ok": True, "warn": _пред}, ensure_ascii=False).encode())
+                # НА РИСОВАННЫЙ КАДР СЛОЙ НЕ КЛАДЁМ — ОТКАЗ КНОПКЕ (09.11).
+                # Снятие (`clear` выше) разрешено всегда: убрать лишнее можно.
+                _нет = отказ_на_карточке(sid, "всплывашка", scenes_path)
+                if _нет:
+                    return self._otkaz(_нет)
                 n = int(self.headers.get("Content-Length", 0) or 0)
                 try:
                     spec = json.loads(self.rfile.read(n) or b"{}")
@@ -3720,6 +3873,12 @@ def run_live(scenes_path, images_dir, port):
                         else:
                             ovs.pop(str(sid), None)
                     return self._reply(200, json.dumps({"ok": True}).encode())
+                # НА РИСОВАННЫЙ КАДР НАДПИСЬ НЕ КЛАДЁМ — ОТКАЗ КНОПКЕ (09.11).
+                # Запрет касается и надписи из-под маски: обязательность
+                # N-текста его не отменяет, маска ставится на обычную сцену.
+                _нет = отказ_на_карточке(sid, "надпись", scenes_path)
+                if _нет:
+                    return self._otkaz(_нет)
                 words = " ".join(str(spec.get("words") or spec.get("text") or "").split()).strip()
                 if not words:
                     return self._reply(400, b"empty")
@@ -4164,6 +4323,13 @@ def run_live(scenes_path, images_dir, port):
                 return self._reply(200)
 
             if route == "overlay_photo":
+                # НА РИСОВАННЫЙ КАДР ВСПЛЫВАШКУ НЕ КЛАДЁМ (09.11): отказываем
+                # ДО чтения тела и до записи файла в `overlays/`, иначе на
+                # диске остался бы кадр без записи — ровно те «сироты»,
+                # которые потом ловит `ship.sh`.
+                _нет = отказ_на_карточке(sid, "всплывашка", scenes_path)
+                if _нет:
+                    return self._otkaz(_нет)
                 n = int(self.headers.get("Content-Length", 0) or 0)
                 data = self.rfile.read(n) if n else b""
                 fname = urllib.parse.unquote(self.headers.get("X-Filename", ""))
@@ -4181,6 +4347,15 @@ def run_live(scenes_path, images_dir, port):
                 return self._reply(200)
 
             if route == "overlay_search":
+                # НА РИСОВАННЫЙ КАДР ВСПЛЫВАШКУ НЕ КЛАДЁМ (09.11). Это ТОТ
+                # САМЫЙ путь, которым дыра и открывалась: он ищет кадр
+                # голосом, попадает на плитку нашего элемента — и фетч
+                # отработал бы впустую, а слой лёг бы после чистого
+                # `selfcheck`. Отказываем до запуска фетчера: заодно не
+                # тратим его минуту на кадр, который не нужен.
+                _нет = отказ_на_карточке(sid, "всплывашка", scenes_path)
+                if _нет:
+                    return self._otkaz(_нет, {"photo": None})
                 # user typed "find me X" for a pop-up -> run the real fetcher
                 # for one throw-away scene straight into overlays/.
                 n = int(self.headers.get("Content-Length", 0) or 0)
@@ -4321,6 +4496,15 @@ def run_live(scenes_path, images_dir, port):
                 target = str(spec.get("target", "scene"))
                 if not (sid and furl.startswith("http")):
                     return self._reply(400, b"no")
+                # ВАРИАНТ ВО ВСПЛЫВАШКУ НА РИСОВАННЫЙ КАДР — ОТКАЗ (09.11).
+                # Замена БАЗОВОГО кадра (`target != "overlay"`) тут не
+                # запрещена: если он решил, что на этой сцене нужно фото, а
+                # не наш элемент, он сначала снимает карточку, и это уже
+                # обычная сцена. Запрет ровно про СЛОЙ поверх карточки.
+                if target == "overlay":
+                    _нет = отказ_на_карточке(sid, "всплывашка", scenes_path)
+                    if _нет:
+                        return self._otkaz(_нет)
                 out_dir = "overlays" if target == "overlay" else images_dir
                 os.makedirs(out_dir, exist_ok=True)
                 ok = False
