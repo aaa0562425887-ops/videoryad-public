@@ -1,0 +1,367 @@
+[
+ {
+  "scene": 2,
+  "view": "split",
+  "dur": 13.52,
+  "anim": 2.6,
+  "tail_zoom": 0.045,
+  "watermark": "5 МИНУТ",
+  "channel": "5 МИНУТ",
+  "kwargs": {
+   "text": "После соглашения Украина будет немного другой формы",
+   "author": "Дональд Трамп",
+   "role": "президент США",
+   "source": "ответ прессе",
+   "photo": "images/scene_002.jpg",
+   "watermark": "5 МИНУТ"
+  }
+ },
+ {
+  "scene": 8,
+  "view": "poster.poster",
+  "dur": 10.4,
+  "anim": 10.4,
+  "tail_zoom": 0.0,
+  "watermark": "5 МИНУТ",
+  "channel": "5 МИНУТ",
+  "kwargs": {
+   "kick": "ИЗ ЧЕГО СОСТОИТ ВОПРОС",
+   "title": "ГРАНИЦЫ — ТОЛЬКО ОДИН КУСОК",
+   "hero_photo": "cards/photo/kadr_202.jpg",
+   "facts": [
+    {
+     "label": "Границы",
+     "value": "только часть"
+    },
+    {
+     "label": "Армия",
+     "value": "отдельный пункт"
+    },
+    {
+     "label": "НАТО",
+     "value": "главный спор"
+    },
+    {
+     "label": "Вооружения",
+     "value": "что можно размещать"
+    }
+   ],
+   "watermark": "5 МИНУТ"
+  },
+  "mode": "frame"
+ },
+ {
+  "scene": 13,
+  "view": "cinematic.dossier",
+  "dur": 10.65,
+  "anim": 10.65,
+  "tail_zoom": 0.045,
+  "watermark": "5 МИНУТ",
+  "channel": "5 МИНУТ",
+  "kwargs": {
+   "case": "СЕРГЕЙ РЯБКОВ",
+   "rows": [
+    "Заместитель министра иностранных дел России",
+    "Отвечает за отношения с Соединёнными Штатами",
+    "Стратегическая стабильность и контроль вооружений"
+   ],
+   "kick": "кто сел за стол",
+   "title": "кто сел за стол",
+   "photo": "images/scene_013.jpg",
+   "stamp": "ПЕРЕГОВОРЫ",
+   "watermark": "5 МИНУТ"
+  }
+ },
+ {
+  "scene": 18,
+  "view": "cinematic.depth_of_field",
+  "dur": 11.44,
+  "anim": 11.44,
+  "tail_zoom": 0.0,
+  "watermark": "5 МИНУТ",
+  "channel": "5 МИНУТ",
+  "kwargs": {
+   "photo": "images/scene_018.jpg",
+   "kick": "РОТАЦИЯ? СЛИШКОМ ТЕМАТИЧЕСКАЯ",
+   "title": "ЗАЧЕМ ЗДЕСЬ ЭТОТ ЧЕЛОВЕК",
+   "watermark": "5 МИНУТ"
+  },
+  "mode": "frame"
+ },
+ {
+  "scene": 23,
+  "view": "vyrezka.gazeta",
+  "dur": 10.57,
+  "anim": 2.6,
+  "tail_zoom": 0.045,
+  "watermark": "5 МИНУТ",
+  "channel": "5 МИНУТ",
+  "kwargs": {
+   "photo": "images/scene_023.jpg",
+   "author": "СЕРГЕЙ РЯБКОВ",
+   "role": "заместитель министра иностранных дел России",
+   "kick": "возвращаемся к нему",
+   "title": "Женева, 2021",
+   "watermark": "5 МИНУТ"
+  }
+ },
+ {
+  "scene": 29,
+  "view": "film.film_strip",
+  "dur": 12.56,
+  "anim": 12.56,
+  "tail_zoom": 0.045,
+  "watermark": "5 МИНУТ",
+  "channel": "5 МИНУТ",
+  "kwargs": {
+   "shots": [
+    "cards/photo/kadr_206.jpg",
+    "cards/photo/kadr_207.jpg",
+    "cards/photo/kadr_208.jpg"
+   ],
+   "kick": "СОЮЗ — ПОЖАЛУЙСТА",
+   "title": "А ВОЕННАЯ НАЧИНКА — ОТДЕЛЬНО",
+   "watermark": "5 МИНУТ"
+  }
+ },
+ {
+  "scene": 35,
+  "view": "cinematic.evidence_wall",
+  "dur": 11.44,
+  "anim": 11.44,
+  "tail_zoom": 0.0,
+  "watermark": "5 МИНУТ",
+  "channel": "5 МИНУТ",
+  "kwargs": {
+   "shots": [
+    [
+     "cards/photo/kadr_209.jpg",
+     240,
+     380,
+     -4,
+     "Кушнер предлагает вернуться"
+    ],
+    [
+     "cards/photo/kadr_210.jpg",
+     800,
+     380,
+     3,
+     "Совет Россия — НАТО"
+    ],
+    [
+     "cards/photo/kadr_211.jpg",
+     1360,
+     380,
+     -2,
+     "Париж, 1997"
+    ]
+   ],
+   "kick": "ЧТО С ЧЕМ СВЯЗАНО",
+   "title": "МЕХАНИЗМ ДОСТАЮТ ИЗ ПРОШЛОГО",
+   "watermark": "5 МИНУТ"
+  },
+  "mode": "frame"
+ },
+ {
+  "scene": 41,
+  "view": "photo",
+  "dur": 12.32,
+  "anim": 12.32,
+  "tail_zoom": 0.0,
+  "watermark": "5 МИНУТ",
+  "channel": "5 МИНУТ",
+  "kwargs": {
+   "kick": "POLITICO",
+   "watermark": "5 МИНУТ",
+   "photo": "images/scene_041.jpg",
+   "title": "В ЕВРОПЕЙСКИХ СТОЛИЦАХ — СКЕПСИС",
+   "lines": [
+    "Предложение США вызвало недоверие",
+    "Каллас: архитектура уже есть"
+   ]
+  }
+ },
+ {
+  "scene": 47,
+  "view": "vyrezka.figura",
+  "dur": 10.72,
+  "anim": 2.6,
+  "tail_zoom": 0.045,
+  "watermark": "5 МИНУТ",
+  "channel": "5 МИНУТ",
+  "kwargs": {
+   "photo": "images/scene_047.jpg",
+   "author": "ДЖОРДЖА МЕЛОНИ",
+   "role": "премьер-министр Италии",
+   "kick": "кто говорит за Европу",
+   "watermark": "5 МИНУТ"
+  }
+ },
+ {
+  "scene": 53,
+  "view": "pull",
+  "dur": 10.64,
+  "anim": 2.6,
+  "tail_zoom": 0.05,
+  "watermark": "5 МИНУТ",
+  "channel": "5 МИНУТ",
+  "kwargs": {
+   "text": "Присутствовать за столом и определять рамку разговора — это не одно и то же",
+   "kick": "Киев · ноябрь 2026",
+   "watermark": "5 МИНУТ"
+  }
+ },
+ {
+  "scene": 58,
+  "view": "charts.cartogram",
+  "dur": 11.07,
+  "anim": 11.07,
+  "tail_zoom": 0.045,
+  "watermark": "5 МИНУТ",
+  "channel": "5 МИНУТ",
+  "kwargs": {
+   "data": [
+    "Россия",
+    "Украина",
+    "Польша",
+    "Румыния",
+    "Литва"
+   ],
+   "kick": "Европа · 2026",
+   "title": "О ЧЁМ СПОР НА САМОМ ДЕЛЕ",
+   "watermark": "5 МИНУТ"
+  }
+ },
+ {
+  "scene": 63,
+  "view": "slider",
+  "dur": 12.8,
+  "anim": 12.8,
+  "tail_zoom": 0.0,
+  "watermark": "5 МИНУТ",
+  "channel": "5 МИНУТ",
+  "kwargs": {},
+  "mode": "cli",
+  "script": "build_chart_slider.py",
+  "cfg": {
+   "title": "СПОР ВОЗВРАЩАЕТСЯ НАЗАД",
+   "min": 1997.0,
+   "max": 2026.0,
+   "low": 2021.0,
+   "high": 2026.0,
+   "marker_value": 2026.0,
+   "marker_display": "2026",
+   "seconds": 12.8,
+   "range_label": "от Основополагающего акта до нынешних переговоров",
+   "caption": "круг замкнулся",
+   "source": ""
+  }
+ },
+ {
+  "scene": 68,
+  "view": "bars",
+  "dur": 11.52,
+  "anim": 11.52,
+  "tail_zoom": 0.0,
+  "watermark": "5 МИНУТ",
+  "channel": "5 МИНУТ",
+  "kwargs": {},
+  "mode": "cli",
+  "script": "build_chart_bars.py",
+  "cfg": {
+   "title": "ВЕС РОССИЙСКОЙ ДЕЛЕГАЦИИ",
+   "caption": "",
+   "seconds": 11.52,
+   "bars": [
+    {
+     "label": "БЫЛО",
+     "value": 0.4,
+     "color": "EABD23"
+    },
+    {
+     "label": "СТАЛО",
+     "value": 0.95,
+     "color": "B92526"
+    }
+   ]
+  }
+ },
+ {
+  "scene": 73,
+  "view": "bullets",
+  "dur": 12.2,
+  "anim": 12.2,
+  "tail_zoom": 0.06,
+  "watermark": "5 МИНУТ",
+  "channel": "5 МИНУТ",
+  "kwargs": {
+   "kick": "ЧТО СЛОЖИЛОСЬ ВМЕСТЕ",
+   "watermark": "5 МИНУТ",
+   "items": [
+    "США предлагают новую конструкцию безопасности",
+    "Кушнер вспоминает Совет Россия — НАТО",
+    "Европейцы нервничают",
+    "Франция просит место за столом",
+    "Мелони: Евросоюз разобщён"
+   ]
+  }
+ },
+ {
+  "scene": 78,
+  "view": "forces",
+  "dur": 12.48,
+  "anim": 12.48,
+  "tail_zoom": 0.06,
+  "watermark": "5 МИНУТ",
+  "channel": "5 МИНУТ",
+  "kwargs": {
+   "kick": "РАССТАНОВКА СИЛ",
+   "watermark": "5 МИНУТ",
+   "title": "КТО ЧЕГО ХОЧЕТ",
+   "rows": [
+    {
+     "who": "МОСКВА",
+     "want": "вернуть конфигурацию 1997 года"
+    },
+    {
+     "who": "ВАШИНГТОН",
+     "want": "закрыть войну и переписать правила"
+    },
+    {
+     "who": "ЕВРОПА",
+     "want": "не остаться за дверью"
+    }
+   ]
+  }
+ },
+ {
+  "scene": 83,
+  "view": "film.film_single",
+  "dur": 13.52,
+  "anim": 2.6,
+  "tail_zoom": 0.045,
+  "watermark": "5 МИНУТ",
+  "channel": "5 МИНУТ",
+  "kwargs": {
+   "photo": "images/scene_083.jpg",
+   "kick": "1997",
+   "title": "ТОЧКА, К КОТОРОЙ ВОЗВРАЩАЮТСЯ",
+   "watermark": "5 МИНУТ"
+  }
+ },
+ {
+  "scene": 88,
+  "view": "marker_serif",
+  "dur": 11.15,
+  "anim": 2.6,
+  "tail_zoom": 0.045,
+  "watermark": "5 МИНУТ",
+  "channel": "5 МИНУТ",
+  "kwargs": {
+   "text": "Важнее не громкие слова о мире, а кто приезжает в Абу-Даби и какие механизмы вытаскивают из прошлого",
+   "accent": "кто приезжает в Абу-Даби",
+   "kick": "Абу-Даби · ноябрь 2026",
+   "watermark": "5 МИНУТ"
+  }
+ }
+]
