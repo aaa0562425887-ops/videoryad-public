@@ -1,0 +1,429 @@
+{
+ "anchor": "top",
+ "9": {
+  "photo": "overlays/scene_009.jpg",
+  "sound": "pop",
+  "at": 2.0,
+  "shape": "rect",
+  "size": "m",
+  "scale": 1.0
+ },
+ "12": {
+  "photo": "overlays/scene_012.jpg",
+  "sound": "whoosh",
+  "at": 2.2,
+  "shape": "rect",
+  "size": "m",
+  "scale": 1.0
+ },
+ "20": {
+  "photo": "overlays/scene_020.jpg",
+  "sound": "zatvor",
+  "at": 2.4,
+  "shape": "rect",
+  "size": "m",
+  "scale": 1.0
+ },
+ "21": {
+  "photo": "overlays/scene_021.jpg",
+  "sound": "ding",
+  "at": 2.6,
+  "shape": "rect",
+  "size": "m",
+  "scale": 1.0
+ },
+ "22": {
+  "photo": "overlays/scene_022.jpg",
+  "sound": "pop",
+  "at": 2.8,
+  "shape": "rect",
+  "size": "m",
+  "scale": 1.0
+ },
+ "28": {
+  "photo": "overlays/scene_028.jpg",
+  "sound": "whoosh",
+  "at": 2.0,
+  "shape": "rect",
+  "size": "m",
+  "scale": 1.0
+ },
+ "33": {
+  "photo": "overlays/scene_033.jpg",
+  "sound": "zatvor",
+  "at": 2.2,
+  "shape": "rect",
+  "size": "m",
+  "scale": 1.0
+ },
+ "38": {
+  "photo": "overlays/scene_038.jpg",
+  "sound": "ding",
+  "at": 2.4,
+  "shape": "rect",
+  "size": "m",
+  "scale": 1.0
+ },
+ "48": {
+  "photo": "overlays/scene_048.jpg",
+  "sound": "pop",
+  "at": 2.6,
+  "shape": "rect",
+  "size": "m",
+  "scale": 1.0
+ },
+ "56": {
+  "photo": "overlays/scene_056.jpg",
+  "sound": "whoosh",
+  "at": 2.8,
+  "shape": "rect",
+  "size": "m",
+  "scale": 1.0
+ },
+ "59": {
+  "photo": "overlays/scene_059.jpg",
+  "sound": "zatvor",
+  "at": 2.0,
+  "shape": "rect",
+  "size": "m",
+  "scale": 1.0
+ },
+ "69": {
+  "photo": "overlays/scene_069.jpg",
+  "sound": "ding",
+  "at": 2.2,
+  "shape": "rect",
+  "size": "m",
+  "scale": 1.0
+ },
+ "72": {
+  "photo": "overlays/scene_072.jpg",
+  "sound": "pop",
+  "at": 2.4,
+  "shape": "rect",
+  "size": "m",
+  "scale": 1.0
+ },
+ "81": {
+  "photo": "overlays/scene_081.jpg",
+  "sound": "whoosh",
+  "at": 2.6,
+  "shape": "rect",
+  "size": "m",
+  "scale": 1.0
+ },
+ "82": {
+  "photo": "overlays/scene_082.jpg",
+  "sound": "zatvor",
+  "at": 2.8,
+  "shape": "rect",
+  "size": "m",
+  "scale": 1.0
+ },
+ "1": {
+  "text": {
+   "words": "ФОРМА — СЛОВО УДОБНОЕ",
+   "color": "yellow",
+   "pos": "tc",
+   "at": 2.0
+  },
+  "sound": "pop"
+ },
+ "3": {
+  "text": {
+   "words": "ВОПРОС БЫЛ ПРОСТОЙ",
+   "color": "white",
+   "pos": "tl",
+   "at": 2.15
+  },
+  "sound": "whoosh"
+ },
+ "6": {
+  "text": {
+   "words": "ВСЕ ПОДУМАЛИ ПРО КАРТУ",
+   "color": "red",
+   "pos": "mc",
+   "at": 2.3
+  },
+  "sound": "zatvor"
+ },
+ "7": {
+  "text": {
+   "words": "ГРАНИЦЫ — ЭТО НЕ ВСЁ",
+   "color": "orange",
+   "pos": "tr",
+   "at": 2.45
+  },
+  "sound": "ding"
+ },
+ "10": {
+  "text": {
+   "words": "МОСКВА ГОВОРИЛА НЕ О ЗЕМЛЕ",
+   "color": "green",
+   "pos": "ml",
+   "at": 2.6
+  },
+  "sound": "pop"
+ },
+ "14": {
+  "text": {
+   "words": "СТРАТЕГИЧЕСКАЯ СТАБИЛЬНОСТЬ",
+   "color": "yellow",
+   "pos": "mr",
+   "at": 2.75
+  },
+  "sound": "whoosh"
+ },
+ "15": {
+  "text": {
+   "words": "ЕГО УЧАСТОК — РАКЕТЫ",
+   "color": "white",
+   "pos": "tc",
+   "at": 2.0
+  },
+  "sound": "zatvor"
+ },
+ "16": {
+  "text": {
+   "words": "УЛЬТИМАТУМ РЯБКОВА",
+   "color": "red",
+   "pos": "tl",
+   "at": 2.15
+  },
+  "sound": "ding"
+ },
+ "17": {
+  "text": {
+   "words": "ПЯТЬ ЛЕТ СПУСТЯ",
+   "color": "orange",
+   "pos": "mc",
+   "at": 2.3
+  },
+  "sound": "pop"
+ },
+ "24": {
+  "text": {
+   "words": "27 МАЯ 1997 ГОДА",
+   "color": "green",
+   "pos": "tr",
+   "at": 2.45
+  },
+  "sound": "whoosh"
+ },
+ "25": {
+  "text": {
+   "words": "ОСНОВОПОЛАГАЮЩИЙ АКТ",
+   "color": "yellow",
+   "pos": "ml",
+   "at": 2.6
+  },
+  "sound": "zatvor"
+ },
+ "26": {
+  "text": {
+   "words": "БОЛЬШЕ НЕ ПРОТИВНИКИ",
+   "color": "yellow",
+   "pos": "mr",
+   "at": 2.75
+  },
+  "sound": "ding"
+ },
+ "27": {
+  "text": {
+   "words": "БЕЗ ЯДЕРНОГО ОРУЖИЯ",
+   "color": "white",
+   "pos": "tc",
+   "at": 2.0
+  },
+  "sound": "pop"
+ },
+ "30": {
+  "text": {
+   "words": "СОЮЗ — ДА, НАЧИНКА — НЕТ",
+   "color": "red",
+   "pos": "tl",
+   "at": 2.15
+  },
+  "sound": "whoosh"
+ },
+ "31": {
+  "text": {
+   "words": "КОНФИГУРАЦИЯ 97-ГО",
+   "color": "orange",
+   "pos": "mc",
+   "at": 2.3
+  },
+  "sound": "zatvor"
+ },
+ "34": {
+  "text": {
+   "words": "ИЗ ВАШИНГТОНА ИДЁТ ИДЕЯ",
+   "color": "green",
+   "pos": "tr",
+   "at": 2.45
+  },
+  "sound": "ding"
+ },
+ "37": {
+  "text": {
+   "words": "ТОГДА СКАЗАЛИ НЕТ",
+   "color": "yellow",
+   "pos": "ml",
+   "at": 2.6
+  },
+  "sound": "pop"
+ },
+ "40": {
+  "text": {
+   "words": "СОВЕТ РОССИЯ — НАТО",
+   "color": "yellow",
+   "pos": "mr",
+   "at": 2.75
+  },
+  "sound": "whoosh"
+ },
+ "42": {
+  "text": {
+   "words": "ЕВРОПА НАПРЯГЛАСЬ",
+   "color": "white",
+   "pos": "tc",
+   "at": 2.0
+  },
+  "sound": "zatvor"
+ },
+ "45": {
+  "text": {
+   "words": "ФРАНЦИЯ ПРОСИТСЯ ЗА СТОЛ",
+   "color": "red",
+   "pos": "tl",
+   "at": 2.15
+  },
+  "sound": "ding"
+ },
+ "49": {
+  "text": {
+   "words": "ЕДИНСТВА НЕТ",
+   "color": "orange",
+   "pos": "mc",
+   "at": 2.3
+  },
+  "sound": "pop"
+ },
+ "50": {
+  "text": {
+   "words": "КИЕВ БОИТСЯ НОВОЙ ЯЛТЫ",
+   "color": "green",
+   "pos": "tr",
+   "at": 2.45
+  },
+  "sound": "whoosh"
+ },
+ "52": {
+  "text": {
+   "words": "БОЛЬШИЕ РЕШАЮТ ЗА ОСТАЛЬНЫХ",
+   "color": "yellow",
+   "pos": "ml",
+   "at": 2.6
+  },
+  "sound": "zatvor"
+ },
+ "54": {
+  "text": {
+   "words": "СИДЕТЬ — НЕ ЗНАЧИТ РЕШАТЬ",
+   "color": "yellow",
+   "pos": "mr",
+   "at": 2.75
+  },
+  "sound": "ding"
+ },
+ "57": {
+  "text": {
+   "words": "ЭТО ДРУГОЙ ЭТАЖ",
+   "color": "white",
+   "pos": "tc",
+   "at": 2.0
+  },
+  "sound": "pop"
+ },
+ "60": {
+  "text": {
+   "words": "ДРУГОЙ ВОЕННО И ПОЛИТИЧЕСКИ",
+   "color": "red",
+   "pos": "tl",
+   "at": 2.15
+  },
+  "sound": "whoosh"
+ },
+ "62": {
+  "text": {
+   "words": "ГДЕ ТОГДА РЕШЕНИЕ?",
+   "color": "orange",
+   "pos": "mc",
+   "at": 2.3
+  },
+  "sound": "zatvor"
+ },
+ "64": {
+  "text": {
+   "words": "МАЙАМИ — ЭТАЖ ВЫШЕ",
+   "color": "green",
+   "pos": "tr",
+   "at": 2.45
+  },
+  "sound": "ding"
+ },
+ "66": {
+  "text": {
+   "words": "ВАЖНО НЕ РУКОПОЖАТИЕ",
+   "color": "yellow",
+   "pos": "ml",
+   "at": 2.6
+  },
+  "sound": "pop"
+ },
+ "75": {
+  "text": {
+   "words": "ЭТО УЖЕ НЕ ТОЛЬКО ФРОНТ",
+   "color": "yellow",
+   "pos": "mr",
+   "at": 2.75
+  },
+  "sound": "whoosh"
+ },
+ "76": {
+  "text": {
+   "words": "КРУГ ЗАМЫКАЕТСЯ",
+   "color": "white",
+   "pos": "tc",
+   "at": 2.0
+  },
+  "sound": "zatvor"
+ },
+ "84": {
+  "text": {
+   "words": "1997-Й — НЕ ПРОСТО ДАТА",
+   "color": "red",
+   "pos": "tl",
+   "at": 2.15
+  },
+  "sound": "ding"
+ },
+ "87": {
+  "text": {
+   "words": "СЛОВО «МИР» ЛЮБЯТ",
+   "color": "orange",
+   "pos": "mc",
+   "at": 2.3
+  },
+  "sound": "pop"
+ },
+ "90": {
+  "text": {
+   "words": "ГРАНИЦЫ ИЛИ КОНСТРУКЦИЯ?",
+   "color": "green",
+   "pos": "tr",
+   "at": 2.45
+  },
+  "sound": "whoosh"
+ }
+}
