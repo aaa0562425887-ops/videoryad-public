@@ -1,0 +1,348 @@
+[
+ {
+  "scene": 2,
+  "view": "charts.map_dist",
+  "dur": 14.5,
+  "anim": 2.6,
+  "tail_zoom": 0.045,
+  "watermark": "ПЛАНЕТА",
+  "channel": "ПЛАНЕТА",
+  "kwargs": {
+   "points": [
+    {
+     "label": "Москва",
+     "lat": 55.751,
+     "lon": 37.618,
+     "accent": false
+    },
+    {
+     "label": "Вашингтон",
+     "lat": 38.907,
+     "lon": -77.036,
+     "accent": true
+    }
+   ],
+   "watermark": "ПЛАНЕТА"
+  }
+ },
+ {
+  "scene": 6,
+  "view": "vyrezka.gazeta",
+  "dur": 14.9,
+  "anim": 2.6,
+  "tail_zoom": 0.045,
+  "watermark": "ПЛАНЕТА",
+  "channel": "ПЛАНЕТА",
+  "kwargs": {
+   "photo": "cards/photo/card_006.jpg",
+   "author": "",
+   "watermark": "ПЛАНЕТА"
+  }
+ },
+ {
+  "scene": 14,
+  "view": "film.film_strip",
+  "dur": 12.0,
+  "anim": 12.0,
+  "tail_zoom": 0.045,
+  "watermark": "ПЛАНЕТА",
+  "channel": "ПЛАНЕТА",
+  "kwargs": {
+   "shots": [
+    "cards/photo/pomosh_film1.jpg",
+    "cards/photo/pomosh_film2.jpg",
+    "cards/photo/eurosovet_film3.jpg"
+   ],
+   "watermark": "ПЛАНЕТА"
+  }
+ },
+ {
+  "scene": 20,
+  "view": "pull",
+  "dur": 13.9,
+  "anim": 2.6,
+  "tail_zoom": 0.05,
+  "watermark": "ПЛАНЕТА",
+  "channel": "ПЛАНЕТА",
+  "kwargs": {
+   "text": "Гражданам предлагают поставить на кон дом, работу и жизнь, а взамен выдают слово «продолжать».",
+   "watermark": "ПЛАНЕТА"
+  }
+ },
+ {
+  "scene": 26,
+  "view": "photo",
+  "dur": 13.4,
+  "anim": 13.4,
+  "tail_zoom": 0.0,
+  "watermark": "ПЛАНЕТА",
+  "channel": "ПЛАНЕТА",
+  "kwargs": {
+   "watermark": "ПЛАНЕТА",
+   "photo": "cards/photo/card_026.jpg",
+   "title": "Порядок приоритетов",
+   "lines": [
+    "сначала новые обязательства",
+    "затем расходы на оборону",
+    "потом промышленность",
+    "социальные статьи — что останется"
+   ]
+  }
+ },
+ {
+  "scene": 29,
+  "view": "charts.pie",
+  "dur": 11.9,
+  "anim": 11.9,
+  "tail_zoom": 0.045,
+  "watermark": "ПЛАНЕТА",
+  "channel": "ПЛАНЕТА",
+  "kwargs": {
+   "segments": [
+    {
+     "label": "уже накоплено обязательств",
+     "value": 77.0
+    },
+    {
+     "label": "новые кредиты",
+     "value": 19.0
+    },
+    {
+     "label": "доход от активов",
+     "value": 4.0
+    }
+   ],
+   "title": "Из чего складываются 200 млрд €",
+   "source": "Welt am Sonntag",
+   "watermark": "ПЛАНЕТА"
+  }
+ },
+ {
+  "scene": 32,
+  "view": "bars",
+  "dur": 13.3,
+  "anim": 13.3,
+  "tail_zoom": 0.0,
+  "watermark": "ПЛАНЕТА",
+  "channel": "ПЛАНЕТА",
+  "kwargs": {},
+  "mode": "cli",
+  "script": "build_chart_bars.py",
+  "cfg": {
+   "title": "Счёт по помощи Украине",
+   "caption": "семь миллиардов рядом с двумястами",
+   "seconds": 13.3,
+   "bars": [
+    {
+     "label": "ОБЩИЕ ОБЯЗАТЕЛЬСТВА, 200 МЛРД €",
+     "value": 1.0,
+     "color": "4A90E2"
+    },
+    {
+     "label": "НОВЫЕ КРЕДИТЫ, 40 МЛРД €",
+     "value": 0.2,
+     "color": "48BB78"
+    },
+    {
+     "label": "НЕ ХВАТАЕТ НАТО, 7 МЛРД €",
+     "value": 0.035,
+     "color": "84848A"
+    }
+   ]
+  }
+ },
+ {
+  "scene": 37,
+  "view": "marker_serif",
+  "dur": 12.1,
+  "anim": 2.6,
+  "tail_zoom": 0.045,
+  "watermark": "ПЛАНЕТА",
+  "channel": "ПЛАНЕТА",
+  "kwargs": {
+   "text": "Когда именно плательщику скажут, что задача решена?",
+   "watermark": "ПЛАНЕТА"
+  }
+ },
+ {
+  "scene": 41,
+  "view": "split",
+  "dur": 11.1,
+  "anim": 2.6,
+  "tail_zoom": 0.045,
+  "watermark": "ПЛАНЕТА",
+  "channel": "ПЛАНЕТА",
+  "kwargs": {
+   "text": "Политика требует разговора с людьми, чьи взгляды противоположны.",
+   "author": "Фридрих Мерц",
+   "role": "федеральный канцлер Германии",
+   "photo": "cards/photo/card_041.jpg",
+   "watermark": "ПЛАНЕТА"
+  }
+ },
+ {
+  "scene": 45,
+  "view": "slider",
+  "dur": 13.6,
+  "anim": 13.6,
+  "tail_zoom": 0.0,
+  "watermark": "ПЛАНЕТА",
+  "channel": "ПЛАНЕТА",
+  "kwargs": {},
+  "mode": "cli",
+  "script": "build_chart_slider.py",
+  "cfg": {
+   "title": "АдГ в общенациональных опросах",
+   "min": 0.0,
+   "max": 35.0,
+   "low": 27.0,
+   "high": 30.0,
+   "marker_value": 29.0,
+   "marker_display": "29",
+   "seconds": 13.6,
+   "range_label": "от 27 до 30 процентов",
+   "caption": "первое место",
+   "source": "Le Monde"
+  }
+ },
+ {
+  "scene": 49,
+  "view": "cinematic.evidence_wall",
+  "dur": 12.0,
+  "anim": 12.0,
+  "tail_zoom": 0.0,
+  "watermark": "ПЛАНЕТА",
+  "channel": "ПЛАНЕТА",
+  "kwargs": {
+   "shots": [
+    [
+     "cards/photo/merz_cdu_wall.jpg",
+     240,
+     380,
+     -4,
+     "центр: финансировать и давить"
+    ],
+    [
+     "cards/photo/adg_wall.jpg",
+     800,
+     380,
+     3,
+     "АдГ: снять санкции, вернуть связи"
+    ],
+    [
+     "cards/photo/byulleten_wall.jpg",
+     1360,
+     380,
+     -2,
+     "избиратель между ними"
+    ]
+   ],
+   "title": "Два курса в одной стране",
+   "watermark": "ПЛАНЕТА"
+  },
+  "mode": "frame"
+ },
+ {
+  "scene": 53,
+  "view": "cinematic.depth_of_field",
+  "dur": 10.8,
+  "anim": 10.8,
+  "tail_zoom": 0.0,
+  "watermark": "ПЛАНЕТА",
+  "channel": "ПЛАНЕТА",
+  "kwargs": {
+   "photo": "cards/photo/card_053.jpg",
+   "watermark": "ПЛАНЕТА"
+  },
+  "mode": "frame"
+ },
+ {
+  "scene": 58,
+  "view": "film.film_single",
+  "dur": 10.2,
+  "anim": 2.6,
+  "tail_zoom": 0.045,
+  "watermark": "ПЛАНЕТА",
+  "channel": "ПЛАНЕТА",
+  "kwargs": {
+   "photo": "cards/photo/card_058.jpg",
+   "watermark": "ПЛАНЕТА"
+  }
+ },
+ {
+  "scene": 62,
+  "view": "charts.cartogram",
+  "dur": 12.8,
+  "anim": 12.8,
+  "tail_zoom": 0.045,
+  "watermark": "ПЛАНЕТА",
+  "channel": "ПЛАНЕТА",
+  "kwargs": {
+   "data": [
+    "Россия",
+    "Украина"
+   ],
+   "watermark": "ПЛАНЕТА"
+  }
+ },
+ {
+  "scene": 66,
+  "view": "poster.poster",
+  "dur": 13.4,
+  "anim": 13.4,
+  "tail_zoom": 0.0,
+  "watermark": "ПЛАНЕТА",
+  "channel": "ПЛАНЕТА",
+  "kwargs": {
+   "title": "Занять Европа ещё способна",
+   "subtitle": "что технически реально",
+   "hero_photo": "cards/photo/fdl_poster.jpg",
+   "bottom": "Деньги находятся. Цель — нет.",
+   "features": [
+    {
+     "text": "новый пакет санкций"
+    },
+    {
+     "text": "заявление о единстве"
+    },
+    {
+     "text": "достижимая цель — нет"
+    }
+   ],
+   "facts": [
+    {
+     "label": "Новые кредиты",
+     "value": "40 млрд €"
+    },
+    {
+     "label": "Обязательства",
+     "value": "свыше 200 млрд €"
+    },
+    {
+     "label": "Не собрано в НАТО",
+     "value": "7 млрд €"
+    },
+    {
+     "label": "Доход от активов",
+     "value": "около 8 млрд €"
+    }
+   ],
+   "watermark": "ПЛАНЕТА"
+  },
+  "mode": "frame"
+ },
+ {
+  "scene": 70,
+  "view": "vyrezka.figura",
+  "dur": 11.1,
+  "anim": 2.6,
+  "tail_zoom": 0.045,
+  "watermark": "ПЛАНЕТА",
+  "channel": "ПЛАНЕТА",
+  "kwargs": {
+   "photo": "cards/photo/card_070.jpg",
+   "author": "",
+   "watermark": "ПЛАНЕТА"
+  }
+ }
+]
