@@ -2846,7 +2846,9 @@ async function _otkaz(r, el){{
   try{{ j = await r.json(); }}catch(e){{}}
   const why = (j && (j.reason || j.warn)) || "";
   if(why){{
-    if(el) el.textContent = "✗ нельзя: " + why.split("\n")[0];
+    // перевод строки берём кодом: весь этот скрипт лежит в python-f-строке,
+    // и обратный слэш в ней съедается ещё до браузера (поймано сразу, 09.11)
+    if(el) el.textContent = "✗ нельзя: " + why.split(String.fromCharCode(10))[0];
     alert(why);
     return true;
   }}
