@@ -222,7 +222,36 @@ function cardFold(item){
   if(b){ b.textContent = hide ? 'развернуть варианты'
                               : 'свернуть — с этим закончил'; }
   sost(item, {'свёрнута': hide});
+  foldRemember(v, hide);
 }
+// ПАМЯТЬ БРАУЗЕРА НА ВИД КАРТОЧКИ (10.11). Состояние на диске ключуется
+// каналом, темой И ДНЁМ сборки — стоит дню смениться, и прежний вид
+// теряется, карточки приезжают развёрнутыми. Браузерная память дня не
+// знает, поэтому держит его выбор через любые пересборки.
+function foldRemember(v, hide){
+  try{
+    var k = v && v.getAttribute('data-key'); if(!k){ return; }
+    var m = JSON.parse(localStorage.getItem('upak_fold') || '{}');
+    m[k] = !!hide;
+    localStorage.setItem('upak_fold', JSON.stringify(m));
+  }catch(e){}
+}
+function foldRestore(){
+  var m;
+  try{ m = JSON.parse(localStorage.getItem('upak_fold') || '{}'); }
+  catch(e){ return; }
+  var all = document.querySelectorAll('[id^="vars-"]');
+  for(var i=0;i<all.length;i++){
+    var v = all[i], k = v.getAttribute('data-key');
+    if(!k || !(k in m)){ continue; }
+    var hide = !!m[k];
+    v.style.display = hide ? 'none' : 'block';
+    var b = document.getElementById('foldbtn-' + v.id.slice(5));
+    if(b){ b.textContent = hide ? 'развернуть варианты'
+                                : 'свернуть — с этим закончил'; }
+  }
+}
+document.addEventListener('DOMContentLoaded', foldRestore);
 // СКОПИРОВАЛ ОПИСАНИЕ → ОНО СВОРАЧИВАЕТСЯ (07.11, его заказ: «чтобы я
 // понимал, что это я уже сделал, это будет мне сигналом»). Карточка
 // остаётся, но описание прячется и помечается галочкой — видно с одного
@@ -378,6 +407,29 @@ function svoy(item, kind, id, btn){
    .then(function(){ btn.textContent = 'записано ✓'; btn.classList.add('done');
                      el.readOnly = true; })
    .catch(function(){ btn.disabled = false; btn.textContent = was; });
+}
+// СВОЙ ЗАГОЛОВОК ПИШЕТСЯ САМ (10.11, его слово: «и мой вариант тоже
+// заголовка не записан»). Раньше текст уходил только по кнопке «записать
+// мой вариант»: вписал, обновил страницу — и труд пропал. Теперь поле
+// сохраняется само, как только он ушёл из него или перестал печатать.
+function svoyAuto(el, item, kind){
+  var t = (el && el.value || '').trim();
+  if(!t || t === (el.dataset.saved || '')){ return; }
+  el.dataset.saved = t;
+  try{ fetch('/zhurnal', {method:'POST',
+       headers:{'Content-Type':'application/json'},
+       body: JSON.stringify({kind:'свой_'+kind, text:t, item:item})}); }
+  catch(e){}
+  var h = el.parentNode && el.parentNode.querySelector('button');
+  if(h && !h.classList.contains('done')){ h.textContent = 'записано само ✓'; }
+}
+function svoyWatch(el, item, kind){
+  var t = null;
+  el.addEventListener('blur', function(){ svoyAuto(el, item, kind); });
+  el.addEventListener('input', function(){
+    clearTimeout(t);
+    t = setTimeout(function(){ svoyAuto(el, item, kind); }, 1200);
+  });
 }
 function zhurnal(kind, text, item){
   try{ fetch('/zhurnal', {method:'POST', headers:{'Content-Type':'application/json'},
@@ -671,8 +723,16 @@ def page(items, day):
                     else "копировать описание", len(desc)))
         # ── ДЕСЯТЬ ВАРИАНТОВ И СЕТКА ПРЕВЬЮ — ЭТО И ЕСТЬ СВОРАЧИВАЕМАЯ
         # ЧАСТЬ. Внутри остаётся всё как было, меняется только обёртка.
-        P.append('<div id="vars-%d" style="display:%s">'
-                 % (_i, "none" if _сверн else "block"))
+        # КЛЮЧ КАРТОЧКИ В РАЗМЕТКЕ (10.11, его слово: «все вкладки были
+        # свёрнутые, обновил — снова развернулись»). Номер `_i` и день
+        # сборки меняются, канал с темой — нет, поэтому память браузера
+        # вешаем на них: даже если состояние на диске не нашлось по дню,
+        # вид карточки вернётся таким, каким он его оставил.
+        P.append('<div id="vars-%d" data-key="%s" style="display:%s">'
+                 % (_i, html.escape("%s|%s" % (it.get("канал", ""),
+                                               it.get("тема", "")),
+                                    quote=True),
+                    "none" if _сверн else "block"))
         for key, lab in (("заголовки", "заголовки — 10 вариантов"),
                          ("надписи", "надписи на превью — 10 вариантов")):
             rows = it.get(key) or []
@@ -722,6 +782,9 @@ def page(items, day):
                         " readonly" if _свой else "",
                         ' class="done"' if _свой else "", _i, key, _sid,
                         "записано ✓" if _свой else "записать мой вариант"))
+              # поле сохраняется само (10.11) — кнопка остаётся как была
+              P.append('<script>svoyWatch(document.getElementById("%s"),'
+                       '%d,"%s");</script>' % (_sid, _i, key))
             P.append('<div class="row">'
                      '<button onclick="fold(\'%s\',%d,\'%s\')">скрыть — с этим '
                      'закончил</button>'
@@ -853,8 +916,29 @@ def main():
     ap.add_argument("day", help="день в виде ДД-ММ, например 08-11")
     ap.add_argument("--port", type=int, default=8810)
     ap.add_argument("--out", help="сохранить html и не поднимать сервер")
+    # ТОЛЬКО ОДИН РОЛИК НА СТРАНИЦЕ (10.11, его слово по «ПЕРЕВОД с
+    # ДИПЛОМАТИЧЕСКОГО»: «положи на дашборд 8811 его. Только его, а остальные
+    # можешь не ложить. Там уже всё сделано, всё забрато»). Фильтр по
+    # подстроке канала или темы, несколько — через запятую. Без ключа всё
+    # как было: день целиком.
+    ap.add_argument("--tolko", help="оставить только ролики, где канал или "
+                                    "тема содержит эту подстроку "
+                                    "(несколько — через запятую)")
     a = ap.parse_args()
     items = collect(a.day)
+    if a.tolko:
+        masks = [m.strip().lower() for m in a.tolko.split(",") if m.strip()]
+        keep = []
+        for it in items:
+            hay = ("%s|%s" % (it.get("канал") or "", it.get("тема") or "")).lower()
+            if any(m in hay for m in masks):
+                keep.append(it)
+        if not keep:
+            sys.exit("--tolko %r не совпал ни с одним роликом дня %s: %s"
+                     % (a.tolko, a.day,
+                        "; ".join("%s|%s" % (i.get("канал"), i.get("тема"))
+                                  for i in items)))
+        items = keep
     if not items:
         sys.exit("за %s ни одной УПАКОВКА.json не нашлось — сначала "
                  "upakovka.py <папка дня> --all" % a.day)
