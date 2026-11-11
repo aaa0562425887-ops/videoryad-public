@@ -1,0 +1,294 @@
+[
+ {
+  "scene": 3,
+  "view": "poster.poster",
+  "dur": 12.24,
+  "anim": 12.24,
+  "tail_zoom": 0.0,
+  "watermark": "ПЛАНЕТА",
+  "channel": "ПЛАНЕТА",
+  "kwargs": {
+   "title": "ПЛАН РАСКРЫТ",
+   "hero_photo": "cards/photo/card_003.jpg",
+   "bottom": "осталась мелочь — не дать плану случиться",
+   "facts": [
+    {
+     "label": "цель",
+     "value": "мосты через Днепр"
+    },
+    {
+     "label": "смысл",
+     "value": "резать снабжение"
+    }
+   ],
+   "watermark": "ПЛАНЕТА"
+  },
+  "mode": "frame"
+ },
+ {
+  "scene": 9,
+  "view": "vyrezka.gazeta",
+  "dur": 11.76,
+  "anim": 2.6,
+  "tail_zoom": 0.045,
+  "watermark": "ПЛАНЕТА",
+  "channel": "ПЛАНЕТА",
+  "kwargs": {
+   "photo": "cards/photo/card_009.jpg",
+   "author": "Владимир Зеленский",
+   "role": "президент Украины",
+   "title": "УЧЁТ С ПЯТНАДЦАТИ",
+   "watermark": "ПЛАНЕТА"
+  }
+ },
+ {
+  "scene": 15,
+  "view": "cinematic.evidence_wall",
+  "dur": 11.36,
+  "anim": 11.36,
+  "tail_zoom": 0.0,
+  "watermark": "ПЛАНЕТА",
+  "channel": "ПЛАНЕТА",
+  "kwargs": {
+   "shots": [
+    [
+     "cards/photo/card_015.jpg",
+     240,
+     250,
+     -4,
+     "очереди в городах"
+    ],
+    [
+     "cards/photo/card_015_2.jpg",
+     800,
+     250,
+     3,
+     "метро как убежище"
+    ],
+    [
+     "cards/photo/card_015_3.jpg",
+     1360,
+     250,
+     -2,
+     "мобилизационный резерв"
+    ],
+    [
+     "cards/photo/card_015_4.jpg",
+     240,
+     580,
+     4,
+     "решения Рады"
+    ]
+   ],
+   "title": "ОДНА ЦЕПЬ",
+   "watermark": "ПЛАНЕТА"
+  },
+  "mode": "frame"
+ },
+ {
+  "scene": 20,
+  "view": "bars",
+  "dur": 12.32,
+  "anim": 12.32,
+  "tail_zoom": 0.0,
+  "watermark": "ПЛАНЕТА",
+  "channel": "ПЛАНЕТА",
+  "kwargs": {},
+  "mode": "cli",
+  "script": "build_chart_bars.py",
+  "cfg": {
+   "title": "ТРИ МЕСЯЦА ПРОТИВ ЖИЗНИ",
+   "caption": "срок короче любого из обязательств",
+   "seconds": 12.32,
+   "bars": [
+    {
+     "label": "ОБЕЩАННЫЕ ДЕВЯНОСТО ДНЕЙ",
+     "value": 0.25,
+     "color": "4A90E2"
+    },
+    {
+     "label": "РАБОЧИЙ КОНТРАКТ В ПОЛЬШЕ",
+     "value": 0.6,
+     "color": "48BB78"
+    },
+    {
+     "label": "ОЧЕРЕДЬ НА ВНЖ В ГЕРМАНИИ",
+     "value": 0.9,
+     "color": "84848A"
+    }
+   ]
+  }
+ },
+ {
+  "scene": 25,
+  "view": "marker_serif",
+  "dur": 12.24,
+  "anim": 2.6,
+  "tail_zoom": 0.045,
+  "watermark": "ПЛАНЕТА",
+  "channel": "ПЛАНЕТА",
+  "kwargs": {
+   "text": "Готового решения Евросоюза в этих материалах нет, но механизм выглядит вполне узнаваемо",
+   "accent": "механизм выглядит вполне узнаваемо",
+   "watermark": "ПЛАНЕТА"
+  }
+ },
+ {
+  "scene": 30,
+  "view": "slider",
+  "dur": 11.93,
+  "anim": 11.93,
+  "tail_zoom": 0.0,
+  "watermark": "ПЛАНЕТА",
+  "channel": "ПЛАНЕТА",
+  "kwargs": {},
+  "mode": "cli",
+  "script": "build_chart_slider.py",
+  "cfg": {
+   "title": "ШКАЛА ДАВЛЕНИЯ",
+   "min": 0.0,
+   "max": 3.0,
+   "low": 1.0,
+   "high": 3.0,
+   "marker_value": 1.5,
+   "marker_display": "1.5",
+   "seconds": 11.93,
+   "range_label": "от уговоров до выдворения",
+   "caption": "следующим шагом способно стать принудительное выдворение",
+   "source": ""
+  }
+ },
+ {
+  "scene": 36,
+  "view": "charts.cartogram",
+  "dur": 12.16,
+  "anim": 12.16,
+  "tail_zoom": 0.045,
+  "watermark": "ПЛАНЕТА",
+  "channel": "ПЛАНЕТА",
+  "kwargs": {
+   "data": [
+    "Украина",
+    "Россия"
+   ],
+   "kick": "продовольствие · экономика · валюта",
+   "title": "ЧТО ПОД УДАРОМ",
+   "watermark": "ПЛАНЕТА"
+  }
+ },
+ {
+  "scene": 41,
+  "view": "pull",
+  "dur": 11.65,
+  "anim": 2.6,
+  "tail_zoom": 0.05,
+  "watermark": "ПЛАНЕТА",
+  "channel": "ПЛАНЕТА",
+  "kwargs": {
+   "text": "Предупреждений накопилось столько, что скоро их придётся выдавать по расписанию",
+   "watermark": "ПЛАНЕТА"
+  }
+ },
+ {
+  "scene": 46,
+  "view": "split",
+  "dur": 12.64,
+  "anim": 2.6,
+  "tail_zoom": 0.045,
+  "watermark": "ПЛАНЕТА",
+  "channel": "ПЛАНЕТА",
+  "kwargs": {
+   "text": "Ему требуется работающая сеть, вода в кране, отопление в квартире и возможность добраться до другого берега",
+   "author": "житель Киева",
+   "photo": "cards/photo/card_046.jpg",
+   "watermark": "ПЛАНЕТА"
+  }
+ },
+ {
+  "scene": 51,
+  "view": "vyrezka.figura",
+  "dur": 12.8,
+  "anim": 2.6,
+  "tail_zoom": 0.045,
+  "watermark": "ПЛАНЕТА",
+  "channel": "ПЛАНЕТА",
+  "kwargs": {
+   "photo": "cards/photo/card_051.jpg",
+   "author": "Владимир Зеленский",
+   "role": "президент Украины",
+   "title": "ОСТАНОВИТЬ СЕЙЧАС",
+   "watermark": "ПЛАНЕТА"
+  }
+ },
+ {
+  "scene": 56,
+  "view": "film.film_strip",
+  "dur": 11.6,
+  "anim": 11.6,
+  "tail_zoom": 0.045,
+  "watermark": "ПЛАНЕТА",
+  "channel": "ПЛАНЕТА",
+  "kwargs": {
+   "shots": [
+    "cards/photo/card_056.jpg",
+    "cards/photo/card_056_2.jpg",
+    "cards/photo/card_056_3.jpg",
+    "cards/photo/card_056_4.jpg"
+   ],
+   "captions": [
+    "специалисты для предприятий",
+    "бойцы для армии",
+    "работники для экономики",
+    "будущие налогоплательщики"
+   ],
+   "watermark": "ПЛАНЕТА"
+  }
+ },
+ {
+  "scene": 62,
+  "view": "cinematic.depth_of_field",
+  "dur": 12.88,
+  "anim": 12.88,
+  "tail_zoom": 0.0,
+  "watermark": "ПЛАНЕТА",
+  "channel": "ПЛАНЕТА",
+  "kwargs": {
+   "photo": "cards/photo/card_062.jpg",
+   "title": "КТО В СПИСКЕ",
+   "watermark": "ПЛАНЕТА"
+  },
+  "mode": "frame"
+ },
+ {
+  "scene": 68,
+  "view": "film.film_single",
+  "dur": 10.96,
+  "anim": 2.6,
+  "tail_zoom": 0.045,
+  "watermark": "ПЛАНЕТА",
+  "channel": "ПЛАНЕТА",
+  "kwargs": {
+   "photo": "cards/photo/card_068.jpg",
+   "title": "СНАБЖЕНИЕ РЕЖУТ ПЕРВЫМ",
+   "watermark": "ПЛАНЕТА"
+  }
+ },
+ {
+  "scene": 73,
+  "view": "photo",
+  "dur": 11.53,
+  "anim": 11.53,
+  "tail_zoom": 0.0,
+  "watermark": "ПЛАНЕТА",
+  "channel": "ПЛАНЕТА",
+  "kwargs": {
+   "watermark": "ПЛАНЕТА",
+   "photo": "cards/photo/card_073.jpg",
+   "lines": [
+    "мост чинят по смете и срокам",
+    "у доверия сметы нет",
+    "срок ремонта не назначен"
+   ]
+  }
+ }
+]
