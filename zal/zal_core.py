@@ -477,7 +477,7 @@ def hang_block(img, cam, lines, hl, center, line_h, fsize=170,
     extrude(img, cam, c, tex, depth=depth, steps=4)
 
 # ---------- стеклянный куб ----------
-def glass_cube(img, cam, center, size, t=0.0):
+def glass_cube(img, cam, center, size, t=0.0, wires=True):
     cx, cy, cz = center
     s = size / 2
     v = [(cx - s, cy - s, cz - s), (cx + s, cy - s, cz - s), (cx + s, cy - s, cz + s), (cx - s, cy - s, cz + s),
@@ -489,6 +489,10 @@ def glass_cube(img, cam, center, size, t=0.0):
         d.polygon([(p[i][0], p[i][1]) for i in f], fill=(214, 226, 240, 40))
     for e0, e1 in ((0,1),(1,2),(2,3),(3,0),(4,5),(5,6),(6,7),(7,4),(0,4),(1,5),(2,6),(3,7)):
         d.line([(p[e0][0], p[e0][1]), (p[e1][0], p[e1][1])], fill=(52, 54, 58, 255), width=7)
+    if wires:
+        for i in (4, 5, 6, 7):
+            top = cam.proj((v[i][0], CEIL, v[i][2]))
+            d.line([(top[0], top[1]), (p[i][0], p[i][1])], fill=(120, 122, 126, 255), width=2)
     img.alpha_composite(lay)
 
 # ---------- белые объёмные макеты ----------
