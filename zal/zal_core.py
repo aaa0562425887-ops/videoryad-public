@@ -550,3 +550,20 @@ def scale_column(img, cam, x, z, top=4.4, wdt=0.13):
     tex = Image.new("RGBA", (40, 400), (44, 40, 36, 255))
     c = quad((x, top / 2, z), wdt, top)
     extrude(img, cam, c, tex, depth=wdt, steps=3, shade=(38, 35, 32))
+
+
+def put_above_floor(canvas, cam, corners, tex, depth=0.0, steps=1, shade=(96, 97, 100)):
+    """кладёт объект, обрезая всё, что ниже линии пола на этой дальности —
+    так слово «вырастает из пола», а не появляется целиком"""
+    zc = sum(c[2] for c in corners) / 4.0
+    dz = max(0.3, zc - cam.z)
+    y_floor = H / 2 + cam.y * F / dz
+    lay = Image.new("RGBA", (W, H), (0, 0, 0, 0))
+    if depth > 0:
+        extrude(lay, cam, corners, tex, depth=depth, steps=steps, shade=shade)
+    else:
+        paste_quad(lay, tex, [cam.proj(p) for p in corners])
+    yf = int(max(0, min(H, y_floor)))
+    if yf < H:
+        ImageDraw.Draw(lay).rectangle([0, yf, W, H], fill=(0, 0, 0, 0))
+    canvas.alpha_composite(lay)
