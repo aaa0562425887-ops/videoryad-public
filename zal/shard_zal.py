@@ -2,10 +2,11 @@
 """Клипы приёмов белого зала: G02, G10, G13. Запуск: shard_zal.py <код> <out.mp4>"""
 import sys, os, math, subprocess
 import numpy as np
-from PIL import Image
+from PIL import Image, ImageDraw
 sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
 import zal_core as Z
 from zal_core import Cam, quad, paste_quad, room, embers, cluster, text_tex, sticker_tex, word_tiles, tv_tex, source_line, \
+     build_block, hang_block, glass_cube, maket_tex, plate_tex, scale_column, font, W as SW, H as SH, \
      sheet_tex, extrude, floor_shadow, reflection, wire, out_expo, out_back, out_cubic, seg
 
 FPS = 30
@@ -138,78 +139,166 @@ def put_words(img, cam, lines, center, line_h, t, start=0.0, step=0.22,
         extrude(img, cam, c, tile, depth=depth, steps=steps)
     return tw, th
 
-# ---------------- G11 · набор фразы по словам ----------------
+# ---------------- G11 · слова спускаются на нитях, в центре стеклянный куб ----------------
 def g11(t):
-    cam = Cam(x=0.0, y=1.46, z=0.62 * t)
+    cam = Cam(x=1.25, y=1.02, z=0.30 * t)
     img = room(cam)
-    for (x, y, z, rot) in ((-4.0, 2.5, 14.0, 15), (4.3, 2.3, 18.0, -12)):
-        if z - cam.z < 0.8: continue
-        sh = sheet_tex(["Разбор · ноябрь", "Сначала не поверили."])
-        c = quad((x, y, z), 1.5, 0.97, yaw=math.radians(rot))
-        wire(img, cam, (x - 0.55, y + 0.48, z)); wire(img, cam, (x + 0.55, y + 0.48, z))
-        paste_quad(img, sh, [cam.proj(p) for p in c])
-    put_words(img, cam, ["СНАЧАЛА ЭТО КАЗАЛОСЬ", "ШУМОМ.", "ПОТОМ СТАЛО РАБОТОЙ."],
-              (0.0, 1.80, 9.6), 0.36, t, start=0.10, step=0.22, fsize=230)
-    img = embers(img, cam, cluster(2.4, 0.26, 7.0, 0.60, 4, 11) + cluster(-2.6, 0.22, 10.0, 0.5, 3, 12), t)
+    # белый лист на полу и угли на нём
+    sheet = Image.new("RGBA", (300, 300), (250, 250, 249, 255))
+    paste_quad(img, sheet, [cam.proj(p) for p in
+               [(-1.15, 0.012, 10.05), (0.65, 0.012, 10.05), (0.65, 0.012, 8.35), (-1.15, 0.012, 8.35)]])
+    if t >= 2.05:
+        glass_cube(img, cam, (-0.25, 1.22, 9.2), 2.44)
+    items = [("w","ОНИ",0),("w","ХОТЕЛИ",0),("w","ПРОВЕРИТЬ,",0),("br",),
+             ("w","НАСКОЛЬКО",0),("w","УМЁН",1),("br",),
+             ("w","САМЫЙ",0),("w","СИЛЬНЫЙ",0),("w","ИЗ",0),("w","НИХ.",0)]
+    lines, hl = build_block(items, t, start=0.15, step=0.25, maxlines=2)
+    if t < 2.05:
+        hang_block(img, cam, lines, hl, (-1.05, 2.45, 7.2), 0.30, fsize=180)
+    else:
+        it2 = [("w","И",0),("w","ЗАПЕРЛИ",1),("w","ЕГО",0),("br",),("w","В",0),("w","ПЕСОЧНИЦЕ.",0)]
+        l2, h2 = build_block(it2, t, start=2.20, step=0.25, maxlines=2)
+        hang_block(img, cam, l2, h2, (-1.05, 2.45, 7.2), 0.30, fsize=180)
+    img = embers(img, cam, cluster(-0.25, 0.16, 9.2, 0.52, 6, 21), t)
     return img
 
-# ---------------- G12 · жёлтый маркер приходит вместе со словом ----------------
+# ---------------- G12 · маркер со словом + макеты вырастают с подписями ----------------
 def g12(t):
-    cam = Cam(x=0.0, y=1.44, z=0.42 * t)
+    cam = Cam(x=0.0, y=1.34, z=0.26 * t)
     img = room(cam)
-    put_words(img, cam, ["ОНИ НАЗВАЛИ ЭТО ОШИБКОЙ.", "ЧЕРЕЗ МЕСЯЦ — СТРАТЕГИЕЙ."],
-              (0.0, 1.78, 8.2), 0.42, t, start=0.10, step=0.24, fsize=250,
-              hl={3, 7}, pop=0.09)
-    img = embers(img, cam, cluster(-2.9, 0.24, 8.0, 0.58, 4, 13) + cluster(3.1, 0.20, 11.0, 0.5, 3, 14), t)
-    return img
-
-# ---------------- G26 · расшифровка строкой поверх эфира ----------------
-def g26(t):
-    cam = Cam(x=0.0, y=1.52, z=0.34 * t)
-    img = room(cam)
-    reps = [(0.15, ["Мы рассчитываем, что соглашение"]),
-            (1.45, ["Мы рассчитываем, что соглашение", "будет подписано до конца недели"]),
-            (2.75, ["Остальные вопросы", "вынесены на следующий раунд"])]
-    cap = None
-    for t0, c in reps:
-        if t >= t0: cap = c
-    tex = tv_tex(cap)
-    pw = 3.3; ph = pw * 540 / 960
-    c = quad((0.0, 1.92, 7.6), pw, ph, yaw=math.radians(-7))
-    wire(img, cam, (-1.3, 1.92 + ph / 2, 7.6)); wire(img, cam, (1.3, 1.92 + ph / 2, 7.6))
-    floor_shadow(img, cam, c, tex)
-    paste_quad(img, tex, [cam.proj(p) for p in c])
-    small = text_tex(["ПРЯМАЯ РЕЧЬ"], fsize=110, fname="Oswald-Bold.ttf")
-    h = 0.20; w = h * small.size[0] / small.size[1]
-    paste_quad(img, small, [cam.proj(p) for p in quad((-1.05, 0.72, 7.4), w, h)])
-    img = embers(img, cam, cluster(2.8, 0.22, 9.0, 0.55, 4, 15), t)
-    source_line(img, "Наша панель · демонстрация приёма, чужой эфир не используется")
-    return img
-
-# ---------------- G15 · подпись-источник в углу ----------------
-def g15(t):
-    cam = Cam(x=0.0, y=1.40, z=0.30 * t)
-    img = room(cam)
-    first = t < 2.0
-    num = "54 836" if first else "116 175"
-    cap = ["СОКРАЩЕНО ЗА ВЕСЬ 2025 ГОД"] if first else ["ЗА ЯНВАРЬ — АВГУСТ 2026"]
-    t0 = 0.25 if first else 2.0
-    k = 1.0 + 0.09 * (1.0 - out_expo((t - t0) / 0.10)) if t >= t0 else 0.0
-    if k > 0:
-        tex = text_tex([num], fsize=430, fname="Oswald-Bold.ttf")
-        h = 0.95 * k; w = h * tex.size[0] / tex.size[1]
-        c = quad((0.0, 1.95, 8.4), w, h)
+    items = [("w","ТЕМ",0),("w","САМЫМ,",0),("w","ЧЕМ",0),("br",),
+             ("w","ЛОМАЮТ",1),("w","БАНКИ",0),("w","И",0),("w","БОЛЬНИЦЫ.",0)]
+    lines, hl = build_block(items, t, start=0.12, step=0.24, maxlines=2)
+    hang_block(img, cam, lines, hl, (-1.9, 2.82, 7.6), 0.32, fsize=190, wires=False)
+    mk = [("bank", "БАНКИ", -2.05, 1.18, 9.0), ("hospital", "БОЛЬНИЦЫ", 0.0, 1.10, 9.0),
+          ("power", "ЭНЕРГОСЕТИ", 2.15, 1.26, 9.0)]
+    for i, (kind, label, x, size, z) in enumerate(mk):
+        t0 = 1.05 + i * 0.52
+        if t < t0: continue
+        k = out_back((t - t0) / 0.34)
+        hh = size * max(0.02, k)
+        tex = maket_tex(kind)
+        c = quad((x, hh / 2, z), size * (hh / size), hh)
         floor_shadow(img, cam, c, tex)
-        extrude(img, cam, c, tex, depth=0.14, steps=8)
-        sub = text_tex(cap, fsize=120, fname="Oswald-Bold.ttf")
-        hs = 0.21; ws = hs * sub.size[0] / sub.size[1]
-        paste_quad(img, sub, [cam.proj(p) for p in quad((0.0, 1.18, 8.4), ws, hs)])
-    img = embers(img, cam, cluster(-3.0, 0.22, 9.5, 0.55, 4, 16) + cluster(3.2, 0.20, 12.5, 0.48, 3, 17), t)
-    source_line(img, "Challenger, Gray & Christmas · 2026" if first else "Росстат · 7 ноября 2026")
+        extrude(img, cam, c, tex, depth=0.30, steps=6, shade=(176, 179, 184))
+        lab = text_tex([label], fsize=110, fname="Oswald-Bold.ttf")
+        lh = 0.17; lw = lh * lab.size[0] / lab.size[1]
+        paste_quad(img, lab, [cam.proj(p) for p in quad((x, 0.16, z - 0.35), lw, lh)])
+        if i and t >= t0:
+            plus = text_tex(["+"], fsize=150, fname="Oswald-Bold.ttf")
+            ph = 0.22; pw = ph * plus.size[0] / plus.size[1]
+            paste_quad(img, plus, [cam.proj(p) for p in quad(((x + mk[i-1][2]) / 2, 0.62, z), pw, ph)])
+    img = embers(img, cam, cluster(-3.4, 0.22, 7.0, 0.52, 4, 22), t)
+    return img
+
+# ---------------- G26 · панель заполняет кадр, надписи справа столбиком ----------------
+def _tv_column(img, t, header, sub, blocks, big=None):
+    d = ImageDraw.Draw(img, "RGBA")
+    x = SW - 640
+    lay = Image.new("RGBA", (SW, SH), (0, 0, 0, 0))
+    dl = ImageDraw.Draw(lay)
+    dl.rectangle([x - 26, 150, x - 22, 150 + 520], fill=(255, 255, 255, 150))
+    img.alpha_composite(lay)
+    y = 168
+    if big:
+        fb = font("Oswald-Bold.ttf", 118)
+        for ln in big:
+            d.text((x + 2, y + 3), ln, font=fb, fill=(0, 0, 0, 120))
+            d.text((x, y), ln, font=fb, fill=(255, 205, 40, 255))
+            y += 126
+    elif header:
+        fh = font("Oswald-Bold.ttf", 54)
+        d.text((x, y), header, font=fh, fill=(255, 255, 255, 255)); y += 62
+        fs = font("Arimo-Bold.ttf", 30)
+        d.text((x, y), sub, font=fs, fill=(226, 228, 232, 235)); y += 64
+    ft = font("Arimo-Bold.ttf", 38)
+    for ln in blocks:
+        d.text((x + 2, y + 2), ln, font=ft, fill=(0, 0, 0, 130))
+        d.text((x, y), ln, font=ft, fill=(255, 255, 255, 255))
+        y += 48
+
+def g26(t):
+    cam = Cam(x=0.0, y=1.50, z=0.30 * t)
+    if t < 0.70:
+        img = room(cam)
+        k = out_cubic(t / 0.70)
+        pw = 3.0 + 9.0 * k
+        z = 7.4 - 5.6 * k
+        ph = pw * 540 / 960
+        tex = tv_tex(None)
+        c = quad((0.0, cam.y + (1.95 - cam.y) * (1 - k), z), pw, ph)
+        if k < 0.5:
+            wire(img, cam, (-pw * 0.4, cam.y + ph / 2, z)); wire(img, cam, (pw * 0.4, cam.y + ph / 2, z))
+        paste_quad(img, tex, [cam.proj(p) for p in c])
+        img = embers(img, cam, cluster(2.8, 0.22, 9.0, 0.5, 3, 23), t)
+        return img
+    img = tv_tex(None, w=SW, h=SH).convert("RGBA")
+    reps = [(0.85, None, []),
+            (1.05, "ОЛЕГ ВОРОНОВ", ["Мы рассчитываем,"]),
+            (1.30, "ОЛЕГ ВОРОНОВ", ["Мы рассчитываем,", "что соглашение"]),
+            (1.58, "ОЛЕГ ВОРОНОВ", ["Мы рассчитываем,", "что соглашение", "будет подписано"]),
+            (1.86, "ОЛЕГ ВОРОНОВ", ["Мы рассчитываем,", "что соглашение", "будет подписано", "до конца недели."]),
+            (2.55, "ОЛЕГ ВОРОНОВ", ["Остальные вопросы"]),
+            (2.80, "ОЛЕГ ВОРОНОВ", ["Остальные вопросы", "вынесены"]),
+            (3.05, "ОЛЕГ ВОРОНОВ", ["Остальные вопросы", "вынесены", "на следующий раунд."])]
+    head, blocks = None, []
+    for t0, h, b in reps:
+        if t >= t0: head, blocks = h, b
+    big = None
+    if t >= 3.45:
+        big = ["ДО КОНЦА"] if t < 3.75 else ["ДО КОНЦА", "НЕДЕЛИ"]
+        head = None
+        blocks = ["а по остальному —"] if t >= 3.95 else []
+        if t >= 4.20: blocks = ["а по остальному —", "новый раунд."]
+    _tv_column(img, t, head, "Телеканал · 7 ноября 2026", blocks, big)
+    return img
+
+# ---------------- G15 · шкала-столб: плашка едет вверх, число добегает ----------------
+def g15(t):
+    cam = Cam(x=0.35, y=1.34, z=0.22 * t)
+    img = room(cam)
+    X, Z = -1.55, 8.6
+    scale_column(img, cam, X, Z, wdt=0.10)
+    # пояснение справа, прижатое вправо
+    expl = text_tex(["ДОЛЯ РАБОТЫ ПО СОЗДАНИЮ", "НОВЫХ СИСТЕМ, КОТОРУЮ", "ВЕДЁТ САМ ИИ"], fsize=92,
+                    fname="Oswald-Bold.ttf")
+    eh = 0.50; ew = eh * expl.size[0] / expl.size[1]
+    paste_quad(img, expl, [cam.proj(p) for p in quad((1.55, 1.05, Z), ew, eh)])
+    # фраза слева сверху по словам
+    items = [("w","ТОГДА",0),("w","ЭТО",0),("w","БЫЛО",0),("br",),
+             ("w","МЕНЬШЕ",0),("w","ПРОЦЕНТА",1),("w","РАБОТЫ.",0)]
+    lines, hl = build_block(items, t, start=0.30, step=0.26, maxlines=2)
+    hang_block(img, cam, lines, hl, (-2.25, 3.05, 7.2), 0.27, fsize=175, wires=False)
+    # значение: сначала внизу «<1%», потом едет вверх и число добегает
+    grow_t0, grow_dur = 2.15, 1.05
+    if t >= 0.55:
+        if t < grow_t0:
+            val, yy = "<1%", 0.42
+        else:
+            k = out_expo((t - grow_t0) / grow_dur)
+            val = "%d%%" % max(1, round(1 + 25 * k))
+            yy = 0.42 + 1.55 * k
+        pt = plate_tex(val)
+        ph = 0.52; pw = ph * pt.size[0] / pt.size[1]
+        c = quad((X + 0.12 + pw / 2, yy, Z - 0.1), pw, ph)
+        paste_quad(img, pt, [cam.proj(p) for p in c])
+    # подписи месяцев и угли на шкале
+    feb = text_tex(["ФЕВ"], fsize=90, fname="Oswald-Bold.ttf")
+    fh = 0.21; fw = fh * feb.size[0] / feb.size[1]
+    paste_quad(img, feb, [cam.proj(p) for p in quad((X - 0.52, 0.24, Z), fw, fh)])
+    pts = cluster(X, 0.16, Z, 0.46, 3, 24, False)
+    if t >= grow_t0:
+        k = out_expo((t - grow_t0) / grow_dur)
+        aug = text_tex(["АВГ"], fsize=90, fname="Oswald-Bold.ttf")
+        paste_quad(img, aug, [cam.proj(p) for p in quad((X - 0.52, 0.28 + 1.55 * k, Z), fw, fh)])
+        pts += cluster(X, 0.20 + 1.55 * k, Z, 0.46, 3, 25, False)
+    img = embers(img, cam, pts, t)
+    if t >= 0.55:
+        source_line(img, "Институт исследований ИИ · 17 сентября 2026")
     return img
 
 SCENES = {"G13": (g13, 3.3), "G10": (g10, 4.0), "G02": (g02, 3.8),
-          "G11": (g11, 3.6), "G12": (g12, 3.2), "G26": (g26, 4.2), "G15": (g15, 4.0)}
+          "G11": (g11, 4.0), "G12": (g12, 3.6), "G26": (g26, 4.6), "G15": (g15, 4.2)}
 
 def render(code, out):
     fn, dur = SCENES[code]

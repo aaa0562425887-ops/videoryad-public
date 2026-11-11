@@ -363,8 +363,22 @@ def tv_tex(caption=None, w=960, h=540, t=0.0):
         r = rng.uniform(8, 26)
         bd.ellipse([bx - r, by - r, bx + r, by + r], fill=(130, 175, 235, 30))
     img.alpha_composite(bok.filter(ImageFilter.GaussianBlur(7)))
-    d.polygon([(w * 0.18, h), (w * 0.30, h * 0.52), (w * 0.70, h * 0.52), (w * 0.82, h)],
-              fill=(18, 36, 74, 255))
+    glow = Image.new("RGBA", (w, h), (0, 0, 0, 0))
+    gd = ImageDraw.Draw(glow)
+    gd.ellipse([w * 0.18, -h * 0.25, w * 0.82, h * 0.72], fill=(70, 120, 200, 70))
+    gd.ellipse([w * 0.34, h * 0.02, w * 0.66, h * 0.52], fill=(120, 170, 235, 55))
+    img.alpha_composite(glow.filter(ImageFilter.GaussianBlur(70)))
+    for i in range(3):
+        yy = h * (0.17 + i * 0.11)
+        d.line([(w * 0.12, yy), (w * 0.88, yy + h * 0.008)], fill=(115, 160, 225, 14), width=2)
+    d.polygon([(w * 0.14, h), (w * 0.27, h * 0.56), (w * 0.73, h * 0.56), (w * 0.86, h)],
+              fill=(14, 28, 60, 255))
+    d.line([(w * 0.27, h * 0.56), (w * 0.73, h * 0.56)], fill=(110, 150, 215, 150), width=4)
+    vig = Image.new("RGBA", (w, h), (0, 0, 0, 0))
+    vd = ImageDraw.Draw(vig)
+    vd.rectangle([0, 0, w, h], fill=(0, 0, 0, 78))
+    vd.ellipse([-w * 0.25, -h * 0.35, w * 1.25, h * 1.25], fill=(0, 0, 0, 0))
+    img.alpha_composite(vig.filter(ImageFilter.GaussianBlur(90)))
     d.rectangle([0, h * 0.86, w, h], fill=(236, 238, 242, 255))
     ftag = font("Arimo-Bold.ttf", int(h * 0.038))
     tagw = d.textlength("ПРЯМОЙ ЭФИР", font=ftag)
@@ -381,3 +395,102 @@ def tv_tex(caption=None, w=960, h=540, t=0.0):
             d.text(((w - tw) / 2, y), ln, font=f, fill=(255, 255, 255, 255))
             y += h * 0.078
     return img
+
+
+# ---------- блок текста, который набирается по словам и висит на нитях ----------
+def build_block(items, t, start=0.0, step=0.25, maxlines=3):
+    """items: ('w', слово, жёлтый?) или ('br',). Возвращает (строки, множество жёлтых индексов)"""
+    rows, flags = [[]], [[]]
+    k = 0
+    for it in items:
+        if it[0] == "br":
+            rows.append([]); flags.append([]); continue
+        if t < start + k * step: break
+        rows[-1].append(it[1]); flags[-1].append(bool(it[2])); k += 1
+    rows = [r for r in rows if r]; flags = [f for f in flags if f]
+    if not rows: return [], set()
+    if len(rows) > maxlines:
+        rows = rows[-maxlines:]; flags = flags[-maxlines:]
+    hl, idx = set(), 0
+    for f in flags:
+        for v in f:
+            if v: hl.add(idx)
+            idx += 1
+    return [" ".join(r) for r in rows], hl
+
+def hang_block(img, cam, lines, hl, center, line_h, fsize=170,
+               fname="Oswald-Bold.ttf", wires=True, depth=0.07):
+    if not lines: return
+    tex = text_tex(lines, fsize=fsize, fname=fname, hl=hl)
+    h = line_h * len(lines) + 0.10
+    w = h * tex.size[0] / tex.size[1]
+    cx, cy, cz = center
+    c = quad((cx + w / 2, cy - h / 2, cz), w, h)   # прижат влево от точки подвеса
+    if wires:
+        wire(img, cam, (cx + w * 0.12, cy, cz))
+        wire(img, cam, (cx + w * 0.88, cy, cz))
+    extrude(img, cam, c, tex, depth=depth, steps=4)
+
+# ---------- стеклянный куб ----------
+def glass_cube(img, cam, center, size, t=0.0):
+    cx, cy, cz = center
+    s = size / 2
+    v = [(cx - s, cy - s, cz - s), (cx + s, cy - s, cz - s), (cx + s, cy - s, cz + s), (cx - s, cy - s, cz + s),
+         (cx - s, cy + s, cz - s), (cx + s, cy + s, cz - s), (cx + s, cy + s, cz + s), (cx - s, cy + s, cz + s)]
+    p = [cam.proj(q) for q in v]
+    lay = Image.new("RGBA", (W, H), (0, 0, 0, 0))
+    d = ImageDraw.Draw(lay, "RGBA")
+    for a, b in ((0,1),(1,2),(2,3),(3,0),(4,5),(5,6),(6,7),(7,4),(0,4),(1,5),(2,6),(3,7)):
+        d.line([(p[a][0], p[a][1]), (p[b][0], p[b][1])], fill=(46, 48, 52, 245), width=4)
+    for f in ((0,1,5,4),(1,2,6,5),(3,2,6,7),(0,3,7,4)):
+        d.polygon([(p[i][0], p[i][1]) for i in f], fill=(222, 232, 242, 26))
+    img.alpha_composite(lay)
+
+# ---------- белые объёмные макеты ----------
+def maket_tex(kind, px=420):
+    img = Image.new("RGBA", (px, px), (0, 0, 0, 0))
+    d = ImageDraw.Draw(img)
+    ink = (236, 238, 241, 255); edge = (120, 124, 130, 255)
+    if kind == "bank":
+        d.polygon([(px*0.06, px*0.36), (px*0.5, px*0.10), (px*0.94, px*0.36)], fill=ink, outline=edge, width=3)
+        d.rectangle([px*0.08, px*0.36, px*0.92, px*0.44], fill=ink, outline=edge, width=3)
+        for i in range(5):
+            x = px * (0.15 + i * 0.175)
+            d.rectangle([x, px*0.44, x + px*0.075, px*0.86], fill=ink, outline=edge, width=3)
+        d.rectangle([px*0.05, px*0.86, px*0.95, px*0.95], fill=ink, outline=edge, width=3)
+    elif kind == "hospital":
+        d.rectangle([px*0.18, px*0.22, px*0.82, px*0.95], fill=ink, outline=edge, width=3)
+        for r in range(4):
+            for c in range(3):
+                d.rectangle([px*(0.26 + c*0.18), px*(0.32 + r*0.15),
+                             px*(0.36 + c*0.18), px*(0.42 + r*0.15)], fill=(196, 200, 206, 255))
+        d.rectangle([px*0.46, px*0.06, px*0.54, px*0.22], fill=ink, outline=edge, width=3)
+        d.rectangle([px*0.38, px*0.11, px*0.62, px*0.17], fill=ink, outline=edge, width=3)
+    else:  # power
+        for sx in (0.28, 0.72):
+            d.line([(px*(sx-0.14), px*0.95), (px*sx, px*0.16)], fill=edge, width=5)
+            d.line([(px*(sx+0.14), px*0.95), (px*sx, px*0.16)], fill=edge, width=5)
+            d.line([(px*(sx-0.11), px*0.72), (px*(sx+0.11), px*0.72)], fill=edge, width=4)
+            d.line([(px*(sx-0.07), px*0.46), (px*(sx+0.07), px*0.46)], fill=edge, width=4)
+            d.line([(px*(sx-0.13), px*0.26), (px*(sx+0.13), px*0.26)], fill=edge, width=4)
+        d.line([(px*0.28, px*0.26), (px*0.72, px*0.30)], fill=edge, width=3)
+        d.line([(px*0.28, px*0.46), (px*0.72, px*0.50)], fill=edge, width=3)
+    return img
+
+# ---------- тёмная плашка со значением ----------
+def plate_tex(value, sub=None, px=520):
+    h = int(px * 0.46)
+    img = Image.new("RGBA", (px, h), (26, 24, 22, 255))
+    d = ImageDraw.Draw(img)
+    d.rectangle([0, 0, px - 1, h - 1], outline=(92, 80, 60, 255), width=5)
+    f = font("Oswald-Bold.ttf", int(h * 0.62))
+    b = d.textbbox((0, 0), value, font=f)
+    d.text(((px - (b[2] - b[0])) / 2 - b[0], (h - (b[3] - b[1])) / 2 - b[1]), value, font=f,
+           fill=(255, 196, 42, 255))
+    return img
+
+# ---------- вертикальная шкала-столб ----------
+def scale_column(img, cam, x, z, top=4.4, wdt=0.13):
+    tex = Image.new("RGBA", (40, 400), (44, 40, 36, 255))
+    c = quad((x, top / 2, z), wdt, top)
+    extrude(img, cam, c, tex, depth=wdt, steps=3, shade=(38, 35, 32))
