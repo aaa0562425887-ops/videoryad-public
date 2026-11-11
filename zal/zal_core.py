@@ -1,0 +1,287 @@
+# -*- coding: utf-8 -*-
+"""Белый зал: псевдо-3D сцена на numpy+PIL.
+Камера смотрит вдоль +z, пол y=0, потолок y=CEIL, стены x=±WALL.
+Всё, что кладём в кадр, — четырёхугольник в пространстве: проецируем углы и
+натягиваем на них картинку перспективным преобразованием.
+"""
+import math, os
+import numpy as np
+from PIL import Image, ImageDraw, ImageFilter, ImageFont
+
+W, H = 1920, 1080
+FOV = 52.0
+F = (W / 2) / math.tan(math.radians(FOV / 2))
+CEIL, WALL, FAR = 5.0, 6.2, 70.0
+
+FONTDIR = os.environ.get("ZAL_FONTS", os.path.join(os.path.dirname(__file__), "fonts"))
+def font(name, size):
+    p = os.path.join(FONTDIR, name)
+    return ImageFont.truetype(p, size)
+
+# ---------- ход движения ----------
+def clamp01(x): return 0.0 if x < 0 else (1.0 if x > 1 else x)
+def out_expo(t):
+    t = clamp01(t); return 1.0 if t >= 1 else 1 - pow(2, -10 * t)
+def out_back(t, s=1.70158):
+    t = clamp01(t) - 1.0
+    return t * t * ((s + 1) * t + s) + 1.0
+def out_cubic(t): t = clamp01(t); return 1 - pow(1 - t, 3)
+def seg(t, a, b): return clamp01((t - a) / max(1e-6, b - a))
+
+# ---------- камера ----------
+class Cam:
+    def __init__(s, x=0.0, y=1.55, z=0.0, yaw=0.0):
+        s.x, s.y, s.z, s.yaw = x, y, z, yaw
+    def proj(s, p):
+        dx, dy, dz = p[0] - s.x, p[1] - s.y, p[2] - s.z
+        if s.yaw:
+            c, si = math.cos(-s.yaw), math.sin(-s.yaw)
+            dx, dz = dx * c - dz * si, dx * si + dz * c
+        if dz < 0.08: dz = 0.08
+        k = F / dz
+        return (W / 2 + dx * k, H / 2 - dy * k, dz)
+
+def quad(center, w, h, yaw=0.0, roll=0.0):
+    """углы прямоугольника в пространстве: TL,TR,BR,BL"""
+    cx, cy, cz = center
+    pts = [(-w/2, h/2), (w/2, h/2), (w/2, -h/2), (-w/2, -h/2)]
+    out = []
+    cr, sr = math.cos(roll), math.sin(roll)
+    cy_, sy_ = math.cos(yaw), math.sin(yaw)
+    for ux, uy in pts:
+        rx, ry = ux * cr - uy * sr, ux * sr + uy * cr
+        out.append((cx + rx * cy_, cy + ry, cz + rx * sy_))
+    return out
+
+# ---------- натягивание картинки на четырёхугольник ----------
+def _coeffs(dst, src):
+    m = []
+    for (dx, dy), (sx, sy) in zip(dst, src):
+        m.append([dx, dy, 1, 0, 0, 0, -sx * dx, -sx * dy])
+        m.append([0, 0, 0, dx, dy, 1, -sy * dx, -sy * dy])
+    A = np.array(m, dtype=np.float64)
+    B = np.array(src, dtype=np.float64).reshape(8)
+    res, *_ = np.linalg.lstsq(A, B, rcond=None)
+    return res
+
+def paste_quad(canvas, tex, pts2d, opacity=1.0):
+    """tex — RGBA; pts2d — четыре экранные точки TL,TR,BR,BL"""
+    xs = [p[0] for p in pts2d]; ys = [p[1] for p in pts2d]
+    x0, x1 = int(math.floor(min(xs))), int(math.ceil(max(xs)))
+    y0, y1 = int(math.floor(min(ys))), int(math.ceil(max(ys)))
+    x0, y0 = max(x0, -W), max(y0, -H)
+    x1, y1 = min(x1, 2 * W), min(y1, 2 * H)
+    bw, bh = x1 - x0, y1 - y0
+    if bw < 2 or bh < 2 or x1 <= 0 or y1 <= 0 or x0 >= W or y0 >= H: return
+    if bw * bh > 40_000_000: return
+    dst = [(p[0] - x0, p[1] - y0) for p in pts2d]
+    tw, th = tex.size
+    src = [(0, 0), (tw, 0), (tw, th), (0, th)]
+    try:
+        c = _coeffs(dst, src)
+    except Exception:
+        return
+    warped = tex.transform((bw, bh), Image.PERSPECTIVE, c, Image.BICUBIC)
+    if opacity < 1.0:
+        a = warped.split()[3].point(lambda v: int(v * opacity))
+        warped.putalpha(a)
+    canvas.alpha_composite(warped, (max(0, x0), max(0, y0)),
+                           (max(0, -x0), max(0, -y0), bw, bh))
+
+# ---------- зал ----------
+def _poly(d, pts, fill):
+    d.polygon([(p[0], p[1]) for p in pts], fill=fill)
+
+def room(cam, windows=True, dark=0.0, shafts=True):
+    img = Image.new("RGBA", (W, H), (0, 0, 0, 255))
+    g = Image.new("L", (1, H))
+    for y in range(H):
+        t = y / H
+        g.putpixel((0, y), int(246 - 26 * abs(t - 0.5) * 2))
+    base = g.resize((W, H))
+    img = Image.merge("RGBA", (base, base, base.point(lambda v: min(255, v + 3)),
+                               Image.new("L", (W, H), 255)))
+    d = ImageDraw.Draw(img, "RGBA")
+    hor = H / 2 + (cam.y - 0.0) * 0  # горизонт на уровне взгляда
+    d.rectangle([0, hor, W, H], fill=(214, 216, 219, 255))      # пол
+    d.rectangle([0, 0, W, hor], fill=(238, 240, 242, 255))      # дальняя стена/воздух
+    # стены
+    for sx in (-1, 1):
+        p = [cam.proj((sx * WALL, CEIL, cam.z + 2.0)), cam.proj((sx * WALL, CEIL, cam.z + FAR)),
+             cam.proj((sx * WALL, 0.0, cam.z + FAR)), cam.proj((sx * WALL, 0.0, cam.z + 2.0))]
+        _poly(d, p, (233, 235, 238, 255))
+    # окна
+    if windows:
+        z0 = math.floor((cam.z + 3) / 7.0) * 7.0
+        for i in range(10):
+            zz = z0 + i * 7.0
+            for sx in (-1, 1):
+                p = [cam.proj((sx * WALL, 3.75, zz)), cam.proj((sx * WALL, 3.75, zz + 3.1)),
+                     cam.proj((sx * WALL, 1.15, zz + 3.1)), cam.proj((sx * WALL, 1.15, zz))]
+                _poly(d, p, (252, 253, 254, 255))
+                for k in range(1, 4):
+                    yy = 1.15 + 2.6 * k / 4
+                    a = cam.proj((sx * WALL, yy, zz)); b = cam.proj((sx * WALL, yy, zz + 3.1))
+                    d.line([(a[0], a[1]), (b[0], b[1])], fill=(226, 229, 233, 255), width=2)
+    # световые полосы на полу
+    if shafts:
+        lay = Image.new("RGBA", (W, H), (0, 0, 0, 0))
+        dl = ImageDraw.Draw(lay, "RGBA")
+        z0 = math.floor((cam.z + 3) / 7.0) * 7.0
+        for i in range(9):
+            zz = z0 + i * 7.0
+            for sx in (-1, 1):
+                p = [cam.proj((sx * (WALL - 0.2), 0.0, zz + 0.6)),
+                     cam.proj((sx * (WALL - 0.2), 0.0, zz + 3.5)),
+                     cam.proj((sx * (WALL - 3.4), 0.0, zz + 5.2)),
+                     cam.proj((sx * (WALL - 3.4), 0.0, zz + 2.3))]
+                dl.polygon([(q[0], q[1]) for q in p], fill=(255, 255, 255, 120))
+        lay = lay.filter(ImageFilter.GaussianBlur(9))
+        img.alpha_composite(lay)
+    if dark > 0:
+        sh = Image.new("RGBA", (W, H), (8, 7, 6, int(235 * clamp01(dark))))
+        img.alpha_composite(sh)
+    return img
+
+# ---------- угли ----------
+_SPR = None
+def _sprite():
+    global _SPR
+    if _SPR is None:
+        n = 192
+        yy, xx = np.mgrid[0:n, 0:n]
+        r = np.sqrt((xx - n/2) ** 2 + (yy - n/2) ** 2) / (n / 2)
+        a = np.clip(1 - r, 0, 1) ** 2.6
+        core = np.clip(1 - r * 3.1, 0, 1) ** 1.4
+        rgb = np.zeros((n, n, 3), np.float32)
+        rgb[..., 0] = 255 * (0.55 * a + 0.45 * core)
+        rgb[..., 1] = 255 * (0.26 * a + 0.62 * core)
+        rgb[..., 2] = 255 * (0.05 * a + 0.45 * core)
+        _SPR = (rgb, a)
+    return _SPR
+
+def embers(img, cam, pts, t):
+    rgb, al = _sprite()
+    arr = np.asarray(img.convert("RGB"), np.float32)
+    for i, (x, y, z, s) in enumerate(pts):
+        pulse = 0.78 + 0.22 * math.sin(t * 3.4 + i * 1.7)
+        px, py, dz = cam.proj((x, y, z))
+        if dz < 0.3: continue
+        size = max(6, int(s * F / dz * pulse))
+        if size > 700 or px < -size or px > W + size or py < -size or py > H + size: continue
+        sp = np.array(Image.fromarray(rgb.astype(np.uint8)).resize((size, size), Image.BILINEAR), np.float32)
+        sa = np.array(Image.fromarray((al * 255).astype(np.uint8)).resize((size, size), Image.BILINEAR), np.float32) / 255.0
+        x0, y0 = int(px - size / 2), int(py - size / 2)
+        X0, Y0 = max(0, x0), max(0, y0); X1, Y1 = min(W, x0 + size), min(H, y0 + size)
+        if X1 <= X0 or Y1 <= Y0: continue
+        sub = sp[Y0 - y0:Y1 - y0, X0 - x0:X1 - x0]
+        suba = sa[Y0 - y0:Y1 - y0, X0 - x0:X1 - x0][..., None]
+        arr[Y0:Y1, X0:X1] = np.clip(arr[Y0:Y1, X0:X1] + sub * suba * pulse, 0, 255)
+    out = Image.fromarray(arr.astype(np.uint8)).convert("RGBA")
+    return out
+
+# ---------- текстуры ----------
+def text_tex(words, fsize=210, fname="ArialBlack.ttf", pad=26, line_gap=14,
+             color=(14, 14, 16, 255), hl=None, hl_color=(255, 212, 0, 255)):
+    """words — список строк; hl — множество индексов слов с жёлтым маркером"""
+    f = font(fname, fsize)
+    tmp = ImageDraw.Draw(Image.new("RGBA", (8, 8)))
+    rows = []
+    for ln in words:
+        ws = ln.split(" ")
+        sizes = [tmp.textbbox((0, 0), w, font=f) for w in ws]
+        rows.append((ws, sizes))
+    sp = tmp.textlength(" ", font=f)
+    wmax = 0; hline = fsize * 1.02
+    for ws, sizes in rows:
+        wd = sum(s[2] - s[0] for s in sizes) + sp * (len(ws) - 1)
+        wmax = max(wmax, wd)
+    tw = int(wmax + pad * 2)
+    th = int(len(rows) * hline + (len(rows) - 1) * line_gap + pad * 2)
+    img = Image.new("RGBA", (max(tw, 8), max(th, 8)), (0, 0, 0, 0))
+    d = ImageDraw.Draw(img)
+    idx = 0
+    y = pad
+    for ws, sizes in rows:
+        x = pad
+        for w, s in zip(ws, sizes):
+            ww = s[2] - s[0]
+            if hl and idx in hl:
+                d.rectangle([x - 10, y + fsize * 0.10, x + ww + 10, y + fsize * 0.98], fill=hl_color)
+            d.text((x - s[0], y - s[1]), w, font=f, fill=color)
+            x += ww + sp
+            idx += 1
+        y += hline + line_gap
+    return img
+
+def sticker_tex(word, fsize=190, bg=(255, 212, 0, 255), fg=(12, 12, 14, 255)):
+    f = font("ArialBlack.ttf", fsize)
+    d0 = ImageDraw.Draw(Image.new("RGBA", (8, 8)))
+    b = d0.textbbox((0, 0), word, font=f)
+    pw, ph = b[2] - b[0] + fsize * 0.52, b[3] - b[1] + fsize * 0.40
+    img = Image.new("RGBA", (int(pw), int(ph)), (0, 0, 0, 0))
+    d = ImageDraw.Draw(img)
+    # рваные края: несколько прямоугольников внахлёст
+    rng = np.random.default_rng(abs(hash(word)) % 9999)
+    d.rectangle([0, ph * 0.04, pw, ph * 0.96], fill=bg)
+    for i in range(7):
+        x0 = pw * i / 7.0
+        d.rectangle([x0, ph * (0.0 + rng.uniform(0, .05)), x0 + pw / 7.0,
+                     ph * (1.0 - rng.uniform(0, .05))], fill=bg)
+    d.text(((pw - (b[2] - b[0])) / 2 - b[0], (ph - (b[3] - b[1])) / 2 - b[1]), word, font=f, fill=fg)
+    return img
+
+def sheet_tex(lines, w=620, h=400, fsize=25):
+    img = Image.new("RGBA", (w, h), (252, 252, 251, 255))
+    d = ImageDraw.Draw(img)
+    d.rectangle([0, 0, w - 1, h - 1], outline=(214, 214, 212, 255), width=2)
+    f = font("Arimo-Bold.ttf", fsize)
+    y = 26
+    for ln in lines:
+        d.text((24, y), ln, font=f, fill=(34, 34, 36, 255)); y += fsize + 9
+    fs = font("Arimo-Bold.ttf", int(fsize * 0.72))
+    for i in range(9):
+        d.line([24, y + 14 + i * 15, w - 24 - (i % 3) * 70, y + 14 + i * 15],
+               fill=(205, 206, 208, 255), width=5)
+    return img
+
+def extrude(canvas, cam, corners, tex, depth=0.30, steps=9, shade=(96, 97, 100)):
+    """объёмная плашка: копии в глубину от дальней к ближней"""
+    for i in range(steps, 0, -1):
+        k = i / steps
+        cs = [(c[0], c[1], c[2] + depth * k) for c in corners]
+        pts = [cam.proj(p) for p in cs]
+        v = int(shade[0] + (150 - shade[0]) * (1 - k) * 0.35)
+        solid = Image.new("RGBA", tex.size, (v, v, v + 2, 255))
+        solid.putalpha(tex.split()[3])
+        paste_quad(canvas, solid, pts)
+    paste_quad(canvas, tex, [cam.proj(p) for p in corners])
+
+def floor_shadow(canvas, cam, corners, tex, spread=0.55):
+    """тень объекта на полу"""
+    bl, br = corners[3], corners[2]
+    far = 0.75
+    sh = [(bl[0], 0.01, bl[2]), (br[0], 0.01, br[2]),
+          (br[0] + 0.1, 0.01, br[2] + far), (bl[0] - 0.1, 0.01, bl[2] + far)]
+    a = tex.split()[3].point(lambda v: int(v * 0.26))
+    dark = Image.new("RGBA", tex.size, (40, 42, 46, 255)); dark.putalpha(a)
+    dark = dark.filter(ImageFilter.GaussianBlur(26))
+    paste_quad(canvas, dark, [cam.proj(p) for p in sh])
+
+def reflection(canvas, cam, corners, tex, strength=0.10):
+    mir = [(c[0], -c[1], c[2]) for c in (corners[3], corners[2], corners[1], corners[0])]
+    t = tex.filter(ImageFilter.GaussianBlur(18))
+    a = t.split()[3].point(lambda v: int(v * strength))
+    t.putalpha(a)
+    paste_quad(canvas, t, [cam.proj(p) for p in mir])
+
+def wire(canvas, cam, top_point, color=(118, 120, 124, 210), width=2):
+    a = cam.proj((top_point[0], CEIL, top_point[2]))
+    b = cam.proj(top_point)
+    d = ImageDraw.Draw(canvas, "RGBA")
+    d.line([(a[0], a[1]), (b[0], b[1])], fill=color, width=width)
+
+def source_line(canvas, text):
+    d = ImageDraw.Draw(canvas, "RGBA")
+    f = font("Arimo-Bold.ttf", 25)
+    d.text((54, H - 62), text, font=f, fill=(96, 98, 102, 255))

@@ -1,0 +1,50 @@
+# Белый зал: приёмы входа, каждый клип на своей машине. Публичный репозиторий — минуты не тратятся.
+name: zal
+on:
+  workflow_dispatch:
+    inputs:
+      scenes:
+        description: "какие приёмы считать, списком JSON"
+        default: '["G02","G10","G13"]'
+  push:
+    paths: ["zal/**"]
+concurrency:
+  group: zal-${{ github.sha }}
+  cancel-in-progress: false
+permissions:
+  contents: write
+jobs:
+  clip:
+    runs-on: ubuntu-latest
+    timeout-minutes: 40
+    strategy:
+      fail-fast: false
+      matrix:
+        scene: ${{ fromJSON(github.event.inputs.scenes || '["G02","G10","G13"]') }}
+    steps:
+      - uses: actions/checkout@v4
+      - name: Библиотеки
+        run: pip install --quiet --upgrade numpy pillow imageio-ffmpeg
+      - name: Собрать клип
+        env:
+          ZAL_FONTS: ${{ github.workspace }}/zal/fonts
+        run: |
+          cd zal
+          time python3 shard_zal.py "${{ matrix.scene }}" "$GITHUB_WORKSPACE/zal_${{ matrix.scene }}.mp4"
+      - uses: actions/upload-artifact@v4
+        with:
+          name: zal-${{ matrix.scene }}
+          path: zal_${{ matrix.scene }}.mp4
+          retention-days: 1
+  pack:
+    needs: clip
+    if: always()
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/download-artifact@v4
+        with: {path: clips, merge-multiple: true}
+      - env: {GH_TOKEN: "${{ github.token }}"}
+        run: |
+          ls -la clips
+          tag="zal-${{ github.run_id }}"
+          gh release create "$tag" clips/*.mp4 -R "${{ github.repository }}" -t "$tag" -n "Белый зал: приёмы входа."
