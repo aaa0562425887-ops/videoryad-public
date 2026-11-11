@@ -92,7 +92,7 @@ def paste_quad(canvas, tex, pts2d, opacity=1.0):
 def _poly(d, pts, fill):
     d.polygon([(p[0], p[1]) for p in pts], fill=fill)
 
-def room(cam, windows=True, dark=0.0, shafts=True):
+def room(cam, windows=True, dark=0.0, shafts=True, ropes=True):
     img = Image.new("RGBA", (W, H), (0, 0, 0, 255))
     g = Image.new("L", (1, H))
     for y in range(H):
@@ -138,6 +138,17 @@ def room(cam, windows=True, dark=0.0, shafts=True):
                 dl.polygon([(q[0], q[1]) for q in p], fill=(255, 255, 255, 120))
         lay = lay.filter(ImageFilter.GaussianBlur(9))
         img.alpha_composite(lay)
+    if ropes:
+        rng = np.random.default_rng(5)
+        dr = ImageDraw.Draw(img, "RGBA")
+        z0 = math.floor((cam.z + 4) / 3.0) * 3.0
+        for i in range(26):
+            zz = z0 + (i % 13) * 3.0 + float(rng.uniform(-1.0, 1.0))
+            xx = float(rng.uniform(-4.6, 4.6))
+            yy = float(rng.uniform(0.9, 2.4))
+            if zz - cam.z < 1.5: continue
+            a = cam.proj((xx, CEIL, zz)); b = cam.proj((xx, yy, zz))
+            dr.line([(a[0], a[1]), (b[0], b[1])], fill=(150, 152, 156, 255), width=1)
     if dark > 0:
         sh = Image.new("RGBA", (W, H), (8, 7, 6, int(235 * clamp01(dark))))
         img.alpha_composite(sh)
@@ -154,9 +165,9 @@ def _sprite():
         a = np.clip(1 - r, 0, 1) ** 1.15
         core = np.clip(1 - r * 1.75, 0, 1) ** 1.1
         rgb = np.zeros((n, n, 3), np.float32)
-        rgb[..., 0] = 255 * (0.55 * a + 0.45 * core)
-        rgb[..., 1] = 255 * (0.26 * a + 0.62 * core)
-        rgb[..., 2] = 255 * (0.05 * a + 0.45 * core)
+        rgb[..., 0] = 255 * (0.60 * a + 0.40 * core)
+        rgb[..., 1] = 255 * (0.30 * a + 0.70 * core)
+        rgb[..., 2] = 255 * (0.06 * a + 0.94 * core)
         _SPR = (rgb, a)
     return _SPR
 
@@ -191,19 +202,19 @@ def embers(img, cam, pts, t, glow=0.95):
         sub = sp[Y0 - y0:Y1 - y0, X0 - x0:X1 - x0]
         suba = sa[Y0 - y0:Y1 - y0, X0 - x0:X1 - x0][..., None]
         add[Y0:Y1, X0:X1] += sub * suba * pulse * 0.55
-        ca[Y0:Y1, X0:X1] = np.maximum(ca[Y0:Y1, X0:X1], np.clip(suba * 2.2 - 0.25, 0, 1))
+        ca[Y0:Y1, X0:X1] = np.maximum(ca[Y0:Y1, X0:X1], np.clip(suba * 2.6 - 0.45, 0, 1))
     if ca.max() <= 0 and add.max() <= 0:
         return img
     halo = np.asarray(Image.fromarray(np.clip(add, 0, 255).astype(np.uint8))
                       .filter(ImageFilter.GaussianBlur(46)), np.float32)
     arr = np.asarray(img.convert("RGB"), np.float32)
-    core = np.array([255.0, 158.0, 48.0], np.float32)
+    core = np.array([255.0, 182.0, 92.0], np.float32)
     arr = arr * (1 - ca) + core * ca
     arr = arr + add * 0.5 + halo * glow
     return Image.fromarray(np.clip(arr, 0, 255).astype(np.uint8)).convert("RGBA")
 
 # ---------- текстуры ----------
-def text_tex(words, fsize=210, fname="ArialBlack.ttf", pad=26, line_gap=14,
+def text_tex(words, fsize=210, fname="ArialBlack.ttf", pad=26, line_gap=14, cond=1.0,
              color=(14, 14, 16, 255), hl=None, hl_color=(255, 212, 0, 255)):
     """words — список строк; hl — множество индексов слов с жёлтым маркером"""
     f = font(fname, fsize)
@@ -234,6 +245,8 @@ def text_tex(words, fsize=210, fname="ArialBlack.ttf", pad=26, line_gap=14,
             x += ww + sp
             idx += 1
         y += hline + line_gap
+    if cond != 1.0:
+        img = img.resize((max(4, int(img.size[0] * cond)), img.size[1]), Image.LANCZOS)
     return img
 
 def sticker_tex(word, fsize=190, bg=(255, 212, 0, 255), fg=(12, 12, 14, 255)):
@@ -350,54 +363,86 @@ def word_tiles(lines, fsize=220, fname="ArialBlack.ttf", hl=None,
 
 # ---------- панель «эфира»: наша, без чужих кадров ----------
 def tv_tex(caption=None, w=960, h=540, t=0.0):
-    img = Image.new("RGBA", (w, h), (12, 26, 58, 255))
+    img = Image.new("RGBA", (w, h), (46, 34, 104, 255))
     d = ImageDraw.Draw(img, "RGBA")
     for i in range(h):
         k = i / h
-        d.line([(0, i), (w, i)], fill=(int(10 + 36 * k), int(24 + 52 * k), int(60 + 86 * k), 255))
-    rng = np.random.default_rng(7)
-    bok = Image.new("RGBA", (w, h), (0, 0, 0, 0))
-    bd = ImageDraw.Draw(bok)
-    for i in range(30):
-        bx, by = rng.uniform(0, w), rng.uniform(0, h * 0.78)
-        r = rng.uniform(8, 26)
-        bd.ellipse([bx - r, by - r, bx + r, by + r], fill=(130, 175, 235, 30))
-    img.alpha_composite(bok.filter(ImageFilter.GaussianBlur(7)))
-    glow = Image.new("RGBA", (w, h), (0, 0, 0, 0))
-    gd = ImageDraw.Draw(glow)
-    gd.ellipse([w * 0.18, -h * 0.25, w * 0.82, h * 0.72], fill=(70, 120, 200, 70))
-    gd.ellipse([w * 0.34, h * 0.02, w * 0.66, h * 0.52], fill=(120, 170, 235, 55))
-    img.alpha_composite(glow.filter(ImageFilter.GaussianBlur(70)))
-    for i in range(3):
-        yy = h * (0.17 + i * 0.11)
-        d.line([(w * 0.12, yy), (w * 0.88, yy + h * 0.008)], fill=(115, 160, 225, 14), width=2)
-    d.polygon([(w * 0.14, h), (w * 0.27, h * 0.56), (w * 0.73, h * 0.56), (w * 0.86, h)],
-              fill=(14, 28, 60, 255))
-    d.line([(w * 0.27, h * 0.56), (w * 0.73, h * 0.56)], fill=(110, 150, 215, 150), width=4)
-    vig = Image.new("RGBA", (w, h), (0, 0, 0, 0))
-    vd = ImageDraw.Draw(vig)
-    vd.rectangle([0, 0, w, h], fill=(0, 0, 0, 78))
-    vd.ellipse([-w * 0.25, -h * 0.35, w * 1.25, h * 1.25], fill=(0, 0, 0, 0))
-    img.alpha_composite(vig.filter(ImageFilter.GaussianBlur(90)))
-    d.rectangle([0, h * 0.86, w, h], fill=(236, 238, 242, 255))
-    ftag = font("Arimo-Bold.ttf", int(h * 0.038))
-    tagw = d.textlength("ПРЯМОЙ ЭФИР", font=ftag)
-    d.rectangle([w * 0.03, h * 0.885, w * 0.03 + tagw + h * 0.05, h * 0.955], fill=(206, 32, 38, 255))
-    d.text((w * 0.03 + h * 0.025, h * 0.900), "ПРЯМОЙ ЭФИР", font=ftag, fill=(255, 255, 255, 255))
-    d.text((w * 0.30, h * 0.897), "ЗАЯВЛЕНИЕ ПО ИТОГАМ ПЕРЕГОВОРОВ",
-           font=font("Arimo-Bold.ttf", int(h * 0.046)), fill=(22, 24, 28, 255))
+        d.line([(0, i), (w, i)], fill=(int(52 + 26 * k), int(38 + 20 * k), int(118 + 40 * k), 255))
+    lay = Image.new("RGBA", (w, h), (0, 0, 0, 0))
+    ld = ImageDraw.Draw(lay)
+    ld.rectangle([w * 0.00, 0, w * 0.085, h], fill=(126, 84, 46, 255))      # деревянная панель слева
+    ld.rectangle([w * 0.085, 0, w * 0.125, h], fill=(206, 212, 236, 210))   # светящаяся полоса
+    ld.ellipse([w * 0.10, -h * 0.35, w * 0.55, h * 1.15], fill=(190, 200, 240, 60))
+    ld.ellipse([w * 0.55, -h * 0.25, w * 1.05, h * 0.95], fill=(120, 110, 220, 55))
+    img.alpha_composite(lay.filter(ImageFilter.GaussianBlur(26)))
+    gf = font("ArialBlack.ttf", int(h * 0.085))
+    gl = Image.new("RGBA", (w, h), (0, 0, 0, 0)); gd = ImageDraw.Draw(gl)
+    for r in range(4):
+        for c in range(3):
+            gd.text((w * (0.20 + c * 0.28), h * (0.10 + r * 0.22)), "ЭФИР", font=gf,
+                    fill=(255, 255, 255, 11))
+    img.alpha_composite(gl.filter(ImageFilter.GaussianBlur(2)))
+    # нижняя плашка
+    d.rectangle([0, h * 0.775, w * 0.30, h * 0.845], fill=(78, 48, 152, 255))
+    d.text((w * 0.022, h * 0.787), "НОВОСТИ ДНЯ", font=font("ArialBlack.ttf", int(h * 0.040)),
+           fill=(255, 255, 255, 255))
+    d.polygon([(0, h * 0.855), (w * 0.985, h * 0.855), (w, h * 0.905), (w * 0.985, h * 0.955),
+               (0, h * 0.955)], fill=(246, 247, 250, 255))
+    d.text((w * 0.025, h * 0.879), "ТЕЛЕКАНАЛ", font=font("ArialBlack.ttf", int(h * 0.044)),
+           fill=(26, 26, 30, 255))
+    d.line([(w * 0.235, h * 0.872), (w * 0.235, h * 0.942)], fill=(120, 122, 130, 255), width=3)
+    d.text((w * 0.256, h * 0.879), "ЗАЯВЛЕНИЕ ПО ИТОГАМ ПЕРЕГОВОРОВ",
+           font=font("ArialBlack.ttf", int(h * 0.044)), fill=(26, 26, 30, 255))
     if caption:
         f = font("Arimo-Bold.ttf", int(h * 0.062))
         y = h * 0.60
         for ln in caption:
             tw = d.textlength(ln, font=f)
-            d.text(((w - tw) / 2 + 2, y + 2), ln, font=f, fill=(0, 0, 0, 170))
             d.text(((w - tw) / 2, y), ln, font=f, fill=(255, 255, 255, 255))
             y += h * 0.078
     return img
 
 
-# ---------- блок текста, который набирается по словам и висит на нитях ----------
+# ---------- разбор текста на отдельные слова (для набора по словам) ----------
+def word_tiles(lines, fsize=220, fname="ArialBlack.ttf", hl=None,
+               color=(14, 14, 16, 255), hl_color=(255, 212, 0, 255),
+               line_gap=16, pad=20):
+    """возвращает (общая ширина, общая высота, [(картинка слова, cx, cy)])
+    cx, cy — центр слова в координатах общего блока."""
+    f = font(fname, fsize)
+    d0 = ImageDraw.Draw(Image.new("RGBA", (8, 8)))
+    sp = d0.textlength(" ", font=f)
+    rows = []
+    for ln in lines:
+        ws = ln.split(" ")
+        bb = [d0.textbbox((0, 0), w, font=f) for w in ws]
+        width = sum(b[2] - b[0] for b in bb) + sp * (len(ws) - 1)
+        rows.append((ws, bb, width))
+    total_w = max(r[2] for r in rows) + pad * 2
+    hline = fsize * 1.02
+    total_h = len(rows) * hline + (len(rows) - 1) * line_gap + pad * 2
+    tiles = []
+    idx = 0
+    y = pad
+    for ws, bb, width in rows:
+        x = (total_w - width) / 2
+        for w, b in zip(ws, bb):
+            ww, hh = b[2] - b[0], b[3] - b[1]
+            mark = bool(hl and idx in hl)
+            tw = int(ww + fsize * 0.14)
+            th = int(hline)
+            tile = Image.new("RGBA", (max(tw, 4), max(th, 4)), (0, 0, 0, 0))
+            td = ImageDraw.Draw(tile)
+            if mark:
+                td.rectangle([0, hline * 0.12, tw, hline * 0.95], fill=hl_color)
+            td.text(((tw - ww) / 2 - b[0], (th - hh) / 2 - b[1]), w, font=f, fill=color)
+            tiles.append((tile, x + ww / 2, y + hline / 2))
+            x += ww + sp
+            idx += 1
+        y += hline + line_gap
+    return total_w, total_h, tiles
+
+# ---------- панель «эфира»: наша, без чужих кадров ----------
 def build_block(items, t, start=0.0, step=0.25, maxlines=3):
     """items: ('w', слово, жёлтый?) или ('br',). Возвращает (строки, множество жёлтых индексов)"""
     rows, flags = [[]], [[]]
@@ -467,26 +512,33 @@ def maket_tex(kind, px=420):
         d.rectangle([px*0.46, px*0.06, px*0.54, px*0.22], fill=ink, outline=edge, width=3)
         d.rectangle([px*0.38, px*0.11, px*0.62, px*0.17], fill=ink, outline=edge, width=3)
     else:  # power
+        edge = (78, 80, 84, 255)
         for sx in (0.28, 0.72):
             d.line([(px*(sx-0.14), px*0.95), (px*sx, px*0.16)], fill=edge, width=5)
             d.line([(px*(sx+0.14), px*0.95), (px*sx, px*0.16)], fill=edge, width=5)
             d.line([(px*(sx-0.11), px*0.72), (px*(sx+0.11), px*0.72)], fill=edge, width=4)
             d.line([(px*(sx-0.07), px*0.46), (px*(sx+0.07), px*0.46)], fill=edge, width=4)
             d.line([(px*(sx-0.13), px*0.26), (px*(sx+0.13), px*0.26)], fill=edge, width=4)
+            for j in range(4):
+                y0 = px*(0.30 + j*0.16); y1 = px*(0.30 + (j+1)*0.16)
+                k0 = 0.07 + j*0.022; k1 = 0.07 + (j+1)*0.022
+                d.line([(px*(sx-k0), y0), (px*(sx+k1), y1)], fill=edge, width=2)
+                d.line([(px*(sx+k0), y0), (px*(sx-k1), y1)], fill=edge, width=2)
         d.line([(px*0.28, px*0.26), (px*0.72, px*0.30)], fill=edge, width=3)
         d.line([(px*0.28, px*0.46), (px*0.72, px*0.50)], fill=edge, width=3)
     return img
 
 # ---------- тёмная плашка со значением ----------
-def plate_tex(value, sub=None, px=520):
+def plate_tex(value, sub=None, px=520, color=(255, 196, 42, 255)):
     h = int(px * 0.46)
-    img = Image.new("RGBA", (px, h), (26, 24, 22, 255))
+    img = Image.new("RGBA", (px, h), (96, 82, 64, 255))
     d = ImageDraw.Draw(img)
-    d.rectangle([0, 0, px - 1, h - 1], outline=(92, 80, 60, 255), width=5)
+    d.rectangle([14, 14, px - 15, h - 15], fill=(30, 26, 22, 255))
+    d.rectangle([0, 0, px - 1, h - 1], outline=(120, 104, 80, 255), width=4)
     f = font("Oswald-Bold.ttf", int(h * 0.62))
     b = d.textbbox((0, 0), value, font=f)
     d.text(((px - (b[2] - b[0])) / 2 - b[0], (h - (b[3] - b[1])) / 2 - b[1]), value, font=f,
-           fill=(255, 196, 42, 255))
+           fill=color)
     return img
 
 # ---------- вертикальная шкала-столб ----------

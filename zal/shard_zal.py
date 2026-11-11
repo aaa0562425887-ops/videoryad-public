@@ -2,7 +2,7 @@
 """Клипы приёмов белого зала: G02, G10, G13. Запуск: shard_zal.py <код> <out.mp4>"""
 import sys, os, math, subprocess
 import numpy as np
-from PIL import Image, ImageDraw
+from PIL import Image, ImageDraw, ImageFilter
 sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
 import zal_core as Z
 from zal_core import Cam, quad, paste_quad, room, embers, cluster, text_tex, sticker_tex, word_tiles, tv_tex, source_line, \
@@ -139,166 +139,214 @@ def put_words(img, cam, lines, center, line_h, t, start=0.0, step=0.22,
         extrude(img, cam, c, tile, depth=depth, steps=steps)
     return tw, th
 
-# ---------------- G11 · слова спускаются на нитях, в центре стеклянный куб ----------------
+KX, KY = 0.9754, 0.5487   # W/F и H/F — перевод доли кадра в метры на метр дальности
+
+def wx(camx, d, fx): return camx + (fx - 0.5) * KX * d
+def wy(camy, d, fy): return camy + (0.5 - fy) * KY * d
+
+# ---------------- G11 · текст по словам + стеклянный куб ----------------
 def g11(t):
-    cam = Cam(x=1.25, y=1.02, z=0.30 * t)
+    CY = 1.45
+    cam = Cam(x=0.0, y=CY, z=0.26 * t)
     img = room(cam)
-    # белый лист на полу и угли на нём
-    sheet = Image.new("RGBA", (300, 300), (250, 250, 249, 255))
+    # белый лист на полу под углями
+    sheet = Image.new("RGBA", (320, 320), (250, 250, 249, 255))
     paste_quad(img, sheet, [cam.proj(p) for p in
-               [(-1.15, 0.012, 10.05), (0.65, 0.012, 10.05), (0.65, 0.012, 8.35), (-1.15, 0.012, 8.35)]])
-    if t >= 2.05:
-        glass_cube(img, cam, (-0.25, 1.22, 9.2), 2.44)
-    items = [("w","ОНИ",0),("w","ХОТЕЛИ",0),("w","ПРОВЕРИТЬ,",0),("br",),
+               [(-0.30, 0.012, 6.60), (1.95, 0.012, 6.60), (1.95, 0.012, 4.35), (-0.30, 0.012, 4.35)]])
+    if t >= 2.30:
+        glass_cube(img, cam, (0.95, 0.95, 5.45), 1.92)
+    D = 7.0
+    X0, YT, LH = wx(0, D, 0.13), wy(CY, D, 0.07), 0.14 * KY * D
+    items = [("w","ОНИ",0),("w","ХОТЕЛИ",0),("w","УЗНАТЬ,",0),("br",),
              ("w","НАСКОЛЬКО",0),("w","УМЁН",1),("br",),
              ("w","САМЫЙ",0),("w","СИЛЬНЫЙ",0),("w","ИЗ",0),("w","НИХ.",0)]
-    lines, hl = build_block(items, t, start=0.15, step=0.25, maxlines=2)
-    if t < 2.05:
-        hang_block(img, cam, lines, hl, (-1.05, 2.45, 7.2), 0.30, fsize=180)
+    it2 = [("w","И",0),("w","ЗАПЕРЛИ",1),("w","ЕГО",0),("br",),("w","В",0),("w","ПЕСОЧНИЦЕ.",0)]
+    if t < 2.30:
+        lines, hl = build_block(items, t, start=0.10, step=0.30, maxlines=3)
     else:
-        it2 = [("w","И",0),("w","ЗАПЕРЛИ",1),("w","ЕГО",0),("br",),("w","В",0),("w","ПЕСОЧНИЦЕ.",0)]
-        l2, h2 = build_block(it2, t, start=2.20, step=0.25, maxlines=2)
-        hang_block(img, cam, l2, h2, (-1.05, 2.45, 7.2), 0.30, fsize=180)
-    img = embers(img, cam, cluster(-0.25, 0.16, 9.2, 0.52, 6, 21), t)
+        lines, hl = build_block(it2, t, start=2.45, step=0.30, maxlines=3)
+    if lines:
+        tex = text_tex(lines, fsize=250, fname="ArialBlack.ttf", hl=hl, cond=0.84, line_gap=4)
+        h = LH * len(lines)
+        w = h * tex.size[0] / tex.size[1]
+        extrude(img, cam, quad((X0 + w / 2, YT - h / 2, D), w, h), tex, depth=0.07, steps=4)
+    img = embers(img, cam, cluster(0.80, 0.34, 5.3, 0.50, 5, 21), t)
     return img
 
-# ---------------- G12 · маркер со словом + макеты вырастают с подписями ----------------
+# ---------------- G12 · фраза + три белых макета с подписями ----------------
 def g12(t):
-    cam = Cam(x=0.0, y=1.34, z=0.26 * t)
+    CY = 1.45
+    cam = Cam(x=0.0, y=CY, z=0.22 * t)
     img = room(cam)
-    items = [("w","ТЕМ",0),("w","САМЫМ,",0),("w","ЧЕМ",0),("br",),
-             ("w","ЛОМАЮТ",1),("w","БАНКИ",0),("w","И",0),("w","БОЛЬНИЦЫ.",0)]
-    lines, hl = build_block(items, t, start=0.12, step=0.24, maxlines=2)
-    hang_block(img, cam, lines, hl, (-1.9, 2.82, 7.6), 0.32, fsize=190, wires=False)
-    mk = [("bank", "БАНКИ", -2.05, 1.18, 9.0), ("hospital", "БОЛЬНИЦЫ", 0.0, 1.10, 9.0),
-          ("power", "ЭНЕРГОСЕТИ", 2.15, 1.26, 9.0)]
+    mk = [("bank", "БАНКИ", -5.5, 2.5, 15.5), ("hospital", "БОЛЬНИЦЫ", -0.45, 2.55, 13.2),
+          ("power", "ЭНЕРГОСЕТИ", 3.6, 2.65, 12.0)]
     for i, (kind, label, x, size, z) in enumerate(mk):
-        t0 = 1.05 + i * 0.52
+        t0 = 0.95 + i * 0.48
         if t < t0: continue
-        k = out_back((t - t0) / 0.34)
+        k = out_back((t - t0) / 0.32)
         hh = size * max(0.02, k)
         tex = maket_tex(kind)
         c = quad((x, hh / 2, z), size * (hh / size), hh)
         floor_shadow(img, cam, c, tex)
-        extrude(img, cam, c, tex, depth=0.30, steps=6, shade=(176, 179, 184))
-        lab = text_tex([label], fsize=110, fname="Oswald-Bold.ttf")
-        lh = 0.17; lw = lh * lab.size[0] / lab.size[1]
-        paste_quad(img, lab, [cam.proj(p) for p in quad((x, 0.16, z - 0.35), lw, lh)])
-        if i and t >= t0:
-            plus = text_tex(["+"], fsize=150, fname="Oswald-Bold.ttf")
-            ph = 0.22; pw = ph * plus.size[0] / plus.size[1]
-            paste_quad(img, plus, [cam.proj(p) for p in quad(((x + mk[i-1][2]) / 2, 0.62, z), pw, ph)])
-    img = embers(img, cam, cluster(-3.4, 0.22, 7.0, 0.52, 4, 22), t)
+        extrude(img, cam, c, tex, depth=0.55, steps=6, shade=(188, 191, 196))
+        lab = text_tex([label], fsize=150, fname="ArialBlack.ttf", cond=0.84)
+        lh = 0.05 * KY * z; lw = lh * lab.size[0] / lab.size[1]
+        paste_quad(img, lab, [cam.proj(p) for p in quad((x, 0.26, z - 1.3), lw, lh)])
+    D = 8.0
+    X0, YT, LH = wx(0, D, 0.15), wy(CY, D, 0.05), 0.12 * KY * D
+    items = [("w","ТЕМ",0),("w","САМЫМ,",0),("w","ЧЕМ",0),("br",),
+             ("w","ЛОМАЮТ",1),("w","БАНКИ",0),("w","И",0),("w","СЕТИ.",0)]
+    lines, hl = build_block(items, t, start=0.10, step=0.28, maxlines=2)
+    if lines:
+        tex = text_tex(lines, fsize=250, fname="ArialBlack.ttf", hl=hl, cond=0.84, line_gap=4)
+        h = LH * len(lines); w = h * tex.size[0] / tex.size[1]
+        extrude(img, cam, quad((X0 + w / 2, YT - h / 2, D), w, h), tex, depth=0.07, steps=4)
+    img = embers(img, cam, cluster(-3.6, 0.26, 7.5, 0.44, 3, 22), t)
     return img
 
-# ---------------- G26 · панель заполняет кадр, надписи справа столбиком ----------------
-def _tv_column(img, t, header, sub, blocks, big=None):
+# ---------------- G26 · панель заполняет кадр, столбец справа ----------------
+def _frame_text(img, x, y, txt, size, color, fname="Arimo-Bold.ttf", shadow=True, stroke=0):
     d = ImageDraw.Draw(img, "RGBA")
-    x = SW - 640
-    lay = Image.new("RGBA", (SW, SH), (0, 0, 0, 0))
-    dl = ImageDraw.Draw(lay)
-    dl.rectangle([x - 26, 150, x - 22, 150 + 520], fill=(255, 255, 255, 150))
-    img.alpha_composite(lay)
-    y = 168
-    if big:
-        fb = font("Oswald-Bold.ttf", 118)
-        for ln in big:
-            d.text((x + 2, y + 3), ln, font=fb, fill=(0, 0, 0, 120))
-            d.text((x, y), ln, font=fb, fill=(255, 205, 40, 255))
-            y += 126
-    elif header:
-        fh = font("Oswald-Bold.ttf", 54)
-        d.text((x, y), header, font=fh, fill=(255, 255, 255, 255)); y += 62
-        fs = font("Arimo-Bold.ttf", 30)
-        d.text((x, y), sub, font=fs, fill=(226, 228, 232, 235)); y += 64
-    ft = font("Arimo-Bold.ttf", 38)
-    for ln in blocks:
-        d.text((x + 2, y + 2), ln, font=ft, fill=(0, 0, 0, 130))
-        d.text((x, y), ln, font=ft, fill=(255, 255, 255, 255))
-        y += 48
+    f = font(fname, size)
+    if shadow:
+        d.text((x + 3, y + 3), txt, font=f, fill=(0, 0, 0, 150))
+    if stroke:
+        for dx in (-stroke, 0, stroke):
+            for dy in (-stroke, 0, stroke):
+                if dx or dy: d.text((x + dx, y + dy), txt, font=f, fill=(24, 18, 6, 255))
+    d.text((x, y), txt, font=f, fill=color)
 
 def g26(t):
-    cam = Cam(x=0.0, y=1.50, z=0.30 * t)
-    if t < 0.70:
+    CY = 1.52
+    cam = Cam(x=0.0, y=CY, z=0.24 * t)
+    if t < 0.90:
         img = room(cam)
-        k = out_cubic(t / 0.70)
-        pw = 3.0 + 9.0 * k
-        z = 7.4 - 5.6 * k
-        ph = pw * 540 / 960
+        k = (t / 0.90) ** 1.35
+        d = 6.6 - 5.1 * k
+        pw = (0.63 + 0.55 * k) * KX * d
+        ph = pw * 9 / 16
         tex = tv_tex(None)
-        c = quad((0.0, cam.y + (1.95 - cam.y) * (1 - k), z), pw, ph)
-        if k < 0.5:
-            wire(img, cam, (-pw * 0.4, cam.y + ph / 2, z)); wire(img, cam, (pw * 0.4, cam.y + ph / 2, z))
-        paste_quad(img, tex, [cam.proj(p) for p in c])
-        img = embers(img, cam, cluster(2.8, 0.22, 9.0, 0.5, 3, 23), t)
+        frame = Image.new("RGBA", (tex.size[0] + 56, tex.size[1] + 56), (28, 28, 30, 255))
+        frame.paste(tex, (28, 28))
+        c = quad((wx(0, d, 0.455), wy(CY, d, 0.45), d), pw * 1.06, ph * 1.12)
+        paste_quad(img, frame, [cam.proj(p) for p in c])
+        if k < 0.62:
+            for ln, yy in (("Я СКАЗАЛ ЭТО", 0.022), ("В ПРЯМОМ ЭФИРЕ", 0.845)):
+                tx = text_tex([ln], fsize=240, fname="ArialBlack.ttf", cond=0.84)
+                hh = int(SH * 0.125); ww = int(hh * tx.size[0] / tx.size[1])
+                tx = tx.resize((ww, hh), Image.LANCZOS)
+                img.alpha_composite(tx, (int(SW * 0.46) - ww // 2, int(SH * yy)))
         return img
     img = tv_tex(None, w=SW, h=SH).convert("RGBA")
-    reps = [(0.85, None, []),
-            (1.05, "ОЛЕГ ВОРОНОВ", ["Мы рассчитываем,"]),
-            (1.30, "ОЛЕГ ВОРОНОВ", ["Мы рассчитываем,", "что соглашение"]),
-            (1.58, "ОЛЕГ ВОРОНОВ", ["Мы рассчитываем,", "что соглашение", "будет подписано"]),
-            (1.86, "ОЛЕГ ВОРОНОВ", ["Мы рассчитываем,", "что соглашение", "будет подписано", "до конца недели."]),
-            (2.55, "ОЛЕГ ВОРОНОВ", ["Остальные вопросы"]),
-            (2.80, "ОЛЕГ ВОРОНОВ", ["Остальные вопросы", "вынесены"]),
-            (3.05, "ОЛЕГ ВОРОНОВ", ["Остальные вопросы", "вынесены", "на следующий раунд."])]
-    head, blocks = None, []
-    for t0, h, b in reps:
-        if t >= t0: head, blocks = h, b
+    XC = int(SW * 0.585)
+    sh = Image.new("RGBA", (SW, SH), (0, 0, 0, 0))
+    ImageDraw.Draw(sh).rectangle([XC - 120, 0, SW, int(SH * 0.78)], fill=(10, 8, 24, 110))
+    img.alpha_composite(sh.filter(ImageFilter.GaussianBlur(60)))
+    reps = [(1.05, ["Мы рассчитываем,"]), (1.33, ["Мы рассчитываем,", "что соглашение"]),
+            (1.61, ["Мы рассчитываем,", "что соглашение", "будет подписано"]),
+            (1.89, ["Мы рассчитываем,", "что соглашение", "будет подписано", "до конца недели."]),
+            (2.70, ["Остальные вопросы"]), (2.98, ["Остальные вопросы", "вынесены"]),
+            (3.26, ["Остальные вопросы", "вынесены", "на следующий раунд."])]
+    blocks = []
+    for t0, b in reps:
+        if t >= t0: blocks = b
     big = None
-    if t >= 3.45:
-        big = ["ДО КОНЦА"] if t < 3.75 else ["ДО КОНЦА", "НЕДЕЛИ"]
-        head = None
-        blocks = ["а по остальному —"] if t >= 3.95 else []
-        if t >= 4.20: blocks = ["а по остальному —", "новый раунд."]
-    _tv_column(img, t, head, "Телеканал · 7 ноября 2026", blocks, big)
+    if t >= 3.95:
+        big = ["НОВЫЙ"] if t < 4.30 else ["НОВЫЙ", "РАУНД"]
+        blocks = [] if t < 4.70 else ["а это значит —"]
+        if t >= 4.95: blocks = ["а это значит —", "ещё месяц."]
+    y = int(SH * 0.045)
+    if big:
+        for ln in big:
+            _frame_text(img, XC, y, ln, 128, (255, 198, 30, 255), "ArialBlack.ttf", True, 4)
+            y += 150
+        y += 18
+    else:
+        d = ImageDraw.Draw(img, "RGBA")
+        d.rectangle([XC - 26, y + 6, XC - 18, y + 110], fill=(255, 198, 30, 255))
+        _frame_text(img, XC, y, "ОЛЕГ ВОРОНОВ", 56, (255, 255, 255, 255), "ArialBlack.ttf")
+        _frame_text(img, XC, y + 68, "Телеканал · 7 ноября 2026", 38, (238, 240, 244, 255))
+        y += 150
+    for ln in blocks:
+        _frame_text(img, XC, y, ln, 44, (255, 255, 255, 255))
+        y += 58
     return img
 
-# ---------------- G15 · шкала-столб: плашка едет вверх, число добегает ----------------
+# ---------------- G15 · шкала наливается, плашка едет вверх ----------------
 def g15(t):
-    cam = Cam(x=0.35, y=1.34, z=0.22 * t)
+    CY = 1.45
+    cam = Cam(x=0.0, y=CY, z=0.16 * t)
     img = room(cam)
-    X, Z = -1.55, 8.6
-    scale_column(img, cam, X, Z, wdt=0.10)
-    # пояснение справа, прижатое вправо
-    expl = text_tex(["ДОЛЯ РАБОТЫ ПО СОЗДАНИЮ", "НОВЫХ СИСТЕМ, КОТОРУЮ", "ВЕДЁТ САМ ИИ"], fsize=92,
-                    fname="Oswald-Bold.ttf")
-    eh = 0.50; ew = eh * expl.size[0] / expl.size[1]
-    paste_quad(img, expl, [cam.proj(p) for p in quad((1.55, 1.05, Z), ew, eh)])
-    # фраза слева сверху по словам
-    items = [("w","ТОГДА",0),("w","ЭТО",0),("w","БЫЛО",0),("br",),
-             ("w","МЕНЬШЕ",0),("w","ПРОЦЕНТА",1),("w","РАБОТЫ.",0)]
-    lines, hl = build_block(items, t, start=0.30, step=0.26, maxlines=2)
-    hang_block(img, cam, lines, hl, (-2.25, 3.05, 7.2), 0.27, fsize=175, wires=False)
-    # значение: сначала внизу «<1%», потом едет вверх и число добегает
-    grow_t0, grow_dur = 2.15, 1.05
-    if t >= 0.55:
-        if t < grow_t0:
-            val, yy = "<1%", 0.42
+    D = 10.6
+    X = wx(0, D, 0.28)
+    GT0, GDUR, RISE = 2.30, 1.10, 1.70
+    k = out_expo((t - GT0) / GDUR) if t >= GT0 else 0.0
+    # столб с делениями
+    col = Image.new("RGBA", (36, 900), (58, 48, 40, 255))
+    dc = ImageDraw.Draw(col)
+    for i in range(30):
+        dc.line([(2, 20 + i * 29), (15, 20 + i * 29)], fill=(226, 224, 220, 255), width=3)
+    if k > 0:
+        fill_h = int(900 * min(1.0, (0.10 + RISE * k) / 4.4))
+        glow = Image.new("RGBA", (36, fill_h), (255, 168, 54, 255))
+        col.paste(glow, (0, 900 - fill_h))
+    cq = quad((X, 2.2, D), 0.16, 4.4)
+    extrude(img, cam, cq, col, depth=0.16, steps=3, shade=(46, 38, 32))
+    # основание-плита
+    base = Image.new("RGBA", (120, 40), (52, 44, 38, 255))
+    paste_quad(img, base, [cam.proj(p) for p in
+               [(X - 0.45, 0.015, D + 0.45), (X + 0.45, 0.015, D + 0.45),
+                (X + 0.45, 0.015, D - 0.45), (X - 0.45, 0.015, D - 0.45)]])
+    # плашка со значением
+    if t >= 0.70:
+        if k <= 0:
+            val, col_num, yy = "<1%", (255, 198, 30, 255), 0.55
         else:
-            k = out_expo((t - grow_t0) / grow_dur)
-            val = "%d%%" % max(1, round(1 + 25 * k))
-            yy = 0.42 + 1.55 * k
-        pt = plate_tex(val)
-        ph = 0.52; pw = ph * pt.size[0] / pt.size[1]
-        c = quad((X + 0.12 + pw / 2, yy, Z - 0.1), pw, ph)
-        paste_quad(img, pt, [cam.proj(p) for p in c])
-    # подписи месяцев и угли на шкале
-    feb = text_tex(["ФЕВ"], fsize=90, fname="Oswald-Bold.ttf")
-    fh = 0.21; fw = fh * feb.size[0] / feb.size[1]
-    paste_quad(img, feb, [cam.proj(p) for p in quad((X - 0.52, 0.24, Z), fw, fh)])
-    pts = cluster(X, 0.16, Z, 0.46, 3, 24, False)
-    if t >= grow_t0:
-        k = out_expo((t - grow_t0) / grow_dur)
-        aug = text_tex(["АВГ"], fsize=90, fname="Oswald-Bold.ttf")
-        paste_quad(img, aug, [cam.proj(p) for p in quad((X - 0.52, 0.28 + 1.55 * k, Z), fw, fh)])
-        pts += cluster(X, 0.20 + 1.55 * k, Z, 0.46, 3, 25, False)
+            val = "%d%%" % max(1, round(1 + 24 * k)); col_num = (248, 246, 242, 255)
+            yy = 0.55 + RISE * k
+        pt = plate_tex(val, color=col_num)
+        ph = 0.87; pw = ph * pt.size[0] / pt.size[1]
+        d2 = ImageDraw.Draw(img, "RGBA")
+        aa = cam.proj((X, yy, D)); bb = cam.proj((X + 0.60, yy, D))
+        d2.line([(aa[0], aa[1]), (bb[0], bb[1])], fill=(62, 52, 44, 255), width=3)
+        paste_quad(img, pt, [cam.proj(p) for p in quad((X + 0.60 + pw / 2, yy, D - 0.2), pw, ph)])
+    # пояснение справа
+    expl = text_tex(["ДОЛЯ РАБОТЫ ПО СОЗДАНИЮ", "НОВЫХ СИСТЕМ, КОТОРУЮ", "ВЕДЁТ САМ ИИ"],
+                    fsize=150, fname="ArialBlack.ttf", cond=0.84, line_gap=6)
+    eh = 0.81; ew = eh * expl.size[0] / expl.size[1]
+    paste_quad(img, expl, [cam.proj(p) for p in quad((2.74, 0.58 + (0.55 if k > 0.5 else 0.0), D), ew, eh)])
+    # фраза сверху
+    if k < 0.45:
+        items = [("w","ТОГДА",0),("w","ЭТО",0),("w","БЫЛО",0),("br",),
+                 ("w","МЕНЬШЕ",1),("w","ПРОЦЕНТА",1),("br",),("w","ВСЕЙ",0),("w","РАБОТЫ.",0)]
+        st, hl = 0.45, None
+    else:
+        items = [("w","А",0),("w","К",0),("w","АВГУСТУ?",0),("br",),
+                 ("w","ЧЕТВЕРТЬ",1),("w","ВСЕЙ",0),("w","РАБОТЫ.",0)]
+        st = GT0 + 0.50
+    lines, hl = build_block(items, t, start=(0.45 if k < 0.45 else GT0 + 0.50), step=0.28, maxlines=4)
+    if lines:
+        tex = text_tex(lines, fsize=220, fname="ArialBlack.ttf", hl=hl, cond=0.84, line_gap=4)
+        LH = 0.085 * KY * D
+        h = LH * len(lines); w = h * tex.size[0] / tex.size[1]
+        X0 = wx(0, D, 0.38); YT = wy(CY, D, 0.20)
+        extrude(img, cam, quad((X0 + w / 2, YT - h / 2, D - 0.3), w, h), tex, depth=0.06, steps=4)
+    pts = cluster(X, 0.18, D, 0.52, 3, 24, False)
+    if k > 0:
+        pts += cluster(X, 0.18 + RISE * k, D, 0.50, 3, 25, False)
+        aug = text_tex(["АВГ"], fsize=150, fname="ArialBlack.ttf", cond=0.84)
+        fh = 0.30; fw = fh * aug.size[0] / aug.size[1]
+        paste_quad(img, aug, [cam.proj(p) for p in quad((X - 0.95, 0.20 + RISE * k, D), fw, fh)])
+    feb = text_tex(["ФЕВ"], fsize=150, fname="ArialBlack.ttf", cond=0.84)
+    fh = 0.30; fw = fh * feb.size[0] / feb.size[1]
+    paste_quad(img, feb, [cam.proj(p) for p in quad((X - 0.95, 0.22, D), fw, fh)])
     img = embers(img, cam, pts, t)
-    if t >= 0.55:
+    if t >= 0.70:
         source_line(img, "Институт исследований ИИ · 17 сентября 2026")
     return img
 
 SCENES = {"G13": (g13, 3.3), "G10": (g10, 4.0), "G02": (g02, 3.8),
-          "G11": (g11, 4.0), "G12": (g12, 3.6), "G26": (g26, 4.6), "G15": (g15, 4.2)}
+          "G11": (g11, 4.4), "G12": (g12, 3.8), "G26": (g26, 5.6), "G15": (g15, 5.0)}
 
 def render(code, out):
     fn, dur = SCENES[code]
