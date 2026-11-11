@@ -5,7 +5,7 @@ import numpy as np
 from PIL import Image
 sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
 import zal_core as Z
-from zal_core import Cam, quad, paste_quad, room, embers, cluster, text_tex, sticker_tex, \
+from zal_core import Cam, quad, paste_quad, room, embers, cluster, text_tex, sticker_tex, word_tiles, tv_tex, source_line, \
      sheet_tex, extrude, floor_shadow, reflection, wire, out_expo, out_back, out_cubic, seg
 
 FPS = 30
@@ -116,7 +116,100 @@ def g02(t):
                  + cluster(3.0, 0.18, 12.0, 0.48, 3, 9), t)
     return img
 
-SCENES = {"G13": (g13, 3.3), "G10": (g10, 4.0), "G02": (g02, 3.8)}
+
+
+# ---------------- общее: набор блока по словам ----------------
+def put_words(img, cam, lines, center, line_h, t, start=0.0, step=0.22,
+              fsize=230, fname="Oswald-Bold.ttf", hl=None, pop=0.10, yaw=0.0,
+              depth=0.10, steps=6):
+    tw, th, tiles = word_tiles(lines, fsize=fsize, fname=fname, hl=hl)
+    block_h = line_h * len(lines) + 0.10
+    sc = block_h / th
+    cx, cy, cz = center
+    for i, (tile, px, py) in enumerate(tiles):
+        ti = start + i * step
+        if t < ti: continue
+        k = 1.0 + pop * (1.0 - out_expo((t - ti) / 0.085))
+        ox = (px - tw / 2) * sc
+        oy = -(py - th / 2) * sc
+        w = tile.size[0] * sc * k
+        h = tile.size[1] * sc * k
+        c = quad((cx + ox * math.cos(yaw), cy + oy, cz + ox * math.sin(yaw)), w, h, yaw=yaw)
+        extrude(img, cam, c, tile, depth=depth, steps=steps)
+    return tw, th
+
+# ---------------- G11 · набор фразы по словам ----------------
+def g11(t):
+    cam = Cam(x=0.0, y=1.46, z=0.62 * t)
+    img = room(cam)
+    for (x, y, z, rot) in ((-4.0, 2.5, 14.0, 15), (4.3, 2.3, 18.0, -12)):
+        if z - cam.z < 0.8: continue
+        sh = sheet_tex(["Разбор · ноябрь", "Сначала не поверили."])
+        c = quad((x, y, z), 1.5, 0.97, yaw=math.radians(rot))
+        wire(img, cam, (x - 0.55, y + 0.48, z)); wire(img, cam, (x + 0.55, y + 0.48, z))
+        paste_quad(img, sh, [cam.proj(p) for p in c])
+    put_words(img, cam, ["СНАЧАЛА ЭТО КАЗАЛОСЬ", "ШУМОМ.", "ПОТОМ СТАЛО РАБОТОЙ."],
+              (0.0, 1.80, 9.6), 0.36, t, start=0.10, step=0.22, fsize=230)
+    img = embers(img, cam, cluster(2.4, 0.26, 7.0, 0.60, 4, 11) + cluster(-2.6, 0.22, 10.0, 0.5, 3, 12), t)
+    return img
+
+# ---------------- G12 · жёлтый маркер приходит вместе со словом ----------------
+def g12(t):
+    cam = Cam(x=0.0, y=1.44, z=0.42 * t)
+    img = room(cam)
+    put_words(img, cam, ["ОНИ НАЗВАЛИ ЭТО ОШИБКОЙ.", "ЧЕРЕЗ МЕСЯЦ — СТРАТЕГИЕЙ."],
+              (0.0, 1.78, 8.2), 0.42, t, start=0.10, step=0.24, fsize=250,
+              hl={3, 7}, pop=0.09)
+    img = embers(img, cam, cluster(-2.9, 0.24, 8.0, 0.58, 4, 13) + cluster(3.1, 0.20, 11.0, 0.5, 3, 14), t)
+    return img
+
+# ---------------- G26 · расшифровка строкой поверх эфира ----------------
+def g26(t):
+    cam = Cam(x=0.0, y=1.52, z=0.34 * t)
+    img = room(cam)
+    reps = [(0.15, ["Мы рассчитываем, что соглашение"]),
+            (1.45, ["Мы рассчитываем, что соглашение", "будет подписано до конца недели"]),
+            (2.75, ["Остальные вопросы", "вынесены на следующий раунд"])]
+    cap = None
+    for t0, c in reps:
+        if t >= t0: cap = c
+    tex = tv_tex(cap)
+    pw = 3.3; ph = pw * 540 / 960
+    c = quad((0.0, 1.92, 7.6), pw, ph, yaw=math.radians(-7))
+    wire(img, cam, (-1.3, 1.92 + ph / 2, 7.6)); wire(img, cam, (1.3, 1.92 + ph / 2, 7.6))
+    floor_shadow(img, cam, c, tex)
+    paste_quad(img, tex, [cam.proj(p) for p in c])
+    small = text_tex(["ПРЯМАЯ РЕЧЬ"], fsize=110, fname="Oswald-Bold.ttf")
+    h = 0.20; w = h * small.size[0] / small.size[1]
+    paste_quad(img, small, [cam.proj(p) for p in quad((-1.05, 0.72, 7.4), w, h)])
+    img = embers(img, cam, cluster(2.8, 0.22, 9.0, 0.55, 4, 15), t)
+    source_line(img, "Наша панель · демонстрация приёма, чужой эфир не используется")
+    return img
+
+# ---------------- G15 · подпись-источник в углу ----------------
+def g15(t):
+    cam = Cam(x=0.0, y=1.40, z=0.30 * t)
+    img = room(cam)
+    first = t < 2.0
+    num = "54 836" if first else "116 175"
+    cap = ["СОКРАЩЕНО ЗА ВЕСЬ 2025 ГОД"] if first else ["ЗА ЯНВАРЬ — АВГУСТ 2026"]
+    t0 = 0.25 if first else 2.0
+    k = 1.0 + 0.09 * (1.0 - out_expo((t - t0) / 0.10)) if t >= t0 else 0.0
+    if k > 0:
+        tex = text_tex([num], fsize=430, fname="Oswald-Bold.ttf")
+        h = 0.95 * k; w = h * tex.size[0] / tex.size[1]
+        c = quad((0.0, 1.95, 8.4), w, h)
+        floor_shadow(img, cam, c, tex)
+        extrude(img, cam, c, tex, depth=0.14, steps=8)
+        sub = text_tex(cap, fsize=120, fname="Oswald-Bold.ttf")
+        hs = 0.21; ws = hs * sub.size[0] / sub.size[1]
+        paste_quad(img, sub, [cam.proj(p) for p in quad((0.0, 1.18, 8.4), ws, hs)])
+    img = embers(img, cam, cluster(-3.0, 0.22, 9.5, 0.55, 4, 16) + cluster(3.2, 0.20, 12.5, 0.48, 3, 17), t)
+    source_line(img, "Challenger, Gray & Christmas · 2026" if first else "Росстат · 7 ноября 2026")
+    return img
+
+SCENES = {"G13": (g13, 3.3), "G10": (g10, 4.0), "G02": (g02, 3.8),
+          "G11": (g11, 3.6), "G12": (g12, 3.2), "G26": (g26, 4.2), "G15": (g15, 4.0)}
 
 def render(code, out):
     fn, dur = SCENES[code]

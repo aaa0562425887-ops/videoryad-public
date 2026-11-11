@@ -307,3 +307,77 @@ def source_line(canvas, text):
     d = ImageDraw.Draw(canvas, "RGBA")
     f = font("Arimo-Bold.ttf", 25)
     d.text((54, H - 62), text, font=f, fill=(96, 98, 102, 255))
+
+
+# ---------- разбор текста на отдельные слова (для набора по словам) ----------
+def word_tiles(lines, fsize=220, fname="ArialBlack.ttf", hl=None,
+               color=(14, 14, 16, 255), hl_color=(255, 212, 0, 255),
+               line_gap=16, pad=20):
+    """возвращает (общая ширина, общая высота, [(картинка слова, cx, cy)])
+    cx, cy — центр слова в координатах общего блока."""
+    f = font(fname, fsize)
+    d0 = ImageDraw.Draw(Image.new("RGBA", (8, 8)))
+    sp = d0.textlength(" ", font=f)
+    rows = []
+    for ln in lines:
+        ws = ln.split(" ")
+        bb = [d0.textbbox((0, 0), w, font=f) for w in ws]
+        width = sum(b[2] - b[0] for b in bb) + sp * (len(ws) - 1)
+        rows.append((ws, bb, width))
+    total_w = max(r[2] for r in rows) + pad * 2
+    hline = fsize * 1.02
+    total_h = len(rows) * hline + (len(rows) - 1) * line_gap + pad * 2
+    tiles = []
+    idx = 0
+    y = pad
+    for ws, bb, width in rows:
+        x = (total_w - width) / 2
+        for w, b in zip(ws, bb):
+            ww, hh = b[2] - b[0], b[3] - b[1]
+            mark = bool(hl and idx in hl)
+            tw = int(ww + fsize * 0.14)
+            th = int(hline)
+            tile = Image.new("RGBA", (max(tw, 4), max(th, 4)), (0, 0, 0, 0))
+            td = ImageDraw.Draw(tile)
+            if mark:
+                td.rectangle([0, hline * 0.12, tw, hline * 0.95], fill=hl_color)
+            td.text(((tw - ww) / 2 - b[0], (th - hh) / 2 - b[1]), w, font=f, fill=color)
+            tiles.append((tile, x + ww / 2, y + hline / 2))
+            x += ww + sp
+            idx += 1
+        y += hline + line_gap
+    return total_w, total_h, tiles
+
+# ---------- панель «эфира»: наша, без чужих кадров ----------
+def tv_tex(caption=None, w=960, h=540, t=0.0):
+    img = Image.new("RGBA", (w, h), (12, 26, 58, 255))
+    d = ImageDraw.Draw(img, "RGBA")
+    for i in range(h):
+        k = i / h
+        d.line([(0, i), (w, i)], fill=(int(10 + 36 * k), int(24 + 52 * k), int(60 + 86 * k), 255))
+    rng = np.random.default_rng(7)
+    bok = Image.new("RGBA", (w, h), (0, 0, 0, 0))
+    bd = ImageDraw.Draw(bok)
+    for i in range(30):
+        bx, by = rng.uniform(0, w), rng.uniform(0, h * 0.78)
+        r = rng.uniform(8, 26)
+        bd.ellipse([bx - r, by - r, bx + r, by + r], fill=(130, 175, 235, 30))
+    img.alpha_composite(bok.filter(ImageFilter.GaussianBlur(7)))
+    d.polygon([(w * 0.18, h), (w * 0.30, h * 0.52), (w * 0.70, h * 0.52), (w * 0.82, h)],
+              fill=(18, 36, 74, 255))
+    d.rectangle([0, h * 0.86, w, h], fill=(236, 238, 242, 255))
+    ftag = font("Arimo-Bold.ttf", int(h * 0.038))
+    tagw = d.textlength("ПРЯМОЙ ЭФИР", font=ftag)
+    d.rectangle([w * 0.03, h * 0.885, w * 0.03 + tagw + h * 0.05, h * 0.955], fill=(206, 32, 38, 255))
+    d.text((w * 0.03 + h * 0.025, h * 0.900), "ПРЯМОЙ ЭФИР", font=ftag, fill=(255, 255, 255, 255))
+    d.text((w * 0.30, h * 0.897), "ЗАЯВЛЕНИЕ ПО ИТОГАМ ПЕРЕГОВОРОВ",
+           font=font("Arimo-Bold.ttf", int(h * 0.046)), fill=(22, 24, 28, 255))
+    if caption:
+        f = font("Arimo-Bold.ttf", int(h * 0.062))
+        y = h * 0.60
+        for ln in caption:
+            tw = d.textlength(ln, font=f)
+            d.text(((w - tw) / 2 + 2, y + 2), ln, font=f, fill=(0, 0, 0, 170))
+            d.text(((w - tw) / 2, y), ln, font=f, fill=(255, 255, 255, 255))
+            y += h * 0.078
+    return img
