@@ -5,7 +5,7 @@ on:
     inputs:
       scenes:
         description: "какие приёмы считать, списком JSON"
-        default: '["G17"]'
+        default: '["G16"]'
   push:
     paths: ["zalf/**"]
 concurrency:
@@ -20,7 +20,7 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        scene: ${{ fromJSON(github.event.inputs.scenes || '["G17"]') }}
+        scene: ${{ fromJSON(github.event.inputs.scenes || '["G16"]') }}
     steps:
       - uses: actions/checkout@v4
       - name: Библиотеки
