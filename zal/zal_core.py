@@ -97,19 +97,19 @@ def room(cam, windows=True, dark=0.0, shafts=True):
     g = Image.new("L", (1, H))
     for y in range(H):
         t = y / H
-        g.putpixel((0, y), int(246 - 26 * abs(t - 0.5) * 2))
+        g.putpixel((0, y), int(234 - 24 * abs(t - 0.5) * 2))
     base = g.resize((W, H))
     img = Image.merge("RGBA", (base, base, base.point(lambda v: min(255, v + 3)),
                                Image.new("L", (W, H), 255)))
     d = ImageDraw.Draw(img, "RGBA")
     hor = H / 2 + (cam.y - 0.0) * 0  # горизонт на уровне взгляда
-    d.rectangle([0, hor, W, H], fill=(214, 216, 219, 255))      # пол
-    d.rectangle([0, 0, W, hor], fill=(238, 240, 242, 255))      # дальняя стена/воздух
+    d.rectangle([0, hor, W, H], fill=(197, 200, 204, 255))      # пол
+    d.rectangle([0, 0, W, hor], fill=(230, 232, 235, 255))      # дальняя стена/воздух
     # стены
     for sx in (-1, 1):
         p = [cam.proj((sx * WALL, CEIL, cam.z + 2.0)), cam.proj((sx * WALL, CEIL, cam.z + FAR)),
              cam.proj((sx * WALL, 0.0, cam.z + FAR)), cam.proj((sx * WALL, 0.0, cam.z + 2.0))]
-        _poly(d, p, (233, 235, 238, 255))
+        _poly(d, p, (222, 225, 229, 255))
     # окна
     if windows:
         z0 = math.floor((cam.z + 3) / 7.0) * 7.0
@@ -118,7 +118,7 @@ def room(cam, windows=True, dark=0.0, shafts=True):
             for sx in (-1, 1):
                 p = [cam.proj((sx * WALL, 3.75, zz)), cam.proj((sx * WALL, 3.75, zz + 3.1)),
                      cam.proj((sx * WALL, 1.15, zz + 3.1)), cam.proj((sx * WALL, 1.15, zz))]
-                _poly(d, p, (252, 253, 254, 255))
+                _poly(d, p, (251, 252, 253, 255))
                 for k in range(1, 4):
                     yy = 1.15 + 2.6 * k / 4
                     a = cam.proj((sx * WALL, yy, zz)); b = cam.proj((sx * WALL, yy, zz + 3.1))
@@ -151,8 +151,8 @@ def _sprite():
         n = 192
         yy, xx = np.mgrid[0:n, 0:n]
         r = np.sqrt((xx - n/2) ** 2 + (yy - n/2) ** 2) / (n / 2)
-        a = np.clip(1 - r, 0, 1) ** 2.6
-        core = np.clip(1 - r * 3.1, 0, 1) ** 1.4
+        a = np.clip(1 - r, 0, 1) ** 1.15
+        core = np.clip(1 - r * 1.75, 0, 1) ** 1.1
         rgb = np.zeros((n, n, 3), np.float32)
         rgb[..., 0] = 255 * (0.55 * a + 0.45 * core)
         rgb[..., 1] = 255 * (0.26 * a + 0.62 * core)
@@ -160,15 +160,29 @@ def _sprite():
         _SPR = (rgb, a)
     return _SPR
 
-def embers(img, cam, pts, t):
+def cluster(x, y, z, s, n=4, seed=0, mirror=True):
+    """горстка углей вокруг точки + их отражение в полу"""
+    rng = np.random.default_rng(seed)
+    out = []
+    for i in range(n):
+        dx = rng.uniform(-0.45, 0.45); dy = rng.uniform(-0.06, 0.22); dz = rng.uniform(-0.5, 0.5)
+        ss = s * rng.uniform(0.45, 1.0)
+        out.append((x + dx, max(0.04, y + dy), z + dz, ss))
+        if mirror:
+            out.append((x + dx, -(max(0.04, y + dy)) * 0.9, z + dz, ss * 0.8))
+    return out
+
+def embers(img, cam, pts, t, glow=0.95):
+    """оранжевые угли: ядро кроет собой фон, вокруг — аддитивный ореол"""
     rgb, al = _sprite()
-    arr = np.asarray(img.convert("RGB"), np.float32)
+    add = np.zeros((H, W, 3), np.float32)
+    ca = np.zeros((H, W, 1), np.float32)
     for i, (x, y, z, s) in enumerate(pts):
-        pulse = 0.78 + 0.22 * math.sin(t * 3.4 + i * 1.7)
+        pulse = 0.82 + 0.18 * math.sin(t * 3.4 + i * 1.7)
         px, py, dz = cam.proj((x, y, z))
         if dz < 0.3: continue
-        size = max(6, int(s * F / dz * pulse))
-        if size > 700 or px < -size or px > W + size or py < -size or py > H + size: continue
+        size = max(10, int(s * F / dz * pulse))
+        if size > 1400 or px < -size or px > W + size or py < -size or py > H + size: continue
         sp = np.array(Image.fromarray(rgb.astype(np.uint8)).resize((size, size), Image.BILINEAR), np.float32)
         sa = np.array(Image.fromarray((al * 255).astype(np.uint8)).resize((size, size), Image.BILINEAR), np.float32) / 255.0
         x0, y0 = int(px - size / 2), int(py - size / 2)
@@ -176,9 +190,17 @@ def embers(img, cam, pts, t):
         if X1 <= X0 or Y1 <= Y0: continue
         sub = sp[Y0 - y0:Y1 - y0, X0 - x0:X1 - x0]
         suba = sa[Y0 - y0:Y1 - y0, X0 - x0:X1 - x0][..., None]
-        arr[Y0:Y1, X0:X1] = np.clip(arr[Y0:Y1, X0:X1] + sub * suba * pulse, 0, 255)
-    out = Image.fromarray(arr.astype(np.uint8)).convert("RGBA")
-    return out
+        add[Y0:Y1, X0:X1] += sub * suba * pulse * 0.55
+        ca[Y0:Y1, X0:X1] = np.maximum(ca[Y0:Y1, X0:X1], np.clip(suba * 2.2 - 0.25, 0, 1))
+    if ca.max() <= 0 and add.max() <= 0:
+        return img
+    halo = np.asarray(Image.fromarray(np.clip(add, 0, 255).astype(np.uint8))
+                      .filter(ImageFilter.GaussianBlur(46)), np.float32)
+    arr = np.asarray(img.convert("RGB"), np.float32)
+    core = np.array([255.0, 158.0, 48.0], np.float32)
+    arr = arr * (1 - ca) + core * ca
+    arr = arr + add * 0.5 + halo * glow
+    return Image.fromarray(np.clip(arr, 0, 255).astype(np.uint8)).convert("RGBA")
 
 # ---------- текстуры ----------
 def text_tex(words, fsize=210, fname="ArialBlack.ttf", pad=26, line_gap=14,
