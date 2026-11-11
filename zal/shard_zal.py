@@ -146,15 +146,15 @@ def wy(camy, d, fy): return camy + (0.5 - fy) * KY * d
 
 # ---------------- G11 · текст по словам + стеклянный куб ----------------
 def g11(t):
-    CY = 1.45
+    CY = 1.10
     cam = Cam(x=0.0, y=CY, z=0.26 * t)
     img = room(cam)
     # белый лист на полу под углями
     sheet = Image.new("RGBA", (320, 320), (250, 250, 249, 255))
     paste_quad(img, sheet, [cam.proj(p) for p in
-               [(-0.30, 0.012, 6.60), (1.95, 0.012, 6.60), (1.95, 0.012, 4.35), (-0.30, 0.012, 4.35)]])
+               [(-0.35, 0.012, 8.05), (1.45, 0.012, 8.05), (1.45, 0.012, 6.35), (-0.35, 0.012, 6.35)]])
     if t >= 2.30:
-        glass_cube(img, cam, (0.95, 0.95, 5.45), 1.92)
+        glass_cube(img, cam, (0.50, 0.98, 7.40), 1.96)
     D = 7.0
     X0, YT, LH = wx(0, D, 0.13), wy(CY, D, 0.07), 0.14 * KY * D
     items = [("w","ОНИ",0),("w","ХОТЕЛИ",0),("w","УЗНАТЬ,",0),("br",),
@@ -164,13 +164,13 @@ def g11(t):
     if t < 2.30:
         lines, hl = build_block(items, t, start=0.10, step=0.30, maxlines=3)
     else:
-        lines, hl = build_block(it2, t, start=2.45, step=0.30, maxlines=3)
+        lines, hl = build_block(it2, t, start=2.38, step=0.28, maxlines=3)
     if lines:
         tex = text_tex(lines, fsize=250, fname="ArialBlack.ttf", hl=hl, cond=0.84, line_gap=4)
         h = LH * len(lines)
         w = h * tex.size[0] / tex.size[1]
         extrude(img, cam, quad((X0 + w / 2, YT - h / 2, D), w, h), tex, depth=0.07, steps=4)
-    img = embers(img, cam, cluster(0.80, 0.34, 5.3, 0.50, 5, 21), t)
+    img = embers(img, cam, cluster(0.55, 0.32, 7.2, 0.66, 4, 21), t)
     return img
 
 # ---------------- G12 · фраза + три белых макета с подписями ----------------

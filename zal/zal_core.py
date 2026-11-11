@@ -484,11 +484,11 @@ def glass_cube(img, cam, center, size, t=0.0):
          (cx - s, cy + s, cz - s), (cx + s, cy + s, cz - s), (cx + s, cy + s, cz + s), (cx - s, cy + s, cz + s)]
     p = [cam.proj(q) for q in v]
     lay = Image.new("RGBA", (W, H), (0, 0, 0, 0))
-    d = ImageDraw.Draw(lay, "RGBA")
-    for a, b in ((0,1),(1,2),(2,3),(3,0),(4,5),(5,6),(6,7),(7,4),(0,4),(1,5),(2,6),(3,7)):
-        d.line([(p[a][0], p[a][1]), (p[b][0], p[b][1])], fill=(46, 48, 52, 245), width=4)
+    d = ImageDraw.Draw(lay)
     for f in ((0,1,5,4),(1,2,6,5),(3,2,6,7),(0,3,7,4)):
-        d.polygon([(p[i][0], p[i][1]) for i in f], fill=(222, 232, 242, 26))
+        d.polygon([(p[i][0], p[i][1]) for i in f], fill=(214, 226, 240, 40))
+    for e0, e1 in ((0,1),(1,2),(2,3),(3,0),(4,5),(5,6),(6,7),(7,4),(0,4),(1,5),(2,6),(3,7)):
+        d.line([(p[e0][0], p[e0][1]), (p[e1][0], p[e1][1])], fill=(52, 54, 58, 255), width=7)
     img.alpha_composite(lay)
 
 # ---------- белые объёмные макеты ----------
