@@ -1,0 +1,177 @@
+[
+ {
+  "scene": 1,
+  "view": "zal",
+  "dur": 7.0,
+  "anim": 2.6,
+  "tail_zoom": 0.045,
+  "watermark": "ПЛАНЕТА",
+  "channel": "ПЛАНЕТА",
+  "kwargs": {
+   "text": "Решение принято без Киева",
+   "words": [
+    "ХАЙП",
+    "ФЕЙК"
+   ],
+   "sheets": [
+    "переговоры",
+    "итог"
+   ],
+   "channel": "ПЛАНЕТА",
+   "dur": 7.0,
+   "watermark": "ПЛАНЕТА"
+  }
+ },
+ {
+  "scene": 2,
+  "view": "zal_slova",
+  "dur": 7.0,
+  "anim": 2.6,
+  "tail_zoom": 0.045,
+  "watermark": "ПЛАНЕТА",
+  "channel": "ПЛАНЕТА",
+  "kwargs": {
+   "channel": "ПЛАНЕТА",
+   "dur": 7.0,
+   "sheets": [
+    "архив",
+    "семья"
+   ],
+   "text": "Берлин выбрал язык силы",
+   "na_polu": "МОЛЧАЛИ",
+   "watermark": "ПЛАНЕТА"
+  }
+ },
+ {
+  "scene": 3,
+  "view": "zal_pol",
+  "dur": 7.0,
+  "anim": 2.6,
+  "tail_zoom": 0.045,
+  "watermark": "ПЛАНЕТА",
+  "channel": "ПЛАНЕТА",
+  "kwargs": {
+   "channel": "ПЛАНЕТА",
+   "dur": 7.0,
+   "sheets": [
+    "бюджет",
+    "аудит"
+   ],
+   "text": "Деньги ушли мимо кассы",
+   "na_polu": "ПРОПАЛИ",
+   "watermark": "ПЛАНЕТА"
+  }
+ },
+ {
+  "scene": 4,
+  "view": "zal_kub",
+  "dur": 7.0,
+  "anim": 2.6,
+  "tail_zoom": 0.045,
+  "watermark": "ПЛАНЕТА",
+  "channel": "ПЛАНЕТА",
+  "kwargs": {
+   "channel": "ПЛАНЕТА",
+   "dur": 7.0,
+   "sheets": [
+    "саммит",
+    "протокол"
+   ],
+   "text": "Главное слово этой недели",
+   "kick": "ОТКАЗ",
+   "watermark": "ПЛАНЕТА"
+  }
+ },
+ {
+  "scene": 5,
+  "view": "zal_makety",
+  "dur": 7.0,
+  "anim": 2.6,
+  "tail_zoom": 0.045,
+  "watermark": "ПЛАНЕТА",
+  "channel": "ПЛАНЕТА",
+  "kwargs": {
+   "channel": "ПЛАНЕТА",
+   "dur": 7.0,
+   "sheets": [],
+   "text": "Удар по инфраструктуре",
+   "makety": [
+    "банк=БАНКИ",
+    "лэп=ЭНЕРГОСЕТИ"
+   ],
+   "watermark": "ПЛАНЕТА"
+  }
+ },
+ {
+  "scene": 6,
+  "view": "zal_shkala",
+  "dur": 7.0,
+  "anim": 2.6,
+  "tail_zoom": 0.045,
+  "watermark": "ПЛАНЕТА",
+  "channel": "ПЛАНЕТА",
+  "kwargs": {
+   "channel": "ПЛАНЕТА",
+   "dur": 7.0,
+   "sheets": [],
+   "text": "Счёт вырос за восемь месяцев",
+   "value": "116 175",
+   "value_sub": "январь — август 2026",
+   "watermark": "ПЛАНЕТА"
+  }
+ },
+ {
+  "scene": 7,
+  "view": "zal_efir",
+  "dur": 7.0,
+  "anim": 2.6,
+  "tail_zoom": 0.045,
+  "watermark": "ПЛАНЕТА",
+  "channel": "ПЛАНЕТА",
+  "kwargs": {
+   "channel": "ПЛАНЕТА",
+   "dur": 7.0,
+   "sheets": [],
+   "text": "В эфире сказали прямо",
+   "say": "решение принимали без нас и за наш счёт",
+   "author": "Сергей Лавров",
+   "watermark": "ПЛАНЕТА"
+  }
+ },
+ {
+  "scene": 8,
+  "view": "zal_schetchik",
+  "dur": 7.0,
+  "anim": 2.6,
+  "tail_zoom": 0.045,
+  "watermark": "ПЛАНЕТА",
+  "channel": "ПЛАНЕТА",
+  "kwargs": {
+   "channel": "ПЛАНЕТА",
+   "dur": 7.0,
+   "sheets": [],
+   "text": "Потери считают миллиардами",
+   "value": "4,3 млрд",
+   "value_sub": "ЗА ГОД",
+   "watermark": "ПЛАНЕТА"
+  }
+ },
+ {
+  "scene": 9,
+  "view": "zal_ekran",
+  "dur": 7.0,
+  "anim": 4.0,
+  "tail_zoom": 0.045,
+  "watermark": "ПЛАНЕТА",
+  "channel": "ПЛАНЕТА",
+  "kwargs": {
+   "channel": "ПЛАНЕТА",
+   "dur": 7.0,
+   "sheets": [],
+   "text": "Панель эфира развернулась",
+   "say": "сказано на камеру и без оговорок",
+   "author": "Мария Захарова",
+   "watermark": "ПЛАНЕТА"
+  }
+ }
+]
