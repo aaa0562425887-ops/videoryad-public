@@ -1,0 +1,734 @@
+[
+ {
+  "scene": 2,
+  "view": "zal_slova",
+  "dur": 12.0,
+  "anim": 2.6,
+  "tail_zoom": 0.045,
+  "watermark": "ПЛАНЕТА",
+  "channel": "ПЛАНЕТА",
+  "kwargs": {
+   "channel": "ПЛАНЕТА",
+   "dur": 12.0,
+   "sheets": [],
+   "text": "Европе велели выбрать единый голос",
+   "na_polu": "ГОЛОС",
+   "watermark": "ПЛАНЕТА"
+  }
+ },
+ {
+  "scene": 4,
+  "view": "zal_schetchik",
+  "dur": 10.8,
+  "anim": 2.6,
+  "tail_zoom": 0.045,
+  "watermark": "ПЛАНЕТА",
+  "channel": "ПЛАНЕТА",
+  "kwargs": {
+   "channel": "ПЛАНЕТА",
+   "dur": 10.8,
+   "sheets": [],
+   "text": "Москва передала НАТО три схемы",
+   "value": "3",
+   "value_sub": "схемы",
+   "watermark": "ПЛАНЕТА"
+  }
+ },
+ {
+  "scene": 6,
+  "view": "zal",
+  "dur": 11.6,
+  "anim": 2.6,
+  "tail_zoom": 0.045,
+  "watermark": "ПЛАНЕТА",
+  "channel": "ПЛАНЕТА",
+  "kwargs": {
+   "text": "Пакты о ненападении — по одному",
+   "words": [
+    "ПАКТ",
+    "ОТКАЗ",
+    "УДАР"
+   ],
+   "sheets": [
+    "Взаимное ненападение",
+    "Письменные гарантии",
+    "Отказ от поддержки",
+    "Двусторонний формат",
+    "Москва и НАТО",
+    "Отдельные договоры"
+   ],
+   "channel": "ПЛАНЕТА",
+   "dur": 11.6,
+   "watermark": "ПЛАНЕТА"
+  }
+ },
+ {
+  "scene": 8,
+  "view": "charts.cartogram",
+  "dur": 10.9,
+  "anim": 10.9,
+  "tail_zoom": 0.045,
+  "watermark": "ПЛАНЕТА",
+  "channel": "ПЛАНЕТА",
+  "kwargs": {
+   "data": [
+    "Польша",
+    "Германия",
+    "Финляндия"
+   ],
+   "title": "Гарантии по одному",
+   "watermark": "ПЛАНЕТА"
+  }
+ },
+ {
+  "scene": 12,
+  "view": "cinematic.dossier",
+  "dur": 19.5,
+  "anim": 19.5,
+  "tail_zoom": 0.045,
+  "watermark": "ПЛАНЕТА",
+  "channel": "ПЛАНЕТА",
+  "kwargs": {
+   "case": "Вашингтон входит в разговор",
+   "rows": [
+    "Требования России прозвучали в 2021 году",
+    "Тогда их убрали в дальний ящик",
+    "Через пять лет разговор вернулся"
+   ],
+   "title": "Вашингтон",
+   "photo": "cards/photo/card_012.jpg",
+   "stamp": "ПЕРВОИСТОЧНИК",
+   "watermark": "ПЛАНЕТА"
+  }
+ },
+ {
+  "scene": 14,
+  "view": "duel",
+  "dur": 11.3,
+  "anim": 3.2,
+  "tail_zoom": 0.035,
+  "watermark": "ПЛАНЕТА",
+  "channel": "ПЛАНЕТА",
+  "kwargs": {
+   "top": {
+    "who": "",
+    "text": "Россия: убрать вооружения",
+    "accent": null,
+    "source": ""
+   },
+   "bottom": {
+    "who": "",
+    "text": "НАТО: ящик надёжнее",
+    "accent": null,
+    "source": ""
+   },
+   "watermark": "ПЛАНЕТА"
+  }
+ },
+ {
+  "scene": 16,
+  "view": "charts.network",
+  "dur": 16.4,
+  "anim": 16.4,
+  "tail_zoom": 0.045,
+  "watermark": "ПЛАНЕТА",
+  "channel": "ПЛАНЕТА",
+  "kwargs": {
+   "nodes": [
+    {
+     "id": "Брюссель",
+     "label": "Брюссель",
+     "weight": 7.0
+    },
+    {
+     "id": "Варшава",
+     "label": "Варшава",
+     "weight": 2.0
+    },
+    {
+     "id": "Берлин",
+     "label": "Берлин",
+     "weight": 3.0
+    },
+    {
+     "id": "Париж",
+     "label": "Париж",
+     "weight": 2.0
+    },
+    {
+     "id": "Вашингтон",
+     "label": "Вашингтон",
+     "weight": 4.0
+    },
+    {
+     "id": "Москва",
+     "label": "Москва",
+     "weight": 4.0
+    }
+   ],
+   "links": [
+    {
+     "from": "Брюссель",
+     "to": "Варшава",
+     "weight": 2.0
+    },
+    {
+     "from": "Брюссель",
+     "to": "Берлин",
+     "weight": 3.0
+    },
+    {
+     "from": "Брюссель",
+     "to": "Париж",
+     "weight": 2.0
+    },
+    {
+     "from": "Вашингтон",
+     "to": "Москва",
+     "weight": 4.0
+    }
+   ],
+   "title": "Кто с кем говорит",
+   "watermark": "ПЛАНЕТА"
+  }
+ },
+ {
+  "scene": 20,
+  "view": "paper_typed",
+  "dur": 9.9,
+  "anim": 2.8,
+  "tail_zoom": 0.04,
+  "watermark": "ПЛАНЕТА",
+  "channel": "ПЛАНЕТА",
+  "kwargs": {
+   "text": "потому что никто не смог толком объяснить их статус и",
+   "watermark": "ПЛАНЕТА"
+  }
+ },
+ {
+  "scene": 22,
+  "view": "charts.line",
+  "dur": 6.7,
+  "anim": 2.6,
+  "tail_zoom": 0.045,
+  "watermark": "ПЛАНЕТА",
+  "channel": "ПЛАНЕТА",
+  "kwargs": {
+   "x_labels": [
+    "2021",
+    "2026",
+    "сегодня"
+   ],
+   "series": [
+    {
+     "name": "Пять лет спустя",
+     "values": [
+      1.0,
+      3.0,
+      5.0
+     ]
+    }
+   ],
+   "title": "Пять лет спустя",
+   "source": "ТАСС",
+   "watermark": "ПЛАНЕТА"
+  }
+ },
+ {
+  "scene": 24,
+  "view": "vyrezka.gazeta",
+  "dur": 10.9,
+  "anim": 2.6,
+  "tail_zoom": 0.045,
+  "watermark": "ПЛАНЕТА",
+  "channel": "ПЛАНЕТА",
+  "kwargs": {
+   "photo": "cards/photo/card_024.jpg",
+   "author": "Максим Рыженков",
+   "role": "глава МИД Белоруссии",
+   "watermark": "ПЛАНЕТА"
+  }
+ },
+ {
+  "scene": 26,
+  "view": "film.film_strip",
+  "dur": 11.0,
+  "anim": 11.0,
+  "tail_zoom": 0.045,
+  "watermark": "ПЛАНЕТА",
+  "channel": "ПЛАНЕТА",
+  "kwargs": {
+   "shots": [
+    "cards/photo/card_026.jpg",
+    "cards/photo/card_026_2.jpg",
+    "cards/photo/card_026_3.jpg",
+    "cards/photo/card_026_4.jpg"
+   ],
+   "title": "Память подсовывает Ялту",
+   "watermark": "ПЛАНЕТА"
+  }
+ },
+ {
+  "scene": 27,
+  "view": "film.film_single",
+  "dur": 11.2,
+  "anim": 2.6,
+  "tail_zoom": 0.045,
+  "watermark": "ПЛАНЕТА",
+  "channel": "ПЛАНЕТА",
+  "kwargs": {
+   "photo": "cards/photo/card_027.jpg",
+   "kick": "Сталин · Рузвельт · Черчилль",
+   "title": "Ялта, февраль 1945",
+   "watermark": "ПЛАНЕТА"
+  }
+ },
+ {
+  "scene": 29,
+  "view": "cinematic.evidence_wall",
+  "dur": 12.4,
+  "anim": 12.4,
+  "tail_zoom": 0.0,
+  "watermark": "ПЛАНЕТА",
+  "channel": "ПЛАНЕТА",
+  "kwargs": {
+   "shots": [
+    [
+     "cards/photo/card_029.jpg",
+     240,
+     250,
+     -4,
+     "Москва"
+    ],
+    [
+     "cards/photo/card_029_2.jpg",
+     800,
+     250,
+     3,
+     "НАТО"
+    ],
+    [
+     "cards/photo/card_029_3.jpg",
+     1360,
+     250,
+     -2,
+     "США"
+    ],
+    [
+     "cards/photo/card_029_4.jpg",
+     240,
+     580,
+     4,
+     "Торговля"
+    ]
+   ],
+   "kick": "Ялта · 1945",
+   "title": "Кого не спросили",
+   "watermark": "ПЛАНЕТА"
+  },
+  "mode": "frame"
+ },
+ {
+  "scene": 31,
+  "view": "cinematic.depth_of_field",
+  "dur": 11.2,
+  "anim": 11.2,
+  "tail_zoom": 0.0,
+  "watermark": "ПЛАНЕТА",
+  "channel": "ПЛАНЕТА",
+  "kwargs": {
+   "photo": "cards/photo/card_031.jpg",
+   "title": "За дверью",
+   "watermark": "ПЛАНЕТА"
+  },
+  "mode": "frame"
+ },
+ {
+  "scene": 32,
+  "view": "vyrezka.figura",
+  "dur": 14.1,
+  "anim": 2.6,
+  "tail_zoom": 0.045,
+  "watermark": "ПЛАНЕТА",
+  "channel": "ПЛАНЕТА",
+  "kwargs": {
+   "photo": "cards/photo/card_032.jpg",
+   "author": "Кая Каллас",
+   "role": "глава дипломатии ЕС",
+   "watermark": "ПЛАНЕТА"
+  }
+ },
+ {
+  "scene": 34,
+  "view": "zal_shkala",
+  "dur": 14.3,
+  "anim": 2.6,
+  "tail_zoom": 0.045,
+  "watermark": "ПЛАНЕТА",
+  "channel": "ПЛАНЕТА",
+  "kwargs": {
+   "channel": "ПЛАНЕТА",
+   "dur": 14.3,
+   "sheets": [],
+   "text": "Двести миллиардов евро",
+   "value": "200",
+   "value_sub": "млрд евро",
+   "watermark": "ПЛАНЕТА"
+  }
+ },
+ {
+  "scene": 36,
+  "view": "strike",
+  "dur": 19.1,
+  "anim": 3.0,
+  "tail_zoom": 0.045,
+  "watermark": "ПЛАНЕТА",
+  "channel": "ПЛАНЕТА",
+  "kwargs": {
+   "text": "Китай расширяет направления. Америка заключает сделки. Евросоюз запрещает участвовать самому себе.",
+   "struck": "запрещает участвовать самому себе",
+   "watermark": "ПЛАНЕТА"
+  }
+ },
+ {
+  "scene": 37,
+  "view": "zal_makety",
+  "dur": 15.5,
+  "anim": 2.6,
+  "tail_zoom": 0.045,
+  "watermark": "ПЛАНЕТА",
+  "channel": "ПЛАНЕТА",
+  "kwargs": {
+   "channel": "ПЛАНЕТА",
+   "dur": 15.5,
+   "sheets": [],
+   "text": "У Евросоюза нет своей базы",
+   "makety": [
+    "банк=ЗАВОДЫ",
+    "лэп=ЭНЕРГОСЕТИ",
+    "больница=АЭС"
+   ],
+   "watermark": "ПЛАНЕТА"
+  }
+ },
+ {
+  "scene": 39,
+  "view": "zal_pol",
+  "dur": 16.7,
+  "anim": 2.6,
+  "tail_zoom": 0.045,
+  "watermark": "ПЛАНЕТА",
+  "channel": "ПЛАНЕТА",
+  "kwargs": {
+   "channel": "ПЛАНЕТА",
+   "dur": 16.7,
+   "sheets": [],
+   "text": "Энергия требует не вдохновения",
+   "na_polu": "ЭНЕРГИЯ",
+   "watermark": "ПЛАНЕТА"
+  }
+ },
+ {
+  "scene": 41,
+  "view": "charts.cartogram",
+  "dur": 8.9,
+  "anim": 8.9,
+  "tail_zoom": 0.045,
+  "watermark": "ПЛАНЕТА",
+  "channel": "ПЛАНЕТА",
+  "kwargs": {
+   "data": [
+    "Россия=40",
+    "США=35"
+   ],
+   "title": "Три ядерные державы",
+   "mode": "bubble",
+   "watermark": "ПЛАНЕТА"
+  }
+ },
+ {
+  "scene": 42,
+  "view": "devices.device_scene",
+  "dur": 13.2,
+  "anim": 2.6,
+  "tail_zoom": 0.045,
+  "watermark": "ПЛАНЕТА",
+  "channel": "ПЛАНЕТА",
+  "kwargs": {
+   "content_path": "cards/photo/card_042.jpg",
+   "items": [
+    "Украина",
+    "Корея",
+    "Устойчивость"
+   ],
+   "title": "Что на столе",
+   "watermark": "ПЛАНЕТА"
+  }
+ },
+ {
+  "scene": 44,
+  "view": "poster.poster",
+  "dur": 10.6,
+  "anim": 10.6,
+  "tail_zoom": 0.0,
+  "watermark": "ПЛАНЕТА",
+  "channel": "ПЛАНЕТА",
+  "kwargs": {
+   "kick": "Механизм проще",
+   "title": "Ялта два ноль",
+   "hero_photo": "cards/photo/card_044.jpg",
+   "watermark": "ПЛАНЕТА"
+  },
+  "mode": "frame"
+ },
+ {
+  "scene": 46,
+  "view": "quote",
+  "dur": 15.7,
+  "anim": 2.6,
+  "tail_zoom": 0.045,
+  "watermark": "ПЛАНЕТА",
+  "channel": "ПЛАНЕТА",
+  "kwargs": {
+   "text": "Для Европы это означает переход к очень неприятной",
+   "watermark": "ПЛАНЕТА"
+  }
+ },
+ {
+  "scene": 48,
+  "view": "torn_split.torn_split",
+  "dur": 9.8,
+  "anim": 2.6,
+  "tail_zoom": 0.045,
+  "watermark": "ПЛАНЕТА",
+  "channel": "ПЛАНЕТА",
+  "kwargs": {
+   "a_path": "cards/photo/card_048.jpg",
+   "b_path": "cards/photo/card_048_2.jpg",
+   "title": "Европа платит дороже",
+   "watermark": "ПЛАНЕТА"
+  }
+ },
+ {
+  "scene": 49,
+  "view": "marker_serif",
+  "dur": 17.2,
+  "anim": 2.6,
+  "tail_zoom": 0.045,
+  "watermark": "ПЛАНЕТА",
+  "channel": "ПЛАНЕТА",
+  "kwargs": {
+   "text": "Даже место на переговорах европейцам сейчас помогает",
+   "watermark": "ПЛАНЕТА"
+  }
+ },
+ {
+  "scene": 51,
+  "view": "bars",
+  "dur": 13.1,
+  "anim": 13.1,
+  "tail_zoom": 0.0,
+  "watermark": "ПЛАНЕТА",
+  "channel": "ПЛАНЕТА",
+  "kwargs": {},
+  "mode": "cli",
+  "script": "build_chart_bars.py",
+  "cfg": {
+   "title": "Заводы теряют конкурентоспособность",
+   "caption": "",
+   "seconds": 13.1,
+   "bars": [
+    {
+     "label": "ЭНЕРГИЯ",
+     "value": 0.3,
+     "color": "4A90E2"
+    },
+    {
+     "label": "ПРОМЫШЛЕННОСТЬ",
+     "value": 0.4,
+     "color": "48BB78"
+    },
+    {
+     "label": "ОБОРОНА",
+     "value": 0.2,
+     "color": "84848A"
+    }
+   ]
+  }
+ },
+ {
+  "scene": 53,
+  "view": "charts.radar",
+  "dur": 11.2,
+  "anim": 11.2,
+  "tail_zoom": 0.045,
+  "watermark": "ПЛАНЕТА",
+  "channel": "ПЛАНЕТА",
+  "kwargs": {
+   "axes": [
+    "Санкции",
+    "Энергия",
+    "Рынок",
+    "Оборона"
+   ],
+   "series": [
+    {
+     "label": "Чем сильна Европа",
+     "values": [
+      2.0,
+      1.0,
+      2.0,
+      1.0
+     ]
+    }
+   ],
+   "title": "Чем сильна Европа",
+   "watermark": "ПЛАНЕТА"
+  }
+ },
+ {
+  "scene": 54,
+  "view": "tape",
+  "dur": 12.4,
+  "anim": 2.4,
+  "tail_zoom": 0.04,
+  "watermark": "ПЛАНЕТА",
+  "channel": "ПЛАНЕТА",
+  "kwargs": {
+   "text": "сама постановка вопроса изменится. Санкции могут",
+   "watermark": "ПЛАНЕТА"
+  }
+ },
+ {
+  "scene": 56,
+  "view": "zal_kub",
+  "dur": 10.0,
+  "anim": 2.6,
+  "tail_zoom": 0.045,
+  "watermark": "ПЛАНЕТА",
+  "channel": "ПЛАНЕТА",
+  "kwargs": {
+   "channel": "ПЛАНЕТА",
+   "dur": 10.0,
+   "sheets": [
+    "Позолота держится",
+    "Двери закрываются",
+    "Кучер важен",
+    "Полночь близко",
+    "Карета ждёт",
+    "Бал кончается"
+   ],
+   "text": "Полночь приближается",
+   "kick": "Пахнет тыквой",
+   "watermark": "ПЛАНЕТА"
+  }
+ },
+ {
+  "scene": 58,
+  "view": "split",
+  "dur": 7.5,
+  "anim": 2.6,
+  "tail_zoom": 0.045,
+  "watermark": "ПЛАНЕТА",
+  "channel": "ПЛАНЕТА",
+  "kwargs": {
+   "text": "Можно сидеть на мешке денег и не получить приглашения",
+   "photo": "cards/photo/card_058.jpg",
+   "watermark": "ПЛАНЕТА"
+  }
+ },
+ {
+  "scene": 60,
+  "view": "charts.slope",
+  "dur": 11.2,
+  "anim": 2.6,
+  "tail_zoom": 0.045,
+  "watermark": "ПЛАНЕТА",
+  "channel": "ПЛАНЕТА",
+  "kwargs": {
+   "items": [
+    {
+     "label": "Единый фронт",
+     "from": 5.0,
+     "to": 2.0
+    },
+    {
+     "label": "Давление",
+     "from": 4.0,
+     "to": 1.0
+    }
+   ],
+   "title": "Было и стало",
+   "source": "ТАСС",
+   "watermark": "ПЛАНЕТА"
+  }
+ },
+ {
+  "scene": 61,
+  "view": "pull",
+  "dur": 13.7,
+  "anim": 2.6,
+  "tail_zoom": 0.05,
+  "watermark": "ПЛАНЕТА",
+  "channel": "ПЛАНЕТА",
+  "kwargs": {
+   "text": "Теперь выяснилось, что телефонная связь всё-таки",
+   "watermark": "ПЛАНЕТА"
+  }
+ },
+ {
+  "scene": 63,
+  "view": "photo",
+  "dur": 8.3,
+  "anim": 8.3,
+  "tail_zoom": 0.0,
+  "watermark": "ПЛАНЕТА",
+  "channel": "ПЛАНЕТА",
+  "kwargs": {
+   "watermark": "ПЛАНЕТА",
+   "photo": "cards/photo/card_063.jpg",
+   "title": "Мерц объясняет ситуацию",
+   "lines": [
+    "Один возможный звонок",
+    "Решения без Европы",
+    "Публике рассказывают иначе"
+   ]
+  }
+ },
+ {
+  "scene": 65,
+  "view": "zal_ekran",
+  "dur": 3.5,
+  "anim": 3.5,
+  "tail_zoom": 0.045,
+  "watermark": "ПЛАНЕТА",
+  "channel": "ПЛАНЕТА",
+  "kwargs": {
+   "channel": "ПЛАНЕТА",
+   "dur": 3.5,
+   "sheets": [],
+   "text": "Мир терпеливо стоит в прихожей",
+   "say": "Принципиальность обходится недорого",
+   "author": "Автор",
+   "watermark": "ПЛАНЕТА"
+  }
+ },
+ {
+  "scene": 67,
+  "view": "zal_efir",
+  "dur": 3.5,
+  "anim": 2.6,
+  "tail_zoom": 0.045,
+  "watermark": "ПЛАНЕТА",
+  "channel": "ПЛАНЕТА",
+  "kwargs": {
+   "channel": "ПЛАНЕТА",
+   "dur": 3.5,
+   "sheets": [],
+   "text": "Совещание началось",
+   "say": "Гости вошли и закрыли дверь",
+   "author": "Автор",
+   "watermark": "ПЛАНЕТА"
+  }
+ }
+]
