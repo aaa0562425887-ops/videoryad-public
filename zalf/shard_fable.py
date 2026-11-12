@@ -7,7 +7,9 @@ import zal_core as Z
 
 FPS = 30
 SCENES = {}
-for mod in ("shard_fable_a", "shard_fable_b", "shard_fable_c", "shard_fable_d", "shard_fable_e", "shard_fable_f", "shard_fable_g"):
+import glob
+_mods = sorted(os.path.basename(f)[:-3] for f in glob.glob(os.path.join(os.path.dirname(os.path.abspath(__file__)), "shard_fable_?.py")))
+for mod in _mods:
     try:
         m = __import__(mod)
         SCENES.update(getattr(m, "SCENES", {}))
