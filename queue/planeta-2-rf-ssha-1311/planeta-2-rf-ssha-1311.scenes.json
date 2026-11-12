@@ -1,0 +1,609 @@
+{
+ "channel": "ПЛАНЕТА",
+ "scenes": [
+  {
+   "id": 1,
+   "start_sec": 0.0,
+   "duration_sec": 9.1,
+   "text": "",
+   "source": "local_library",
+   "source_query": "ПОЛИТИКА/ЕВРОПА"
+  },
+  {
+   "id": 2,
+   "start_sec": 9.1,
+   "duration_sec": 12.0,
+   "text": "",
+   "source": "card:zal_slova",
+   "source_query": "карточка «zal_slova» — кадр рисуется в облаке, фетч не нужен"
+  },
+  {
+   "id": 3,
+   "start_sec": 21.1,
+   "duration_sec": 11.4,
+   "text": "",
+   "source": "local_library",
+   "source_query": "БАЗА/ВЛАСТЬ-ЕВРОПА-НАТО/ЗАЛ-ЗАСЕДАНИЙ-НАТО",
+   "fx": "flash"
+  },
+  {
+   "id": 4,
+   "start_sec": 32.5,
+   "duration_sec": 10.8,
+   "text": "",
+   "source": "card:zal_schetchik",
+   "source_query": "карточка «zal_schetchik» — кадр рисуется в облаке, фетч не нужен"
+  },
+  {
+   "id": 5,
+   "start_sec": 43.3,
+   "duration_sec": 12.2,
+   "text": "",
+   "source": "local_library",
+   "source_query": "БАЗА/ПЕРСОНЫ/ПУТИН",
+   "fx": "subscribe"
+  },
+  {
+   "id": 6,
+   "start_sec": 55.5,
+   "duration_sec": 11.6,
+   "text": "",
+   "source": "card:zal",
+   "source_query": "карточка «zal» — кадр рисуется в облаке, фетч не нужен"
+  },
+  {
+   "id": 7,
+   "start_sec": 67.1,
+   "duration_sec": 11.1,
+   "text": "",
+   "source": "local_library",
+   "source_query": "БАЗА/ВЛАСТЬ-ЕВРОПА-НАТО/УЧЕНИЯ-НАТО-БРОНЕТЕХНИКА",
+   "fx": "depth"
+  },
+  {
+   "id": 8,
+   "start_sec": 78.2,
+   "duration_sec": 10.9,
+   "text": "",
+   "source": "card:map",
+   "source_query": "карточка «map» — кадр рисуется в облаке, фетч не нужен"
+  },
+  {
+   "id": 9,
+   "start_sec": 89.1,
+   "duration_sec": 8.3,
+   "text": "",
+   "source": "local_library",
+   "source_query": "БАЗА/ВЛАСТЬ-ЕВРОПА-НАТО/УЧЕНИЯ-НАТО-БРОНЕТЕХНИКА"
+  },
+  {
+   "id": 10,
+   "start_sec": 97.4,
+   "duration_sec": 14.8,
+   "text": "",
+   "source": "local_library",
+   "source_query": "БАЗА/ВЛАСТЬ-ЕВРОПА-НАТО/ЗАЛ-ЗАСЕДАНИЙ-НАТО"
+  },
+  {
+   "id": 11,
+   "start_sec": 112.2,
+   "duration_sec": 3.9,
+   "text": "",
+   "source": "local_library",
+   "source_query": "БАЗА/ВЕДОМСТВА/МИНОБОРОНЫ-РОССИИ",
+   "fx": "inset"
+  },
+  {
+   "id": 12,
+   "start_sec": 116.1,
+   "duration_sec": 19.5,
+   "text": "",
+   "source": "card:dossier",
+   "source_query": "карточка «dossier» — кадр рисуется в облаке, фетч не нужен"
+  },
+  {
+   "id": 13,
+   "start_sec": 135.6,
+   "duration_sec": 8.0,
+   "text": "",
+   "source": "local_library",
+   "source_query": "ПОЛИТИКА/НАТО",
+   "fx": "mosaic"
+  },
+  {
+   "id": 14,
+   "start_sec": 143.6,
+   "duration_sec": 11.3,
+   "text": "",
+   "source": "card:duel",
+   "source_query": "карточка «duel» — кадр рисуется в облаке, фетч не нужен"
+  },
+  {
+   "id": 15,
+   "start_sec": 154.9,
+   "duration_sec": 11.5,
+   "text": "",
+   "source": "local_library",
+   "source_query": "БАЗА/ВЛАСТЬ-ЕВРОПА-НАТО/ШТАБ-НАТО-БРЮССЕЛЕ",
+   "fx": "panels"
+  },
+  {
+   "id": 16,
+   "start_sec": 166.4,
+   "duration_sec": 16.4,
+   "text": "",
+   "source": "card:network",
+   "source_query": "карточка «network» — кадр рисуется в облаке, фетч не нужен"
+  },
+  {
+   "id": 17,
+   "start_sec": 182.8,
+   "duration_sec": 15.2,
+   "text": "",
+   "source": "local_library",
+   "source_query": "БАЗА/ВЛАСТЬ-ЕВРОПА-НАТО/ЗАЛ-ЕВРОПАРЛАМЕНТА-СТРАСБУРГЕ",
+   "fx": "subscribe"
+  },
+  {
+   "id": 18,
+   "start_sec": 198.0,
+   "duration_sec": 15.9,
+   "text": "",
+   "source": "local_library",
+   "source_query": "ПОЛИТИКА/ГЕРМАНИЯ"
+  },
+  {
+   "id": 19,
+   "start_sec": 213.9,
+   "duration_sec": 7.8,
+   "text": "",
+   "source": "local_library",
+   "source_query": "БАЗА/ВЕДОМСТВА/ГОСДЕП-США",
+   "fx": "mosaic"
+  },
+  {
+   "id": 20,
+   "start_sec": 221.7,
+   "duration_sec": 9.9,
+   "text": "",
+   "source": "card:paper_typed",
+   "source_query": "карточка «paper_typed» — кадр рисуется в облаке, фетч не нужен"
+  },
+  {
+   "id": 21,
+   "start_sec": 231.6,
+   "duration_sec": 7.1,
+   "text": "",
+   "source": "local_library",
+   "source_query": "БАЗА/ВЕДОМСТВА/АРМИЯ-США"
+  },
+  {
+   "id": 22,
+   "start_sec": 238.7,
+   "duration_sec": 6.7,
+   "text": "",
+   "source": "card:line",
+   "source_query": "карточка «line» — кадр рисуется в облаке, фетч не нужен"
+  },
+  {
+   "id": 23,
+   "start_sec": 245.4,
+   "duration_sec": 20.1,
+   "text": "",
+   "source": "local_library",
+   "source_query": "БАЗА/ПЕРСОНЫ/ТРАМП",
+   "fx": "tear"
+  },
+  {
+   "id": 24,
+   "start_sec": 265.5,
+   "duration_sec": 10.9,
+   "text": "",
+   "source": "card:vyrezka",
+   "source_query": "карточка «vyrezka» — кадр рисуется в облаке, фетч не нужен"
+  },
+  {
+   "id": 25,
+   "start_sec": 276.4,
+   "duration_sec": 11.6,
+   "text": "",
+   "source": "local_library",
+   "source_query": "ПОЛИТИКА/БЕЛОРУСИЯ"
+  },
+  {
+   "id": 26,
+   "start_sec": 288.0,
+   "duration_sec": 11.0,
+   "text": "",
+   "source": "card:film",
+   "source_query": "карточка «film» — кадр рисуется в облаке, фетч не нужен"
+  },
+  {
+   "id": 27,
+   "start_sec": 299.0,
+   "duration_sec": 11.2,
+   "text": "",
+   "source": "card:film_frame",
+   "source_query": "карточка «film_frame» — кадр рисуется в облаке, фетч не нужен"
+  },
+  {
+   "id": 28,
+   "start_sec": 310.2,
+   "duration_sec": 14.2,
+   "text": "",
+   "source": "press_photo",
+   "source_query": "Сталин Рузвельт Черчилль Ливадийский дворец Ялта 1945",
+   "fx": "wipe"
+  },
+  {
+   "id": 29,
+   "start_sec": 324.4,
+   "duration_sec": 12.4,
+   "text": "",
+   "source": "card:wall",
+   "source_query": "карточка «wall» — кадр рисуется в облаке, фетч за сценой не идёт",
+   "card": {
+    "kind": "wall",
+    "код": "A56",
+    "kick": "Ялта · 1945",
+    "title": "Кого не спросили",
+    "watermark": "ПЛАНЕТА",
+    "anim": 12.4
+   }
+  },
+  {
+   "id": 30,
+   "start_sec": 336.8,
+   "duration_sec": 10.8,
+   "text": "",
+   "source": "local_library",
+   "source_query": "БАЗА/ВЕДОМСТВА/ООН",
+   "fx": "subscribe"
+  },
+  {
+   "id": 31,
+   "start_sec": 347.6,
+   "duration_sec": 11.2,
+   "text": "",
+   "source": "card:dof",
+   "source_query": "карточка «dof» — кадр рисуется в облаке, фетч за сценой не идёт",
+   "card": {
+    "kind": "dof",
+    "код": "A64",
+    "title": "За дверью",
+    "watermark": "ПЛАНЕТА",
+    "anim": 11.2
+   }
+  },
+  {
+   "id": 32,
+   "start_sec": 358.8,
+   "duration_sec": 14.1,
+   "text": "",
+   "source": "card:vyrezka_kontur",
+   "source_query": "карточка «vyrezka_kontur» — кадр рисуется в облаке, фетч не нужен"
+  },
+  {
+   "id": 33,
+   "start_sec": 372.9,
+   "duration_sec": 11.1,
+   "text": "",
+   "source": "local_library",
+   "source_query": "БАЗА/ВЛАСТЬ-ЕВРОПА-НАТО/ЗДАНИЕ-БЕРЛАЙМОН-БРЮССЕЛЕ"
+  },
+  {
+   "id": 34,
+   "start_sec": 384.0,
+   "duration_sec": 14.3,
+   "text": "",
+   "source": "card:zal_shkala",
+   "source_query": "карточка «zal_shkala» — кадр рисуется в облаке, фетч не нужен"
+  },
+  {
+   "id": 35,
+   "start_sec": 398.3,
+   "duration_sec": 10.4,
+   "text": "",
+   "source": "local_library",
+   "source_query": "БАЗА/ВЛАСТЬ-ЕВРОПА-НАТО/ЕЛИСЕЙСКИЙ-ДВОРЕЦ-ПАРИЖЕ"
+  },
+  {
+   "id": 36,
+   "start_sec": 408.7,
+   "duration_sec": 19.1,
+   "text": "",
+   "source": "card:strike",
+   "source_query": "карточка «strike» — кадр рисуется в облаке, фетч не нужен"
+  },
+  {
+   "id": 37,
+   "start_sec": 427.8,
+   "duration_sec": 15.5,
+   "text": "",
+   "source": "card:zal_makety",
+   "source_query": "карточка «zal_makety» — кадр рисуется в облаке, фетч не нужен"
+  },
+  {
+   "id": 38,
+   "start_sec": 443.3,
+   "duration_sec": 9.9,
+   "text": "",
+   "source": "local_library",
+   "source_query": "БАЗА/ЛОГИСТИКА-ЕВРОПА/ВЕТРОПАРК-СЕВЕРНОМ-МОРЕ"
+  },
+  {
+   "id": 39,
+   "start_sec": 453.2,
+   "duration_sec": 16.7,
+   "text": "",
+   "source": "card:zal_pol",
+   "source_query": "карточка «zal_pol» — кадр рисуется в облаке, фетч не нужен"
+  },
+  {
+   "id": 40,
+   "start_sec": 469.9,
+   "duration_sec": 11.3,
+   "text": "",
+   "source": "web_search",
+   "source_query": "Си Цзиньпин Пекин 2026 искусственный интеллект ядерная безопасность"
+  },
+  {
+   "id": 41,
+   "start_sec": 481.2,
+   "duration_sec": 8.9,
+   "text": "",
+   "source": "card:bubbles",
+   "source_query": "карточка «bubbles» — кадр рисуется в облаке, фетч не нужен"
+  },
+  {
+   "id": 42,
+   "start_sec": 490.1,
+   "duration_sec": 13.2,
+   "text": "",
+   "source": "card:device",
+   "source_query": "карточка «device» — кадр рисуется в облаке, фетч не нужен"
+  },
+  {
+   "id": 43,
+   "start_sec": 503.3,
+   "duration_sec": 18.4,
+   "text": "",
+   "source": "local_library",
+   "source_query": "ПОЛИТИКА/CHINA"
+  },
+  {
+   "id": 44,
+   "start_sec": 521.7,
+   "duration_sec": 10.6,
+   "text": "",
+   "source": "card:poster",
+   "source_query": "карточка «poster» — кадр рисуется в облаке, фетч за сценой не идёт",
+   "card": {
+    "kind": "poster",
+    "код": "A6",
+    "kick": "Механизм проще",
+    "title": "Ялта два ноль",
+    "watermark": "ПЛАНЕТА",
+    "anim": 10.6
+   }
+  },
+  {
+   "id": 45,
+   "start_sec": 532.3,
+   "duration_sec": 14.0,
+   "text": "",
+   "source": "local_library",
+   "source_query": "БАЗА/ВЛАСТЬ-РОССИЯ/МОСКОВСКИЙ-КРЕМЛЬ-СО"
+  },
+  {
+   "id": 46,
+   "start_sec": 546.3,
+   "duration_sec": 15.7,
+   "text": "",
+   "source": "card:quote",
+   "source_query": "карточка «quote» — кадр рисуется в облаке, фетч не нужен"
+  },
+  {
+   "id": 47,
+   "start_sec": 562.0,
+   "duration_sec": 14.4,
+   "text": "",
+   "source": "local_library",
+   "source_query": "БАЗА/ВЛАСТЬ-РОССИЯ/ЗДАНИЕ-МИД-РОССИИ"
+  },
+  {
+   "id": 48,
+   "start_sec": 576.4,
+   "duration_sec": 9.8,
+   "text": "",
+   "source": "card:torn",
+   "source_query": "карточка «torn» — кадр рисуется в облаке, фетч не нужен"
+  },
+  {
+   "id": 49,
+   "start_sec": 586.2,
+   "duration_sec": 17.2,
+   "text": "",
+   "source": "card:marker_serif",
+   "source_query": "карточка «marker_serif» — кадр рисуется в облаке, фетч не нужен"
+  },
+  {
+   "id": 50,
+   "start_sec": 603.4,
+   "duration_sec": 14.5,
+   "text": "",
+   "source": "local_library",
+   "source_query": "БАЗА/ВЛАСТЬ-ЕВРОПА-НАТО/ЗДАНИЕ-БЕРЛАЙМОН-БРЮССЕЛЕ"
+  },
+  {
+   "id": 51,
+   "start_sec": 617.9,
+   "duration_sec": 13.1,
+   "text": "",
+   "source": "card:bars",
+   "source_query": "карточка «bars» — кадр рисуется в облаке, фетч за сценой не идёт",
+   "card": {
+    "kind": "bars",
+    "код": "A4",
+    "title": "Заводы теряют конкурентоспособность",
+    "watermark": "ПЛАНЕТА",
+    "anim": 13.1
+   }
+  },
+  {
+   "id": 52,
+   "start_sec": 631.0,
+   "duration_sec": 17.1,
+   "text": "",
+   "source": "local_library",
+   "source_query": "БАЗА/ЛОГИСТИКА-ЕВРОПА/УГОЛЬНАЯ-ЭЛЕКТРОСТАНЦИЯ-ГЕРМАНИИ"
+  },
+  {
+   "id": 53,
+   "start_sec": 648.1,
+   "duration_sec": 11.2,
+   "text": "",
+   "source": "card:radar",
+   "source_query": "карточка «radar» — кадр рисуется в облаке, фетч не нужен"
+  },
+  {
+   "id": 54,
+   "start_sec": 659.3,
+   "duration_sec": 12.4,
+   "text": "",
+   "source": "card:tape",
+   "source_query": "карточка «tape» — кадр рисуется в облаке, фетч не нужен"
+  },
+  {
+   "id": 55,
+   "start_sec": 671.7,
+   "duration_sec": 10.3,
+   "text": "",
+   "source": "local_library",
+   "source_query": "БАЗА/ВЛАСТЬ-США/КАПИТОЛИЙ-ВАШИНГТОНЕ-ДНЁМ"
+  },
+  {
+   "id": 56,
+   "start_sec": 682.0,
+   "duration_sec": 10.0,
+   "text": "",
+   "source": "card:zal_kub",
+   "source_query": "карточка «zal_kub» — кадр рисуется в облаке, фетч не нужен"
+  },
+  {
+   "id": 57,
+   "start_sec": 692.0,
+   "duration_sec": 8.5,
+   "text": "",
+   "source": "local_library",
+   "source_query": "БАЗА/ЛОГИСТИКА-ЕВРОПА/ПОРТ-ГАМБУРГА-ВОЗДУХА"
+  },
+  {
+   "id": 58,
+   "start_sec": 700.5,
+   "duration_sec": 7.5,
+   "text": "",
+   "source": "card:split",
+   "source_query": "карточка «split» — кадр рисуется в облаке, фетч не нужен"
+  },
+  {
+   "id": 59,
+   "start_sec": 708.0,
+   "duration_sec": 9.1,
+   "text": "",
+   "source": "local_library",
+   "source_query": "БАЗА/ВЛАСТЬ-ЕВРОПА-НАТО/СОВЕТ-МИНИСТРОВ-ПОЛЬШИ"
+  },
+  {
+   "id": 60,
+   "start_sec": 717.1,
+   "duration_sec": 11.2,
+   "text": "",
+   "source": "card:slope",
+   "source_query": "карточка «slope» — кадр рисуется в облаке, фетч не нужен"
+  },
+  {
+   "id": 61,
+   "start_sec": 728.3,
+   "duration_sec": 13.7,
+   "text": "",
+   "source": "card:pull",
+   "source_query": "карточка «pull» — кадр рисуется в облаке, фетч не нужен"
+  },
+  {
+   "id": 62,
+   "start_sec": 742.0,
+   "duration_sec": 9.6,
+   "text": "",
+   "source": "local_library",
+   "source_query": "БАЗА/ВЛАСТЬ-ЕВРОПА-НАТО/БУНДЕСТАГ-БЕРЛИНЕ-СТЕКЛЯННЫЙ"
+  },
+  {
+   "id": 63,
+   "start_sec": 751.6,
+   "duration_sec": 8.3,
+   "text": "",
+   "source": "card:photo",
+   "source_query": "карточка «photo» — кадр рисуется в облаке, фетч за сценой не идёт",
+   "card": {
+    "kind": "photo",
+    "title": "Мерц объясняет ситуацию",
+    "lines": [
+     "Один возможный звонок",
+     "Решения без Европы",
+     "Публике рассказывают иначе"
+    ],
+    "watermark": "ПЛАНЕТА",
+    "anim": 8.3,
+    "photo": "cards/photo/merz_oval.jpg"
+   }
+  },
+  {
+   "id": 64,
+   "start_sec": 759.9,
+   "duration_sec": 3.9,
+   "text": "",
+   "source": "local_library",
+   "source_query": "ПОЛИТИКА/МЕРЦ"
+  },
+  {
+   "id": 65,
+   "start_sec": 763.8,
+   "duration_sec": 3.5,
+   "text": "",
+   "source": "card:zal_ekran",
+   "source_query": "карточка «zal_ekran» — кадр рисуется в облаке, фетч не нужен"
+  },
+  {
+   "id": 66,
+   "start_sec": 767.3,
+   "duration_sec": 3.7,
+   "text": "",
+   "source": "local_library",
+   "source_query": "БАЗА/ВЛАСТЬ-США/БЕЛЫЙ-ДОМ-СО"
+  },
+  {
+   "id": 67,
+   "start_sec": 771.0,
+   "duration_sec": 3.5,
+   "text": "",
+   "source": "card:zal_efir",
+   "source_query": "карточка «zal_efir» — кадр рисуется в облаке, фетч не нужен"
+  },
+  {
+   "id": 68,
+   "start_sec": 774.5,
+   "duration_sec": 3.0,
+   "text": "",
+   "source": "local_library",
+   "source_query": "БАЗА/ВЛАСТЬ-ЕВРОПА-НАТО/ЗДАНИЕ-ПАРЛАМЕНТА-ФИНЛЯНДИИ"
+  }
+ ],
+ "propuski": {
+  "slider": "В тексте нет оценки с числовым диапазоном от минимума до максимума.",
+  "map_dist": "В тексте не названо расстояние между двумя географическими точками.",
+  "map_regions": "В тексте нет перечня областей или регионов одной страны.",
+  "pie": "В тексте не названы доли, составляющие единое целое.",
+  "waterfall": "В тексте нет начального и конечного числовых итогов с отдельными статьями изменения."
+ }
+}
