@@ -1,0 +1,890 @@
+[
+ {
+  "scene": 2,
+  "view": "zal_slova",
+  "dur": 10.0,
+  "anim": 2.6,
+  "tail_zoom": 0.045,
+  "watermark": "5 МИНУТ",
+  "channel": "5 МИНУТ",
+  "kwargs": {
+   "channel": "5 МИНУТ",
+   "dur": 10.0,
+   "sheets": [
+    "разговор конструктивный",
+    "все готовы встречаться дальше"
+   ],
+   "text": "Только мир почему-то никак не наступает",
+   "accent": "мир",
+   "na_polu": "ЧТО СЧИТАЮТ УСПЕХОМ",
+   "watermark": "5 МИНУТ"
+  }
+ },
+ {
+  "scene": 3,
+  "view": "quote",
+  "dur": 8.89,
+  "anim": 2.6,
+  "tail_zoom": 0.045,
+  "watermark": "5 МИНУТ",
+  "channel": "5 МИНУТ",
+  "kwargs": {
+   "text": "Смотрим не на красивые слова после встречи, а на то, что после неё реально изменилось",
+   "watermark": "5 МИНУТ"
+  }
+ },
+ {
+  "scene": 4,
+  "view": "zal_schetchik",
+  "dur": 11.35,
+  "anim": 2.6,
+  "tail_zoom": 0.045,
+  "watermark": "5 МИНУТ",
+  "channel": "5 МИНУТ",
+  "kwargs": {
+   "channel": "5 МИНУТ",
+   "dur": 11.35,
+   "sheets": [],
+   "text": "Уиткофф у Путина в десятый раз",
+   "value": "10",
+   "value_sub": "встреч",
+   "watermark": "5 МИНУТ"
+  }
+ },
+ {
+  "scene": 5,
+  "view": "strike",
+  "dur": 10.19,
+  "anim": 3.0,
+  "tail_zoom": 0.045,
+  "watermark": "5 МИНУТ",
+  "channel": "5 МИНУТ",
+  "kwargs": {
+   "text": "Разговор полезный, есть прогресс, следующий раунд готовят",
+   "struck": "есть прогресс",
+   "watermark": "5 МИНУТ"
+  }
+ },
+ {
+  "scene": 10,
+  "view": "photo",
+  "dur": 11.52,
+  "anim": 11.52,
+  "tail_zoom": 0.0,
+  "watermark": "5 МИНУТ",
+  "channel": "5 МИНУТ",
+  "kwargs": {
+   "watermark": "5 МИНУТ",
+   "photo": "cards/photo/card_010.jpg",
+   "title": "Гуманитарный трек",
+   "lines": [
+    "обмен пленными",
+    "миссия в Константиновке"
+   ]
+  }
+ },
+ {
+  "scene": 11,
+  "view": "split",
+  "dur": 8.72,
+  "anim": 2.0,
+  "tail_zoom": 0.06,
+  "watermark": "5 МИНУТ",
+  "channel": "5 МИНУТ",
+  "kwargs": {
+   "photo": "cards/photo/card_011.jpg",
+   "text": "Предлагаю организовать гуманитарную миссию в Константиновке",
+   "author": "Владимир Путин",
+   "role": "президент России",
+   "accent": "Предлагаю организовать",
+   "watermark": "5 МИНУТ"
+  }
+ },
+ {
+  "scene": 12,
+  "view": "charts.waterfall",
+  "dur": 11.12,
+  "anim": 11.12,
+  "tail_zoom": 0.045,
+  "watermark": "5 МИНУТ",
+  "channel": "5 МИНУТ",
+  "kwargs": {
+   "start": {
+    "label": "заявлено",
+    "value": 100.0
+   },
+   "steps": [
+    {
+     "label": "обмен",
+     "value": 10.0
+    },
+    {
+     "label": "миссия",
+     "value": 5.0
+    },
+    {
+     "label": "территории",
+     "value": -40.0
+    },
+    {
+     "label": "войска",
+     "value": -35.0
+    }
+   ],
+   "end": {
+    "label": "ИТОГ"
+   },
+   "watermark": "5 МИНУТ"
+  }
+ },
+ {
+  "scene": 13,
+  "view": "doc",
+  "dur": 8.0,
+  "anim": 3.4,
+  "tail_zoom": 0.04,
+  "watermark": "5 МИНУТ",
+  "channel": "5 МИНУТ",
+  "kwargs": {
+   "text": "по территориям, по войскам, по условиям окончания конфликта. А им снова говорят зато договорились об обмене. Ну отлично.",
+   "mark": "ТЕРРИТОРИЯМ",
+   "watermark": "5 МИНУТ"
+  }
+ },
+ {
+  "scene": 15,
+  "view": "charts.map_dist",
+  "dur": 12.34,
+  "anim": 2.6,
+  "tail_zoom": 0.045,
+  "watermark": "5 МИНУТ",
+  "channel": "5 МИНУТ",
+  "kwargs": {
+   "points": [
+    {
+     "label": "Константиновка",
+     "lat": 48.52,
+     "lon": 37.72,
+     "accent": false
+    },
+    {
+     "label": "Донецк",
+     "lat": 48.0,
+     "lon": 37.8,
+     "accent": false
+    }
+   ],
+   "watermark": "5 МИНУТ"
+  }
+ },
+ {
+  "scene": 16,
+  "view": "zal_pol",
+  "dur": 9.69,
+  "anim": 2.6,
+  "tail_zoom": 0.045,
+  "watermark": "5 МИНУТ",
+  "channel": "5 МИНУТ",
+  "kwargs": {
+   "channel": "5 МИНУТ",
+   "dur": 9.69,
+   "sheets": [],
+   "text": "Кто отвечает за доступ",
+   "accent": "доступ",
+   "na_polu": "ДОСТУП",
+   "watermark": "5 МИНУТ"
+  }
+ },
+ {
+  "scene": 17,
+  "view": "tape",
+  "dur": 11.5,
+  "anim": 2.4,
+  "tail_zoom": 0.04,
+  "watermark": "5 МИНУТ",
+  "channel": "5 МИНУТ",
+  "kwargs": {
+   "text": "Для России существует одна линия разграничения — государственная граница",
+   "watermark": "5 МИНУТ"
+  }
+ },
+ {
+  "scene": 19,
+  "view": "bars",
+  "dur": 9.28,
+  "anim": 9.28,
+  "tail_zoom": 0.0,
+  "watermark": "5 МИНУТ",
+  "channel": "5 МИНУТ",
+  "kwargs": {},
+  "mode": "cli",
+  "script": "build_chart_bars.py",
+  "cfg": {
+   "title": "Что считают границей",
+   "caption": "Москва говорит о границе, а не о линии фронта",
+   "seconds": 9.28,
+   "bars": [
+    {
+     "label": "ЛИНИЯ ФРОНТА",
+     "value": 0.3,
+     "color": "EABD23"
+    },
+    {
+     "label": "ГОСУДАРСТВЕННАЯ ГРАНИЦА",
+     "value": 1.0,
+     "color": "B92526"
+    }
+   ]
+  }
+ },
+ {
+  "scene": 20,
+  "view": "paper_typed",
+  "dur": 11.92,
+  "anim": 2.8,
+  "tail_zoom": 0.04,
+  "watermark": "5 МИНУТ",
+  "channel": "5 МИНУТ",
+  "kwargs": {
+   "text": "Донецкая, Луганская, Запорожская и Херсонская области записаны в Конституции России как субъекты Федерации",
+   "watermark": "5 МИНУТ"
+  }
+ },
+ {
+  "scene": 21,
+  "view": "charts.cartogram",
+  "dur": 14.68,
+  "anim": 14.68,
+  "tail_zoom": 0.045,
+  "watermark": "5 МИНУТ",
+  "channel": "5 МИНУТ",
+  "kwargs": {
+   "data": [
+    "Донецкая",
+    "Луганская",
+    "Запорожская",
+    "Херсонская"
+   ],
+   "level": "region",
+   "admin": "Украина",
+   "watermark": "5 МИНУТ"
+  }
+ },
+ {
+  "scene": 22,
+  "view": "marker_serif",
+  "dur": 9.35,
+  "anim": 2.6,
+  "tail_zoom": 0.045,
+  "watermark": "5 МИНУТ",
+  "channel": "5 МИНУТ",
+  "kwargs": {
+   "text": "Одна короткая фраза говорит больше, чем десять пресс-конференций",
+   "accent": "Одна короткая фраза",
+   "watermark": "5 МИНУТ"
+  }
+ },
+ {
+  "scene": 23,
+  "view": "zal_kub",
+  "dur": 12.49,
+  "anim": 2.6,
+  "tail_zoom": 0.045,
+  "watermark": "5 МИНУТ",
+  "channel": "5 МИНУТ",
+  "kwargs": {
+   "channel": "5 МИНУТ",
+   "dur": 12.49,
+   "sheets": [],
+   "text": "Торг начинается не с чистого листа",
+   "accent": "Торг",
+   "kick": "Позиция уже оформлена",
+   "watermark": "5 МИНУТ"
+  }
+ },
+ {
+  "scene": 24,
+  "view": "pull",
+  "dur": 11.68,
+  "anim": 2.6,
+  "tail_zoom": 0.05,
+  "watermark": "5 МИНУТ",
+  "channel": "5 МИНУТ",
+  "kwargs": {
+   "text": "Иностранный контингент на территории Украины для нас неприемлем",
+   "author": "Владимир Путин",
+   "role": "президент России",
+   "watermark": "5 МИНУТ"
+  }
+ },
+ {
+  "scene": 26,
+  "view": "cinematic.depth_of_field",
+  "dur": 10.66,
+  "anim": 10.66,
+  "tail_zoom": 0.0,
+  "watermark": "5 МИНУТ",
+  "channel": "5 МИНУТ",
+  "kwargs": {
+   "photo": "cards/photo/card_026.jpg",
+   "title": "Европа готовит контингент",
+   "watermark": "5 МИНУТ"
+  },
+  "mode": "frame"
+ },
+ {
+  "scene": 28,
+  "view": "cinematic.dossier",
+  "dur": 11.5,
+  "anim": 11.5,
+  "tail_zoom": 0.045,
+  "watermark": "5 МИНУТ",
+  "channel": "5 МИНУТ",
+  "kwargs": {
+   "case": "Письмо Путину и Байдену, 2021",
+   "rows": [
+    "гарантии безопасности — не обсуждались",
+    "нерасширение НАТО — отказ",
+    "иностранные войска — неприемлемы"
+   ],
+   "kick": "Москва · письмо 2021 года",
+   "title": "Юрий Ушаков",
+   "photo": "cards/photo/card_028.jpg",
+   "stamp": "ПЕРВОИСТОЧНИК",
+   "watermark": "5 МИНУТ"
+  }
+ },
+ {
+  "scene": 30,
+  "view": "charts.line",
+  "dur": 14.0,
+  "anim": 2.6,
+  "tail_zoom": 0.045,
+  "watermark": "5 МИНУТ",
+  "channel": "5 МИНУТ",
+  "kwargs": {
+   "x_labels": [
+    "2021",
+    "2022",
+    "2024",
+    "2026"
+   ],
+   "series": [
+    {
+     "name": "",
+     "values": [
+      1.0,
+      2.0,
+      5.0,
+      10.0
+     ]
+    }
+   ],
+   "unit": " встреч",
+   "source": "хронология контактов",
+   "watermark": "5 МИНУТ"
+  }
+ },
+ {
+  "scene": 31,
+  "view": "charts.network",
+  "dur": 11.68,
+  "anim": 11.68,
+  "tail_zoom": 0.045,
+  "watermark": "5 МИНУТ",
+  "channel": "5 МИНУТ",
+  "kwargs": {
+   "nodes": [
+    {
+     "id": "Москва",
+     "label": "Москва",
+     "weight": 4.0
+    },
+    {
+     "id": "Вашингтон",
+     "label": "Вашингтон",
+     "weight": 6.0
+    },
+    {
+     "id": "Киев",
+     "label": "Киев",
+     "weight": 5.0
+    },
+    {
+     "id": "Брюссель",
+     "label": "Брюссель",
+     "weight": 3.0
+    }
+   ],
+   "links": [
+    {
+     "from": "Москва",
+     "to": "Вашингтон",
+     "weight": 3.0
+    },
+    {
+     "from": "Вашингтон",
+     "to": "Киев",
+     "weight": 3.0
+    },
+    {
+     "from": "Киев",
+     "to": "Брюссель",
+     "weight": 2.0
+    },
+    {
+     "from": "Брюссель",
+     "to": "Москва",
+     "weight": 1.0
+    }
+   ],
+   "watermark": "5 МИНУТ"
+  }
+ },
+ {
+  "scene": 32,
+  "view": "duel",
+  "dur": 10.72,
+  "anim": 3.2,
+  "tail_zoom": 0.035,
+  "watermark": "5 МИНУТ",
+  "channel": "5 МИНУТ",
+  "kwargs": {
+   "top": {
+    "who": "",
+    "text": "Для Европы это гарантия после войны",
+    "accent": null,
+    "source": ""
+   },
+   "bottom": {
+    "who": "",
+    "text": "Для Москвы то, против чего она выступала до войны",
+    "accent": null,
+    "source": ""
+   },
+   "watermark": "5 МИНУТ"
+  }
+ },
+ {
+  "scene": 33,
+  "view": "charts.cartogram",
+  "dur": 12.08,
+  "anim": 12.08,
+  "tail_zoom": 0.045,
+  "watermark": "5 МИНУТ",
+  "channel": "5 МИНУТ",
+  "kwargs": {
+   "data": [
+    "Россия",
+    "США",
+    "Украина",
+    "Германия",
+    "Франция"
+   ],
+   "watermark": "5 МИНУТ"
+  }
+ },
+ {
+  "scene": 34,
+  "view": "charts.cartogram",
+  "dur": 12.99,
+  "anim": 12.99,
+  "tail_zoom": 0.045,
+  "watermark": "5 МИНУТ",
+  "channel": "5 МИНУТ",
+  "kwargs": {
+   "data": [
+    "Германия",
+    "Франция",
+    "Великобритания",
+    "Польша"
+   ],
+   "mode": "bubble",
+   "watermark": "5 МИНУТ"
+  }
+ },
+ {
+  "scene": 35,
+  "view": "vyrezka.gazeta",
+  "dur": 8.63,
+  "anim": 2.6,
+  "tail_zoom": 0.045,
+  "watermark": "5 МИНУТ",
+  "channel": "5 МИНУТ",
+  "kwargs": {
+   "photo": "cards/photo/card_035.jpg",
+   "author": "Владимир Зеленский",
+   "role": "президент Украины",
+   "watermark": "5 МИНУТ"
+  }
+ },
+ {
+  "scene": 37,
+  "view": "devices.device_scene",
+  "dur": 9.47,
+  "anim": 2.6,
+  "tail_zoom": 0.045,
+  "watermark": "5 МИНУТ",
+  "channel": "5 МИНУТ",
+  "kwargs": {
+   "content_path": "cards/photo/card_037.jpg",
+   "items": [
+    "связь военная, не бытовая",
+    "разведка, управление, дроны",
+    "доступ выдаёт американская компания"
+   ],
+   "watermark": "5 МИНУТ"
+  }
+ },
+ {
+  "scene": 40,
+  "view": "zal_makety",
+  "dur": 10.55,
+  "anim": 2.6,
+  "tail_zoom": 0.045,
+  "watermark": "5 МИНУТ",
+  "channel": "5 МИНУТ",
+  "kwargs": {
+   "channel": "5 МИНУТ",
+   "dur": 10.55,
+   "sheets": [],
+   "text": "Ограничить, замедлить, закрыть",
+   "accent": "замедлить",
+   "makety": [
+    "лэп=СЕТИ",
+    "банк=ФИНАНСЫ",
+    "больница=КЛИНИКИ"
+   ],
+   "watermark": "5 МИНУТ"
+  }
+ },
+ {
+  "scene": 44,
+  "view": "paper_hand",
+  "dur": 10.64,
+  "anim": 2.8,
+  "tail_zoom": 0.04,
+  "watermark": "5 МИНУТ",
+  "channel": "5 МИНУТ",
+  "kwargs": {
+   "text": "Обменами занимались и раньше: омбудсмены, рабочие группы, отдельные каналы связи",
+   "watermark": "5 МИНУТ"
+  }
+ },
+ {
+  "scene": 45,
+  "view": "cinematic.evidence_wall",
+  "dur": 12.55,
+  "anim": 12.55,
+  "tail_zoom": 0.0,
+  "watermark": "5 МИНУТ",
+  "channel": "5 МИНУТ",
+  "kwargs": {
+   "shots": [
+    [
+     "cards/photo/card_045.jpg",
+     240,
+     380,
+     -4,
+     "наземная станция"
+    ],
+    [
+     "cards/photo/card_045_2.jpg",
+     800,
+     380,
+     3,
+     "антенна Старшилд"
+    ]
+   ],
+   "title": "Один рычаг работает в обе стороны",
+   "watermark": "5 МИНУТ"
+  },
+  "mode": "frame"
+ },
+ {
+  "scene": 46,
+  "view": "zal_efir",
+  "dur": 8.57,
+  "anim": 2.6,
+  "tail_zoom": 0.045,
+  "watermark": "5 МИНУТ",
+  "channel": "5 МИНУТ",
+  "kwargs": {
+   "channel": "5 МИНУТ",
+   "dur": 8.57,
+   "sheets": [],
+   "text": "История уже существует",
+   "say": "Ограничения есть, и это мешает перехвату дронов",
+   "author": "Владимир Зеленский",
+   "role": "президент Украины",
+   "source": "заявление Зеленского",
+   "watermark": "5 МИНУТ"
+  }
+ },
+ {
+  "scene": 47,
+  "view": "film.film_single",
+  "dur": 8.0,
+  "anim": 2.6,
+  "tail_zoom": 0.045,
+  "watermark": "5 МИНУТ",
+  "channel": "5 МИНУТ",
+  "kwargs": {
+   "photo": "cards/photo/card_047.jpg",
+   "watermark": "5 МИНУТ"
+  }
+ },
+ {
+  "scene": 49,
+  "view": "charts.pie",
+  "dur": 11.04,
+  "anim": 11.04,
+  "tail_zoom": 0.045,
+  "watermark": "5 МИНУТ",
+  "channel": "5 МИНУТ",
+  "kwargs": {
+   "segments": [
+    {
+     "label": "обмен пленными",
+     "value": 40.0
+    },
+    {
+     "label": "гуманитарная миссия",
+     "value": 25.0
+    },
+    {
+     "label": "следующий раунд",
+     "value": 20.0
+    },
+    {
+     "label": "подключение Европы",
+     "value": 15.0
+    }
+   ],
+   "watermark": "5 МИНУТ"
+  }
+ },
+ {
+  "scene": 50,
+  "view": "charts.radar",
+  "dur": 12.0,
+  "anim": 12.0,
+  "tail_zoom": 0.045,
+  "watermark": "5 МИНУТ",
+  "channel": "5 МИНУТ",
+  "kwargs": {
+   "axes": [
+    "территории",
+    "войска",
+    "гарантии",
+    "обмен",
+    "миссия",
+    "раунды"
+   ],
+   "series": [
+    {
+     "label": "",
+     "values": [
+      1.0,
+      1.0,
+      2.0,
+      5.0,
+      4.0,
+      5.0
+     ]
+    }
+   ],
+   "watermark": "5 МИНУТ"
+  }
+ },
+ {
+  "scene": 51,
+  "view": "zal_ekran",
+  "dur": 8.48,
+  "anim": 4.0,
+  "tail_zoom": 0.045,
+  "watermark": "5 МИНУТ",
+  "channel": "5 МИНУТ",
+  "kwargs": {
+   "channel": "5 МИНУТ",
+   "dur": 8.48,
+   "sheets": [],
+   "text": "Снова требования безопасности",
+   "say": "Для России существует одна линия разграничения — государственная граница",
+   "author": "Владимир Путин",
+   "role": "президент России",
+   "source": "заявление в Кремле",
+   "watermark": "5 МИНУТ"
+  }
+ },
+ {
+  "scene": 52,
+  "view": "poster.poster",
+  "dur": 11.04,
+  "anim": 11.04,
+  "tail_zoom": 0.0,
+  "watermark": "5 МИНУТ",
+  "channel": "5 МИНУТ",
+  "kwargs": {
+   "title": "Старшилд как рычаг",
+   "hero_photo": "cards/photo/card_052.jpg",
+   "bottom": "Техническая настройка стала политикой",
+   "facts": [
+    {
+     "label": "связь",
+     "value": "военная"
+    },
+    {
+     "label": "доступ",
+     "value": "у США"
+    }
+   ],
+   "watermark": "5 МИНУТ"
+  },
+  "mode": "frame"
+ },
+ {
+  "scene": 53,
+  "view": "film.film_strip",
+  "dur": 10.73,
+  "anim": 10.73,
+  "tail_zoom": 0.045,
+  "watermark": "5 МИНУТ",
+  "channel": "5 МИНУТ",
+  "kwargs": {
+   "shots": [
+    "cards/photo/card_053.jpg",
+    "cards/photo/card_053_2.jpg",
+    "cards/photo/card_053_3.jpg"
+   ],
+   "watermark": "5 МИНУТ"
+  }
+ },
+ {
+  "scene": 54,
+  "view": "torn_split.torn_split",
+  "dur": 4.5,
+  "anim": 2.6,
+  "tail_zoom": 0.045,
+  "watermark": "5 МИНУТ",
+  "channel": "5 МИНУТ",
+  "kwargs": {
+   "a_path": "cards/photo/card_054.jpg",
+   "b_path": "cards/photo/card_054_2.jpg",
+   "title": "Уиткофф и Кушнер снова в Москве",
+   "watermark": "5 МИНУТ"
+  }
+ },
+ {
+  "scene": 55,
+  "view": "zal_shkala",
+  "dur": 15.03,
+  "anim": 2.6,
+  "tail_zoom": 0.045,
+  "watermark": "5 МИНУТ",
+  "channel": "5 МИНУТ",
+  "kwargs": {
+   "channel": "5 МИНУТ",
+   "dur": 15.03,
+   "sheets": [],
+   "text": "Десять встреч — это уже целая серия",
+   "value": "10",
+   "value_sub": "встреч с Путиным",
+   "watermark": "5 МИНУТ"
+  }
+ },
+ {
+  "scene": 56,
+  "view": "charts.slope",
+  "dur": 11.5,
+  "anim": 2.6,
+  "tail_zoom": 0.045,
+  "watermark": "5 МИНУТ",
+  "channel": "5 МИНУТ",
+  "kwargs": {
+   "items": [
+    {
+     "label": "встречи",
+     "from": 1.0,
+     "to": 10.0
+    },
+    {
+     "label": "изменённые позиции",
+     "from": 0.0,
+     "to": 0.0
+    }
+   ],
+   "left_label": "до серии встреч",
+   "right_label": "после десяти встреч",
+   "source": "позиции сторон",
+   "watermark": "5 МИНУТ"
+  }
+ },
+ {
+  "scene": 57,
+  "view": "slider",
+  "dur": 12.05,
+  "anim": 12.05,
+  "tail_zoom": 0.0,
+  "watermark": "5 МИНУТ",
+  "channel": "5 МИНУТ",
+  "kwargs": {},
+  "mode": "cli",
+  "script": "build_chart_slider.py",
+  "cfg": {
+   "title": "Сколько главных пунктов сдвинулось",
+   "min": 0.0,
+   "max": 5.0,
+   "low": 0.0,
+   "high": 1.0,
+   "marker_value": 0.0,
+   "marker_display": "0",
+   "seconds": 12.05,
+   "range_label": "РАЗБРОС ОЦЕНОК",
+   "caption": "",
+   "source": ""
+  }
+ },
+ {
+  "scene": 58,
+  "view": "vyrezka.figura",
+  "dur": 5.12,
+  "anim": 2.6,
+  "tail_zoom": 0.045,
+  "watermark": "5 МИНУТ",
+  "channel": "5 МИНУТ",
+  "kwargs": {
+   "photo": "cards/photo/card_058.jpg",
+   "author": "Владимир Путин",
+   "role": "президент России",
+   "watermark": "5 МИНУТ"
+  }
+ },
+ {
+  "scene": 59,
+  "view": "zal",
+  "dur": 14.64,
+  "anim": 2.6,
+  "tail_zoom": 0.045,
+  "watermark": "5 МИНУТ",
+  "channel": "5 МИНУТ",
+  "kwargs": {
+   "text": "Снова обмен, хорошая встреча и обещание встретиться ещё раз",
+   "words": [
+    "ИТОГ",
+    "ОБМЕН"
+   ],
+   "sheets": [
+    "десять встреч",
+    "позиции не изменились",
+    "следующий раунд готовят",
+    "прогресс объявлен",
+    "границы прежние",
+    "войска неприемлемы"
+   ],
+   "channel": "5 МИНУТ",
+   "dur": 14.64,
+   "watermark": "5 МИНУТ"
+  }
+ }
+]
