@@ -241,29 +241,201 @@ def listy(img, cam, zmax):
         d.rectangle([p[0][0], p[0][1], p[0][0] + shir, p[0][1] + vys],
                     outline=(214, 216, 219, 200), width=1)
 
+# ----------------------------------------------------------------- зал по кадрам 21.3-21.9
+FONT_B = "/usr/share/fonts/truetype/dejavu/DejaVuSans-Bold.ttf"
+ZAL_W, ZAL_H, ZAL_FAR = 7.0, 5.2, 46.0      # полуширина, потолок, дальняя стена
+OKNO_Z, OKNO_W = 4.5, 1.65                   # шаг окон и ширина
+OKNO_Y0, OKNO_Y1 = 1.30, 3.70
+
+def zal2(cam):
+    """Зал, снятый с кадров 21.333-21.933: широкий светлый ангар, высокие окна
+    с переплётом в нишах, бетонный пол плитами, косые пятна света, потолок с
+    балками, жёлтый проём вдали. Горизонт берётся ИЗ ПРОЕКЦИИ."""
+    img = Image.new("RGBA", (W, H), (236, 237, 238, 255))
+    d = ImageDraw.Draw(img, "RGBA")
+    hor = cam.proj((0.0, cam.y, cam.z + 1e5))[1]
+    d.rectangle([0, 0, W, hor], fill=(238, 239, 240, 255))        # воздух
+    d.rectangle([0, hor, W, H], fill=(214, 213, 209, 255))        # бетонный пол
+
+    # --- плиты пола: швы поперёк и вдоль
+    z0 = math.floor(cam.z / 3.0) * 3.0
+    for i in range(26):
+        zz = z0 + i * 3.0
+        if zz < cam.z + 0.6 or zz > ZAL_FAR: continue
+        a = cam.proj((-ZAL_W, 0.0, zz)); b = cam.proj((ZAL_W, 0.0, zz))
+        d.line([(a[0], a[1]), (b[0], b[1])], fill=(203, 202, 198, 255), width=1)
+    for xx in (-4.5, -1.5, 1.5, 4.5):
+        a = cam.proj((xx, 0.0, cam.z + 0.6)); b = cam.proj((xx, 0.0, ZAL_FAR))
+        d.line([(a[0], a[1]), (b[0], b[1])], fill=(203, 202, 198, 255), width=1)
+
+    # --- потолок и его балки
+    Z._poly(d, [cam.proj((-ZAL_W, ZAL_H, cam.z + 0.6)), cam.proj((ZAL_W, ZAL_H, cam.z + 0.6)),
+                cam.proj((ZAL_W, ZAL_H, ZAL_FAR)), cam.proj((-ZAL_W, ZAL_H, ZAL_FAR))],
+            (241, 242, 243, 255))
+    for i in range(30):
+        zz = math.floor(cam.z / 1.6) * 1.6 + i * 1.6
+        if zz < cam.z + 1.0 or zz > ZAL_FAR: continue
+        a = cam.proj((-ZAL_W, ZAL_H, zz)); b = cam.proj((ZAL_W, ZAL_H, zz))
+        far = clamp01((zz - cam.z) / 30.0)
+        d.line([(a[0], a[1]), (b[0], b[1])], fill=lerp3((206, 207, 209), (232, 233, 234), far) + (255,), width=2)
+
+    # --- стены
+    for sx in (-1, 1):
+        Z._poly(d, [cam.proj((sx * ZAL_W, ZAL_H, cam.z + 0.6)), cam.proj((sx * ZAL_W, ZAL_H, ZAL_FAR)),
+                    cam.proj((sx * ZAL_W, 0.0, ZAL_FAR)), cam.proj((sx * ZAL_W, 0.0, cam.z + 0.6))],
+                (228, 229, 231, 255))
+
+    # --- окна с переплётом, утопленные в нишу
+    zw0 = math.floor((cam.z + 1.0) / OKNO_Z) * OKNO_Z
+    for i in range(14):
+        zz = zw0 + i * OKNO_Z
+        if zz < cam.z + 0.8 or zz > ZAL_FAR - 2.0: continue
+        for sx in (-1, 1):
+            xw = sx * ZAL_W
+            nisha = [cam.proj((xw, OKNO_Y1 + 0.18, zz - 0.18)), cam.proj((xw, OKNO_Y1 + 0.18, zz + OKNO_W + 0.18)),
+                     cam.proj((xw, OKNO_Y0 - 0.18, zz + OKNO_W + 0.18)), cam.proj((xw, OKNO_Y0 - 0.18, zz - 0.18))]
+            Z._poly(d, nisha, (216, 218, 221, 255))
+            p = [cam.proj((xw, OKNO_Y1, zz)), cam.proj((xw, OKNO_Y1, zz + OKNO_W)),
+                 cam.proj((xw, OKNO_Y0, zz + OKNO_W)), cam.proj((xw, OKNO_Y0, zz))]
+            Z._poly(d, p, (253, 253, 252, 255))
+            for k in range(1, 3):                       # горизонтальный переплёт
+                yy = OKNO_Y0 + (OKNO_Y1 - OKNO_Y0) * k / 3
+                a = cam.proj((xw, yy, zz)); b = cam.proj((xw, yy, zz + OKNO_W))
+                d.line([(a[0], a[1]), (b[0], b[1])], fill=(205, 207, 210, 255), width=2)
+            a = cam.proj((xw, OKNO_Y1, zz + OKNO_W / 2)); b = cam.proj((xw, OKNO_Y0, zz + OKNO_W / 2))
+            d.line([(a[0], a[1]), (b[0], b[1])], fill=(205, 207, 210, 255), width=2)
+
+    # --- косые пятна света на полу от окон
+    lay = Image.new("RGBA", (W, H), (0, 0, 0, 0))
+    dl = ImageDraw.Draw(lay, "RGBA")
+    for i in range(14):
+        zz = zw0 + i * OKNO_Z
+        if zz < cam.z + 0.8 or zz > ZAL_FAR - 2.0: continue
+        for sx in (-1, 1):
+            x0 = sx * (ZAL_W - 0.3); x1 = sx * (ZAL_W - 3.6)
+            p = [cam.proj((x0, 0.0, zz + 0.1)), cam.proj((x0, 0.0, zz + OKNO_W + 0.1)),
+                 cam.proj((x1, 0.0, zz + OKNO_W + 2.3)), cam.proj((x1, 0.0, zz + 2.3))]
+            dl.polygon([(q[0], q[1]) for q in p], fill=(255, 255, 250, 165 if sx < 0 else 70))
+    lay = lay.filter(ImageFilter.GaussianBlur(4))
+    img.alpha_composite(lay)
+
+    # --- дальняя стена и жёлтый проём
+    Z._poly(d, [cam.proj((-ZAL_W, ZAL_H, ZAL_FAR)), cam.proj((ZAL_W, ZAL_H, ZAL_FAR)),
+                cam.proj((ZAL_W, 0.0, ZAL_FAR)), cam.proj((-ZAL_W, 0.0, ZAL_FAR))],
+            (233, 234, 235, 255))
+    Z._poly(d, [cam.proj((0.55, 2.85, ZAL_FAR - 0.05)), cam.proj((1.15, 2.85, ZAL_FAR - 0.05)),
+                cam.proj((1.15, 0.15, ZAL_FAR - 0.05)), cam.proj((0.55, 0.15, ZAL_FAR - 0.05))],
+            YEL)
+    return img
+
+def bukvy_obyom(img, cam, slovo, x, z, vys, cvet, k_vyhod, tenu=True):
+    """Объёмные буквы стоят НА ПОЛУ и выезжают из пола: k_vyhod 0 — спрятаны,
+    1 — вышли целиком. Глубина даётся слоями со смещением, снизу тень."""
+    if k_vyhod <= 0.001: return
+    px_na_m = abs(cam.proj((1.0, 0.0, z))[0] - cam.proj((0.0, 0.0, z))[0])
+    if px_na_m < 1: return
+    kegl = max(8, int(vys * px_na_m))
+    try: fnt = ImageFont.truetype(FONT_B, kegl)
+    except Exception: return
+    tmp = ImageDraw.Draw(Image.new("RGBA", (8, 8)))
+    bb = tmp.textbbox((0, 0), slovo, font=fnt)
+    tw, th = bb[2] - bb[0], bb[3] - bb[1]
+    if tw < 2 or th < 2 or tw > 6000: return
+    sloy = Image.new("RGBA", (tw + 60, th + 60), (0, 0, 0, 0))
+    ds = ImageDraw.Draw(sloy)
+    glub = max(2, int(kegl * 0.13))
+    for i in range(glub, 0, -1):                         # бока буквы
+        k = 0.55 + 0.45 * (1 - i / glub)
+        c = tuple(int(v * k) for v in cvet[:3]) + (255,)
+        ds.text((30 + i * 0.6, 30 - bb[1] + i * 0.75), slovo, font=fnt, fill=c)
+    ds.text((30, 30 - bb[1]), slovo, font=fnt, fill=cvet + (255,))
+    osn = cam.proj((x, 0.0, z))
+    vid = int(sloy.height * clamp01(k_vyhod))
+    kus = sloy.crop((0, sloy.height - vid, sloy.width, sloy.height))
+    px, py = int(osn[0] - sloy.width / 2), int(osn[1] - vid)
+    if tenu:
+        t = Image.new("RGBA", (sloy.width, max(6, int(kegl * 0.22))), (0, 0, 0, 0))
+        ImageDraw.Draw(t).ellipse([10, 0, sloy.width - 10, t.height], fill=(60, 58, 54, 90))
+        t = t.filter(ImageFilter.GaussianBlur(5))
+        img.alpha_composite(t, (px, int(osn[1] - t.height * 0.5)))
+    img.alpha_composite(kus, (px, py))
+
+def listy_na_polu(img, cam, t):
+    """листы со скриншотами ЛЕЖАТ на полу (к 20 с они уже упали)"""
+    rng = np.random.default_rng(7)
+    mesta = [(2.6, -0.9, 2.2, 1.5), (4.6, 1.4, 1.5, 1.0), (6.4, -2.0, 1.7, 1.1),
+             (7.8, 1.1, 1.4, 0.95), (9.6, -0.4, 2.0, 1.3), (11.5, 2.0, 1.3, 0.9)]
+    for i, (dz, xx, sw, sh) in enumerate(mesta):
+        zz = cam.z + dz
+        p = [cam.proj((xx - sw / 2, 0.02, zz + sh / 2)), cam.proj((xx + sw / 2, 0.02, zz + sh / 2)),
+             cam.proj((xx + sw / 2, 0.02, zz - sh / 2)), cam.proj((xx - sw / 2, 0.02, zz - sh / 2))]
+        xs = [q[0] for q in p]; ys = [q[1] for q in p]
+        if max(xs) - min(xs) < 6 or max(ys) - min(ys) < 3: continue
+        d = ImageDraw.Draw(img, "RGBA")
+        d.polygon([(q[0], q[1]) for q in p], fill=(250, 250, 249, 255), outline=(206, 206, 204, 255))
+        shir = int(max(xs) - min(xs)); vys = int(max(ys) - min(ys))
+        if shir > 10 and vys > 6:
+            tex = list_tex(100 + i).resize((shir, max(4, vys)), Image.LANCZOS)
+            tex.putalpha(200)
+            img.alpha_composite(tex, (int(min(xs)), int(min(ys))))
+
 # ----------------------------------------------------------------- G01
 def g01_cam(t):
-    """камера ни мгновения не стоит: разгон 0,4 → 3,6 м/с, поворот от окон к оси зала,
-    задранный на 7° взгляд выравнивается, лёгкое покачивание"""
-    def v(tt): return 0.4 + 3.2 * smooth(seg(tt, 0.6, 3.2))
+    """камера идёт вперёд и не останавливается; наклон снят с плёнки (горизонт
+    17.0 — 78 % высоты, 21.4 — 57 %), к концу куска взгляд выравнивается"""
+    def v(tt): return 0.5 + 3.1 * smooth(seg(tt, 0.5, 2.9))
     n = max(1, int(t * 60)); dt = t / n if n else 0
     z = sum(v(i * dt) for i in range(n)) * dt
-    yaw = math.radians(12.0) * (1 - smooth(seg(t, 0.0, 3.0))) + math.radians(0.5) * math.sin(1.3 * t)
-    pitch = math.radians(7.0) * (1 - smooth(seg(t, 0.4, 3.2))) + math.radians(0.25) * math.sin(0.9 * t + 1)
-    x = -0.35 + 0.55 * smooth(seg(t, 0.0, 4.0)) + 0.06 * math.sin(1.1 * t)
-    y = 1.55 + 0.03 * math.sin(1.7 * t)
+    yaw = math.radians(9.0) * (1 - smooth(seg(t, 0.0, 2.6))) + math.radians(0.4) * math.sin(1.3 * t)
+    pitch = math.radians(6.0) * (1 - smooth(seg(t, 0.3, 3.0))) + math.radians(0.2) * math.sin(0.9 * t + 1)
+    x = -0.55 + 0.75 * smooth(seg(t, 0.0, 4.2)) + 0.05 * math.sin(1.1 * t)
+    y = 1.58 + 0.025 * math.sin(1.7 * t)
     return CamP(x, y, z, yaw, pitch), v(t)
 
+def g01_nadpis_plosko(img, cam, slova, z, vys, k):
+    """плоская чёрная надпись, лежащая над листами (IF ANYTHING...)"""
+    if k <= 0.01: return
+    px = abs(cam.proj((1.0, 0.0, z))[0] - cam.proj((0.0, 0.0, z))[0])
+    kegl = max(8, int(vys * px))
+    try: fnt = ImageFont.truetype(FONT_B, kegl)
+    except Exception: return
+    tmp = ImageDraw.Draw(Image.new("RGBA", (8, 8)))
+    bb = tmp.textbbox((0, 0), slova, font=fnt)
+    tw, th = bb[2] - bb[0], bb[3] - bb[1]
+    if tw < 2 or tw > 6000: return
+    sl = Image.new("RGBA", (tw + 20, th + 20), (0, 0, 0, 0))
+    ImageDraw.Draw(sl).text((10, 10 - bb[1]), slova, font=fnt, fill=(26, 26, 26, 255))
+    vid = int(sl.width * clamp01(k))
+    sl = sl.crop((0, 0, max(2, vid), sl.height))
+    o = cam.proj((0.1, 0.62, z))
+    img.alpha_composite(sl, (int(o[0] - (tw + 20) / 2), int(o[1] - sl.height / 2)))
+
 def g01(t):
-    """белый зал как единственная площадка: глянцевый пол, окна, свет полосами, тросы"""
+    """Белый зал как единственная площадка — кусок 17.0-22.0 с плёнки:
+    камера летит сквозь облако висящих листов, листы оказываются лежащими на
+    полу под надписью IF ANYTHING..., зал пустеет, и из пола встают объёмные
+    слова: чёрные дальше, жёлтые ближе и крупнее."""
     cam, v = g01_cam(t)
-    ZW = 60.0
-    img = room_p(cam)
-    floor_mirror(img, cam, ZW)
-    far_wall(img, cam, ZW, slot=True)
-    beams(img, cam, cam.z + 1.0, min(ZW, cam.z + 34.0))
-    extra_ropes(img, cam, n=26, seed=3, zmax=ZW)
-    listy(img, cam, ZW)
+    img = zal2(cam)
+    extra_ropes(img, cam, n=22, seed=3, zmax=ZAL_FAR - 2.0)
+
+    if t < 3.25:                      # висящие листы, камера идёт сквозь них
+        listy(img, cam, ZAL_FAR - 4.0)
+    if t >= 2.9 and t < 4.30:         # листы уже лежат на полу
+        listy_na_polu(img, cam, t)
+        g01_nadpis_plosko(img, cam, "IF ANYTHING...", cam.z + 7.2, 0.46,
+                          seg(t, 2.95, 3.25))
+
+    if t >= 4.33:                     # слова встают из пола
+        tt = t - 4.33
+        chern = [("I", -1.95), ("DIDN'T", -0.55), ("GO", 1.45)]
+        for i, (sl, xx) in enumerate(chern):
+            k = seg(tt, 0.02 + i * 0.10, 0.17 + i * 0.10)
+            bukvy_obyom(img, cam, sl, xx, cam.z + 12.5, 0.60, (28, 28, 28), k)
+        zhelt = [("FAR", -1.65), ("ENOUGH.", 1.95)]
+        for i, (sl, xx) in enumerate(zhelt):
+            k = seg(tt, 0.34 + i * 0.16, 0.50 + i * 0.16)
+            bukvy_obyom(img, cam, sl, xx, cam.z + 8.5, 0.72, (232, 176, 36), k)
     return img
 
 # ----------------------------------------------------------------- G06
