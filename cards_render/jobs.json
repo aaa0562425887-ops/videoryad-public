@@ -1,0 +1,864 @@
+[
+ {
+  "scene": 10,
+  "view": "charts.cartogram",
+  "dur": 8.2,
+  "anim": 8.2,
+  "tail_zoom": 0.045,
+  "watermark": "ПЛАНЕТА",
+  "channel": "ПЛАНЕТА",
+  "kwargs": {
+   "data": [
+    "Объединённые Арабские Эмираты",
+    "Швейцария"
+   ],
+   "watermark": "ПЛАНЕТА"
+  }
+ },
+ {
+  "scene": 12,
+  "view": "marker_serif",
+  "dur": 8.8,
+  "anim": 2.6,
+  "tail_zoom": 0.045,
+  "watermark": "ПЛАНЕТА",
+  "channel": "ПЛАНЕТА",
+  "kwargs": {
+   "text": "Макрон зовёт Европу к единой стратегии и готов возглавить её лично",
+   "accent": "единой стратегии",
+   "watermark": "ПЛАНЕТА"
+  }
+ },
+ {
+  "scene": 16,
+  "view": "bars",
+  "dur": 9.8,
+  "anim": 9.8,
+  "tail_zoom": 0.0,
+  "watermark": "ПЛАНЕТА",
+  "channel": "ПЛАНЕТА",
+  "kwargs": {},
+  "mode": "cli",
+  "script": "build_chart_bars.py",
+  "cfg": {
+   "title": "ДОВЕРИЕ МАКРОНУ ДОМА",
+   "caption": "",
+   "seconds": 9.8,
+   "bars": [
+    {
+     "label": "ELABE",
+     "value": 0.13,
+     "color": "4A90E2"
+    },
+    {
+     "label": "VERIAN",
+     "value": 0.14,
+     "color": "48BB78"
+    },
+    {
+     "label": "НЕДОВЕРИЕ",
+     "value": 0.8,
+     "color": "84848A"
+    }
+   ]
+  }
+ },
+ {
+  "scene": 17,
+  "view": "poster.poster",
+  "dur": 7.5,
+  "anim": 7.5,
+  "tail_zoom": 0.0,
+  "watermark": "ПЛАНЕТА",
+  "channel": "ПЛАНЕТА",
+  "kwargs": {
+   "title": "КТО ПОЕДЕТ ГОВОРИТЬ",
+   "hero_photo": "cards/photo/card_017.jpg",
+   "source": "заявления европейских столиц",
+   "facts": [
+    {
+     "label": "претендентов",
+     "value": "три"
+    },
+    {
+     "label": "государств",
+     "value": "двадцать семь"
+    }
+   ],
+   "watermark": "ПЛАНЕТА"
+  },
+  "mode": "frame"
+ },
+ {
+  "scene": 19,
+  "view": "charts.cartogram",
+  "dur": 12.6,
+  "anim": 12.6,
+  "tail_zoom": 0.045,
+  "watermark": "ПЛАНЕТА",
+  "channel": "ПЛАНЕТА",
+  "kwargs": {
+   "data": [
+    "Франция",
+    "Германия",
+    "Эстония"
+   ],
+   "mode": "bubble",
+   "watermark": "ПЛАНЕТА"
+  }
+ },
+ {
+  "scene": 20,
+  "view": "film.film_single",
+  "dur": 14.0,
+  "anim": 2.6,
+  "tail_zoom": 0.045,
+  "watermark": "ПЛАНЕТА",
+  "channel": "ПЛАНЕТА",
+  "kwargs": {
+   "photo": "cards/photo/card_020.jpg",
+   "title": "АРХИВ ПЕРЕГОВОРОВ",
+   "watermark": "ПЛАНЕТА"
+  }
+ },
+ {
+  "scene": 21,
+  "view": "doc",
+  "dur": 10.2,
+  "anim": 3.4,
+  "tail_zoom": 0.04,
+  "watermark": "ПЛАНЕТА",
+  "channel": "ПЛАНЕТА",
+  "kwargs": {
+   "text": "Чтобы вести разговор с Россией, Евросоюзу сперва придётся провести переговоры с самим собой. Причём договориться нужно н",
+   "mark": "ЧТОБЫ",
+   "watermark": "ПЛАНЕТА"
+  }
+ },
+ {
+  "scene": 23,
+  "view": "charts.radar",
+  "dur": 11.9,
+  "anim": 11.9,
+  "tail_zoom": 0.045,
+  "watermark": "ПЛАНЕТА",
+  "channel": "ПЛАНЕТА",
+  "kwargs": {
+   "axes": [
+    "Продолжать курс",
+    "Считать цену",
+    "Менять направление"
+   ],
+   "series": [
+    {
+     "label": "",
+     "values": [
+      1.0,
+      1.0,
+      1.0
+     ]
+    }
+   ],
+   "sobytiya": true,
+   "watermark": "ПЛАНЕТА"
+  }
+ },
+ {
+  "scene": 24,
+  "view": "quote",
+  "dur": 11.8,
+  "anim": 2.6,
+  "tail_zoom": 0.045,
+  "watermark": "ПЛАНЕТА",
+  "channel": "ПЛАНЕТА",
+  "kwargs": {
+   "text": "Кошта? Каллас? Макрон? И что этот человек вправе обещать за остальных?",
+   "watermark": "ПЛАНЕТА"
+  }
+ },
+ {
+  "scene": 26,
+  "view": "cinematic.depth_of_field",
+  "dur": 18.5,
+  "anim": 18.5,
+  "tail_zoom": 0.0,
+  "watermark": "ПЛАНЕТА",
+  "channel": "ПЛАНЕТА",
+  "kwargs": {
+   "photo": "cards/photo/card_026.jpg",
+   "watermark": "ПЛАНЕТА"
+  },
+  "mode": "frame"
+ },
+ {
+  "scene": 28,
+  "view": "zal_kub",
+  "dur": 11.2,
+  "anim": 2.6,
+  "tail_zoom": 0.045,
+  "watermark": "ПЛАНЕТА",
+  "channel": "ПЛАНЕТА",
+  "kwargs": {
+   "channel": "ПЛАНЕТА",
+   "dur": 11.2,
+   "sheets": [],
+   "text": "Евросоюз требует места за столом",
+   "kick": "Условия выставлены заранее",
+   "watermark": "ПЛАНЕТА"
+  }
+ },
+ {
+  "scene": 29,
+  "view": "charts.map_dist",
+  "dur": 12.2,
+  "anim": 2.6,
+  "tail_zoom": 0.045,
+  "watermark": "ПЛАНЕТА",
+  "channel": "ПЛАНЕТА",
+  "kwargs": {
+   "points": [
+    {
+     "label": "Брюссель",
+     "lat": 50.85,
+     "lon": 4.35,
+     "accent": false
+    },
+    {
+     "label": "Москва",
+     "lat": 55.75,
+     "lon": 37.62,
+     "accent": false
+    }
+   ],
+   "watermark": "ПЛАНЕТА"
+  }
+ },
+ {
+  "scene": 30,
+  "view": "zal_makety",
+  "dur": 14.1,
+  "anim": 2.6,
+  "tail_zoom": 0.045,
+  "watermark": "ПЛАНЕТА",
+  "channel": "ПЛАНЕТА",
+  "kwargs": {
+   "channel": "ПЛАНЕТА",
+   "dur": 14.1,
+   "sheets": [],
+   "text": "Каждый со своим списком",
+   "makety": [
+    "банк=ДЕНЬГИ",
+    "лэп=ЭНЕРГОСЕТИ",
+    "больница=ЗИМА"
+   ],
+   "watermark": "ПЛАНЕТА"
+  }
+ },
+ {
+  "scene": 31,
+  "view": "film.film_strip",
+  "dur": 10.6,
+  "anim": 10.6,
+  "tail_zoom": 0.045,
+  "watermark": "ПЛАНЕТА",
+  "channel": "ПЛАНЕТА",
+  "kwargs": {
+   "shots": [
+    "cards/photo/card_031.jpg",
+    "cards/photo/card_031_2.jpg",
+    "cards/photo/card_031_3.jpg"
+   ],
+   "title": "СТОРОНЫ ЗА СТОЛОМ",
+   "watermark": "ПЛАНЕТА"
+  }
+ },
+ {
+  "scene": 33,
+  "view": "devices.device_scene",
+  "dur": 8.5,
+  "anim": 2.6,
+  "tail_zoom": 0.045,
+  "watermark": "ПЛАНЕТА",
+  "channel": "ПЛАНЕТА",
+  "kwargs": {
+   "content_path": "cards/photo/card_033.jpg",
+   "items": [
+    "разговор начался",
+    "масштаб у каждого свой",
+    "следующий раунд обсуждается"
+   ],
+   "watermark": "ПЛАНЕТА"
+  }
+ },
+ {
+  "scene": 34,
+  "view": "duel",
+  "dur": 17.0,
+  "anim": 3.2,
+  "tail_zoom": 0.035,
+  "watermark": "ПЛАНЕТА",
+  "channel": "ПЛАНЕТА",
+  "kwargs": {
+   "top": {
+    "who": "Киев",
+    "text": "Система безопасности здесь лишняя",
+    "accent": null,
+    "source": ""
+   },
+   "bottom": {
+    "who": "Москва",
+    "text": "Это центральная тема разговора",
+    "accent": null,
+    "source": ""
+   },
+   "watermark": "ПЛАНЕТА"
+  }
+ },
+ {
+  "scene": 36,
+  "view": "doc",
+  "dur": 9.7,
+  "anim": 3.4,
+  "tail_zoom": 0.04,
+  "watermark": "ПЛАНЕТА",
+  "channel": "ПЛАНЕТА",
+  "kwargs": {
+   "text": "Одна сторона принесла список срочных вопросов. Другая предлагает переделать всю схему отношений. Стол один, а документы на нём разные.",
+   "watermark": "ПЛАНЕТА"
+  }
+ },
+ {
+  "scene": 37,
+  "view": "vyrezka.figura",
+  "dur": 15.6,
+  "anim": 2.6,
+  "tail_zoom": 0.045,
+  "watermark": "ПЛАНЕТА",
+  "channel": "ПЛАНЕТА",
+  "kwargs": {
+   "photo": "cards/photo/card_037.jpg",
+   "author": "Владимир Зеленский",
+   "role": "президент Украины",
+   "watermark": "ПЛАНЕТА"
+  }
+ },
+ {
+  "scene": 39,
+  "view": "zal_efir",
+  "dur": 14.5,
+  "anim": 2.6,
+  "tail_zoom": 0.045,
+  "watermark": "ПЛАНЕТА",
+  "channel": "ПЛАНЕТА",
+  "kwargs": {
+   "channel": "ПЛАНЕТА",
+   "dur": 14.5,
+   "sheets": [],
+   "text": "Проблема Европы",
+   "say": "Поддержку Украине дают европейские государства, прежнего американского участия уже нет",
+   "author": "Эммануэль Макрон",
+   "role": "президент Франции",
+   "watermark": "ПЛАНЕТА"
+  }
+ },
+ {
+  "scene": 41,
+  "view": "paper_hand",
+  "dur": 4.9,
+  "anim": 2.8,
+  "tail_zoom": 0.04,
+  "watermark": "ПЛАНЕТА",
+  "channel": "ПЛАНЕТА",
+  "kwargs": {
+   "text": "Процесс идёт хорошо. Наполните канистры и готовьтесь к тяжёлой зиме.",
+   "watermark": "ПЛАНЕТА"
+  }
+ },
+ {
+  "scene": 42,
+  "view": "charts.network",
+  "dur": 19.0,
+  "anim": 19.0,
+  "tail_zoom": 0.045,
+  "watermark": "ПЛАНЕТА",
+  "channel": "ПЛАНЕТА",
+  "kwargs": {
+   "nodes": [
+    {
+     "id": "Вашингтон",
+     "label": "Вашингтон",
+     "weight": 3.0
+    },
+    {
+     "id": "Москва",
+     "label": "Москва",
+     "weight": 1.0
+    },
+    {
+     "id": "Киев",
+     "label": "Киев",
+     "weight": 1.0
+    },
+    {
+     "id": "Европа",
+     "label": "Европа",
+     "weight": 1.0
+    }
+   ],
+   "links": [
+    {
+     "from": "Вашингтон",
+     "to": "Москва",
+     "weight": 1.0
+    },
+    {
+     "from": "Вашингтон",
+     "to": "Киев",
+     "weight": 1.0
+    },
+    {
+     "from": "Вашингтон",
+     "to": "Европа",
+     "weight": 1.0
+    }
+   ],
+   "watermark": "ПЛАНЕТА"
+  }
+ },
+ {
+  "scene": 43,
+  "view": "zal_slova",
+  "dur": 12.5,
+  "anim": 2.6,
+  "tail_zoom": 0.045,
+  "watermark": "ПЛАНЕТА",
+  "channel": "ПЛАНЕТА",
+  "kwargs": {
+   "channel": "ПЛАНЕТА",
+   "dur": 12.5,
+   "sheets": [],
+   "text": "Рычаги важнее заявлений",
+   "na_polu": "РЫЧАГИ",
+   "watermark": "ПЛАНЕТА"
+  }
+ },
+ {
+  "scene": 45,
+  "view": "torn_split.torn_split",
+  "dur": 3.9,
+  "anim": 2.6,
+  "tail_zoom": 0.045,
+  "watermark": "ПЛАНЕТА",
+  "channel": "ПЛАНЕТА",
+  "kwargs": {
+   "a_path": "cards/photo/card_045.jpg",
+   "b_path": "cards/photo/card_045_2.jpg",
+   "title": "ЕВРОПЕЙСКАЯ ГАРМОНИЯ",
+   "watermark": "ПЛАНЕТА"
+  }
+ },
+ {
+  "scene": 46,
+  "view": "split",
+  "dur": 21.8,
+  "anim": 2.6,
+  "tail_zoom": 0.045,
+  "watermark": "ПЛАНЕТА",
+  "channel": "ПЛАНЕТА",
+  "kwargs": {
+   "text": "Сначала повышают голос друг на друга, потом едут говорить одним голосом",
+   "photo": "cards/photo/card_046.jpg",
+   "watermark": "ПЛАНЕТА"
+  }
+ },
+ {
+  "scene": 48,
+  "view": "marker_serif",
+  "dur": 18.7,
+  "anim": 2.6,
+  "tail_zoom": 0.045,
+  "watermark": "ПЛАНЕТА",
+  "channel": "ПЛАНЕТА",
+  "kwargs": {
+   "text": "Общий знаменатель получается разве что на итоговой фотографии",
+   "accent": "на итоговой фотографии",
+   "watermark": "ПЛАНЕТА"
+  }
+ },
+ {
+  "scene": 49,
+  "view": "zal",
+  "dur": 11.9,
+  "anim": 2.6,
+  "tail_zoom": 0.045,
+  "watermark": "ПЛАНЕТА",
+  "channel": "ПЛАНЕТА",
+  "kwargs": {
+   "text": "Спор о переговорщике стал ожесточённым",
+   "words": [
+    "КРЕСЛО",
+    "ЕДИНСТВО"
+   ],
+   "sheets": [
+    "Фицо о деньгах и влиянии",
+    "Мерц кричал на Фицо",
+    "Словакия тормозит пакет",
+    "Берлин требует санкций",
+    "Таллин считает своё",
+    "Париж считает своё"
+   ],
+   "channel": "ПЛАНЕТА",
+   "dur": 11.9,
+   "watermark": "ПЛАНЕТА"
+  }
+ },
+ {
+  "scene": 51,
+  "view": "charts.slope",
+  "dur": 11.7,
+  "anim": 2.6,
+  "tail_zoom": 0.045,
+  "watermark": "ПЛАНЕТА",
+  "channel": "ПЛАНЕТА",
+  "kwargs": {
+   "items": [
+    {
+     "label": "разговор неприличен",
+     "from": 1.0,
+     "to": 1.0,
+     "to_label": "разговор обязателен"
+    },
+    {
+     "label": "спор о пользе",
+     "from": 1.0,
+     "to": 1.0,
+     "to_label": "спор о представителе"
+    }
+   ],
+   "left_label": "Было",
+   "right_label": "Стало",
+   "source": "заявления европейских столиц",
+   "sobytiya": true,
+   "watermark": "ПЛАНЕТА"
+  }
+ },
+ {
+  "scene": 52,
+  "view": "cinematic.dossier",
+  "dur": 14.0,
+  "anim": 14.0,
+  "tail_zoom": 0.045,
+  "watermark": "ПЛАНЕТА",
+  "channel": "ПЛАНЕТА",
+  "kwargs": {
+   "rows": [
+    "кто — заместитель главы офиса президента",
+    "что говорит — скорого мира не ждите",
+    "зима — тяжёлая",
+    "инфраструктура — повреждена"
+   ],
+   "title": "Ирина Верещук",
+   "photo": "cards/photo/card_052.jpg",
+   "stamp": "ПЕРВОИСТОЧНИК",
+   "watermark": "ПЛАНЕТА"
+  }
+ },
+ {
+  "scene": 54,
+  "view": "charts.radar",
+  "dur": 15.5,
+  "anim": 15.5,
+  "tail_zoom": 0.045,
+  "watermark": "ПЛАНЕТА",
+  "channel": "ПЛАНЕТА",
+  "kwargs": {
+   "axes": [
+    "Продвижение за столом",
+    "Запасы на зиму",
+    "Расчёт на худшее"
+   ],
+   "series": [
+    {
+     "label": "",
+     "values": [
+      1.0,
+      1.0,
+      1.0
+     ]
+    }
+   ],
+   "sobytiya": true,
+   "watermark": "ПЛАНЕТА"
+  }
+ },
+ {
+  "scene": 55,
+  "view": "tape",
+  "dur": 13.4,
+  "anim": 2.4,
+  "tail_zoom": 0.04,
+  "watermark": "ПЛАНЕТА",
+  "channel": "ПЛАНЕТА",
+  "kwargs": {
+   "text": "Процесс идёт хорошо. Наполните канистры.",
+   "watermark": "ПЛАНЕТА"
+  }
+ },
+ {
+  "scene": 57,
+  "view": "zal_schetchik",
+  "dur": 9.7,
+  "anim": 2.6,
+  "tail_zoom": 0.045,
+  "watermark": "ПЛАНЕТА",
+  "channel": "ПЛАНЕТА",
+  "kwargs": {
+   "channel": "ПЛАНЕТА",
+   "dur": 9.7,
+   "sheets": [],
+   "text": "Рядом идёт американский отсчёт",
+   "value": "1,5",
+   "value_sub": "месяца",
+   "watermark": "ПЛАНЕТА"
+  }
+ },
+ {
+  "scene": 58,
+  "view": "slider",
+  "dur": 12.1,
+  "anim": 12.1,
+  "tail_zoom": 0.0,
+  "watermark": "ПЛАНЕТА",
+  "channel": "ПЛАНЕТА",
+  "kwargs": {},
+  "mode": "cli",
+  "script": "build_chart_slider.py",
+  "cfg": {
+   "title": "СРОК ОТ ДЕПУТАТА РАДЫ",
+   "min": 0.0,
+   "max": 2.0,
+   "low": 0.0,
+   "high": 2.0,
+   "marker_value": 1.5,
+   "marker_display": "1.5  месяца",
+   "seconds": 12.1,
+   "range_label": "РАЗБРОС ОЦЕНОК",
+   "caption": "",
+   "source": "заявление Чернева"
+  }
+ },
+ {
+  "scene": 60,
+  "view": "zal_shkala",
+  "dur": 10.0,
+  "anim": 2.6,
+  "tail_zoom": 0.045,
+  "watermark": "ПЛАНЕТА",
+  "channel": "ПЛАНЕТА",
+  "kwargs": {
+   "channel": "ПЛАНЕТА",
+   "dur": 10.0,
+   "sheets": [],
+   "text": "Срок считают обе стороны",
+   "value": "1,5",
+   "value_sub": "месяца",
+   "watermark": "ПЛАНЕТА"
+  }
+ },
+ {
+  "scene": 61,
+  "view": "paper_typed",
+  "dur": 14.5,
+  "anim": 2.8,
+  "tail_zoom": 0.04,
+  "watermark": "ПЛАНЕТА",
+  "channel": "ПЛАНЕТА",
+  "kwargs": {
+   "text": "Санкционное давление идёт много лет. Ещё один пакет не секретная кнопка.",
+   "watermark": "ПЛАНЕТА"
+  }
+ },
+ {
+  "scene": 63,
+  "view": "pull",
+  "dur": 10.1,
+  "anim": 2.6,
+  "tail_zoom": 0.05,
+  "watermark": "ПЛАНЕТА",
+  "channel": "ПЛАНЕТА",
+  "kwargs": {
+   "text": "Торопится противник, значит можно поднимать требования и ждать перемен",
+   "watermark": "ПЛАНЕТА"
+  }
+ },
+ {
+  "scene": 64,
+  "view": "vyrezka.gazeta",
+  "dur": 14.2,
+  "anim": 2.6,
+  "tail_zoom": 0.045,
+  "watermark": "ПЛАНЕТА",
+  "channel": "ПЛАНЕТА",
+  "kwargs": {
+   "photo": "cards/photo/card_064.jpg",
+   "author": "Владимир Зеленский",
+   "role": "президент Украины",
+   "watermark": "ПЛАНЕТА"
+  }
+ },
+ {
+  "scene": 66,
+  "view": "photo",
+  "dur": 11.6,
+  "anim": 11.6,
+  "tail_zoom": 0.0,
+  "watermark": "ПЛАНЕТА",
+  "channel": "ПЛАНЕТА",
+  "kwargs": {
+   "watermark": "ПЛАНЕТА",
+   "photo": "cards/photo/card_066.jpg",
+   "lines": [
+    "Часы тикают по обе стороны",
+    "Каждый подносит к камере чужой циферблат"
+   ]
+  }
+ },
+ {
+  "scene": 69,
+  "view": "charts.pie",
+  "dur": 9.8,
+  "anim": 9.8,
+  "tail_zoom": 0.045,
+  "watermark": "ПЛАНЕТА",
+  "channel": "ПЛАНЕТА",
+  "kwargs": {
+   "segments": [
+    {
+     "label": "Германия",
+     "value": 25.0
+    },
+    {
+     "label": "Франция",
+     "value": 25.0
+    },
+    {
+     "label": "Словакия",
+     "value": 25.0
+    },
+    {
+     "label": "Эстония",
+     "value": 25.0
+    }
+   ],
+   "sobytiya": true,
+   "watermark": "ПЛАНЕТА"
+  }
+ },
+ {
+  "scene": 70,
+  "view": "zal_pol",
+  "dur": 9.8,
+  "anim": 2.6,
+  "tail_zoom": 0.045,
+  "watermark": "ПЛАНЕТА",
+  "channel": "ПЛАНЕТА",
+  "kwargs": {
+   "channel": "ПЛАНЕТА",
+   "dur": 9.8,
+   "sheets": [],
+   "text": "Главный результат",
+   "na_polu": "ДВИЖЕНИЕ",
+   "watermark": "ПЛАНЕТА"
+  }
+ },
+ {
+  "scene": 72,
+  "view": "tape",
+  "dur": 12.2,
+  "anim": 2.4,
+  "tail_zoom": 0.04,
+  "watermark": "ПЛАНЕТА",
+  "channel": "ПЛАНЕТА",
+  "kwargs": {
+   "text": "Обсуждается следующий раунд. Посредники ездят между сторонами.",
+   "watermark": "ПЛАНЕТА"
+  }
+ },
+ {
+  "scene": 73,
+  "view": "zal_ekran",
+  "dur": 9.2,
+  "anim": 4.0,
+  "tail_zoom": 0.045,
+  "watermark": "ПЛАНЕТА",
+  "channel": "ПЛАНЕТА",
+  "kwargs": {
+   "channel": "ПЛАНЕТА",
+   "dur": 9.2,
+   "sheets": [],
+   "text": "Место подорожало",
+   "say": "Москва продолжает выдвигать требования по безопасности",
+   "author": "Москва",
+   "role": "сторона переговоров",
+   "watermark": "ПЛАНЕТА"
+  }
+ },
+ {
+  "scene": 75,
+  "view": "cinematic.evidence_wall",
+  "dur": 9.2,
+  "anim": 9.2,
+  "tail_zoom": 0.0,
+  "watermark": "ПЛАНЕТА",
+  "channel": "ПЛАНЕТА",
+  "kwargs": {
+   "shots": [
+    [
+     "cards/photo/card_075.jpg",
+     240,
+     250,
+     -4,
+     "КИЕВ"
+    ],
+    [
+     "cards/photo/card_075_2.jpg",
+     800,
+     250,
+     3,
+     "МОСКВА"
+    ],
+    [
+     "cards/photo/card_075_3.jpg",
+     1360,
+     250,
+     -2,
+     "БРЮССЕЛЬ"
+    ],
+    [
+     "cards/photo/card_075_4.jpg",
+     240,
+     580,
+     4,
+     "БЕРЛИН"
+    ]
+   ],
+   "title": "КТО ЗА СТОЛОМ",
+   "watermark": "ПЛАНЕТА"
+  },
+  "mode": "frame"
+ },
+ {
+  "scene": 76,
+  "view": "strike",
+  "dur": 11.8,
+  "anim": 3.0,
+  "tail_zoom": 0.045,
+  "watermark": "ПЛАНЕТА",
+  "channel": "ПЛАНЕТА",
+  "kwargs": {
+   "text": "Главным событием стал не объявленный прорыв, а то, что участники наконец сдвинулись с места",
+   "struck": "объявленный прорыв",
+   "watermark": "ПЛАНЕТА"
+  }
+ }
+]
