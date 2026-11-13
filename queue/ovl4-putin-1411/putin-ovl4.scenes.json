@@ -1,0 +1,32 @@
+{
+ "scenes": [
+  {
+   "id": 11,
+   "duration_sec": 4.0,
+   "text": "",
+   "source": "press_photo",
+   "source_query": "Юрий Ушаков на брифинге в Кремле, 2026"
+  },
+  {
+   "id": 13,
+   "duration_sec": 4.0,
+   "text": "",
+   "source": "press_photo",
+   "source_query": "здание МИД России на Смоленской площади, Москва"
+  },
+  {
+   "id": 26,
+   "duration_sec": 4.0,
+   "text": "",
+   "source": "press_photo",
+   "source_query": "архивное письмо на бланке Кремля крупным планом"
+  },
+  {
+   "id": 31,
+   "duration_sec": 4.0,
+   "text": "",
+   "source": "press_photo",
+   "source_query": "военный спутник связи на орбите, иллюстрация"
+  }
+ ]
+}
