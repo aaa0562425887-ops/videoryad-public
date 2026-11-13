@@ -134,6 +134,113 @@ def extra_ropes(img, cam, n=40, seed=3, zspan=60.0, zmax=None):
         col = lerp3((132, 134, 138), (190, 192, 196), far)
         d.line([(a[0], a[1]), (b[0], b[1])], fill=col + (235,), width=1 if far > 0.3 else 2)
 
+# ----------------------------------------------------------------- зал с наклоном
+def room_p(cam, windows=True, dark=0.0, shafts=True, ropes=True):
+    """Тот же зал, что zal_core.room, с ОДНОЙ правкой: линия горизонта берётся из
+    проекции, а не прибита к центру кадра. В zal_core камеры без наклона, и пол там
+    залит прямоугольником от H/2; у CamP есть pitch, горизонт уезжает — и пол
+    оказывался нарисован поверх стен и потолка, а зеркало пола улетало на потолок.
+    Отсюда был зеркальный клин вместо зала (замечание Z-0019)."""
+    img = Image.new("RGBA", (W, H), (0, 0, 0, 255))
+    g = Image.new("L", (1, H))
+    for y in range(H):
+        t = y / H
+        g.putpixel((0, y), int(234 - 24 * abs(t - 0.5) * 2))
+    base = g.resize((W, H))
+    img = Image.merge("RGBA", (base, base, base.point(lambda v: min(255, v + 3)),
+                               Image.new("L", (W, H), 255)))
+    d = ImageDraw.Draw(img, "RGBA")
+    hor = cam.proj((0.0, cam.y, cam.z + 1e5))[1]          # <- вся правка
+    d.rectangle([0, hor, W, H], fill=(211, 214, 218, 255))      # пол — светлее, как в оригинале
+    d.rectangle([0, 0, W, hor], fill=(230, 232, 235, 255))      # дальняя стена/воздух
+    for sx in (-1, 1):
+        p = [cam.proj((sx * WALL, CEIL, cam.z + 2.0)), cam.proj((sx * WALL, CEIL, cam.z + FAR)),
+             cam.proj((sx * WALL, 0.0, cam.z + FAR)), cam.proj((sx * WALL, 0.0, cam.z + 2.0))]
+        Z._poly(d, p, (222, 225, 229, 255))
+    if windows:
+        z0 = math.floor((cam.z + 3) / 7.0) * 7.0
+        for i in range(10):
+            zz = z0 + i * 7.0
+            for sx in (-1, 1):
+                p = [cam.proj((sx * WALL, 3.75, zz)), cam.proj((sx * WALL, 3.75, zz + 3.1)),
+                     cam.proj((sx * WALL, 1.15, zz + 3.1)), cam.proj((sx * WALL, 1.15, zz))]
+                Z._poly(d, p, (251, 252, 253, 255))
+                for k in range(1, 4):
+                    yy = 1.15 + 2.6 * k / 4
+                    a = cam.proj((sx * WALL, yy, zz)); b = cam.proj((sx * WALL, yy, zz + 3.1))
+                    d.line([(a[0], a[1]), (b[0], b[1])], fill=(226, 229, 233, 255), width=2)
+    if shafts:
+        lay = Image.new("RGBA", (W, H), (0, 0, 0, 0))
+        dl = ImageDraw.Draw(lay, "RGBA")
+        z0 = math.floor((cam.z + 3) / 7.0) * 7.0
+        for i in range(9):
+            zz = z0 + i * 7.0
+            for sx in (-1, 1):
+                p = [cam.proj((sx * (WALL - 0.2), 0.0, zz + 0.6)),
+                     cam.proj((sx * (WALL - 0.2), 0.0, zz + 3.5)),
+                     cam.proj((sx * (WALL - 3.4), 0.0, zz + 5.2)),
+                     cam.proj((sx * (WALL - 3.4), 0.0, zz + 2.3))]
+                dl.polygon([(q[0], q[1]) for q in p], fill=(255, 255, 255, 120))
+        lay = lay.filter(ImageFilter.GaussianBlur(9))
+        img.alpha_composite(lay)
+    if ropes:
+        rng = np.random.default_rng(5)
+        dr = ImageDraw.Draw(img, "RGBA")
+        z0 = math.floor((cam.z + 4) / 3.0) * 3.0
+        for i in range(26):
+            zz = z0 + (i % 13) * 3.0 + float(rng.uniform(-1.0, 1.0))
+            xx = float(rng.uniform(-4.6, 4.6))
+            yy = float(rng.uniform(0.9, 2.4))
+            if zz - cam.z < 1.5: continue
+            a = cam.proj((xx, CEIL, zz)); b = cam.proj((xx, yy, zz))
+            dr.line([(a[0], a[1]), (b[0], b[1])], fill=(150, 152, 156, 255), width=1)
+    if dark > 0:
+        sh = Image.new("RGBA", (W, H), (8, 7, 6, int(235 * clamp01(dark))))
+        img.alpha_composite(sh)
+    return img
+
+
+def list_tex(seed):
+    """лист со скриншотом поста: мелкие серые строчки, как в оригинале"""
+    rng = np.random.default_rng(seed)
+    w, h = 300, 200
+    im = Image.new("RGBA", (w, h), (252, 252, 251, 255))
+    d = ImageDraw.Draw(im)
+    y = 16
+    d.rectangle([14, y, 14 + int(rng.uniform(70, 120)), y + 7], fill=(150, 152, 156, 255))
+    y += 20
+    while y < h - 16:
+        ln = int(rng.uniform(0.35, 0.95) * (w - 28))
+        d.rectangle([14, y, 14 + ln, y + 6], fill=(120, 122, 126, 255))
+        y += 13
+    return im
+
+def listy(img, cam, zmax):
+    """висящие на тросах листы с текстом — в оригинале камера летит сквозь них"""
+    rng = np.random.default_rng(11)
+    mesta = []
+    base = math.floor(cam.z / 6.0) * 6.0
+    for i in range(9):
+        zz = base + 4.0 + i * 5.5 + float(rng.uniform(-1.2, 1.2))
+        if zz - cam.z < 1.6 or zz > zmax - 4.0: continue
+        xx = float(rng.uniform(-4.3, 4.3))
+        yy = float(rng.uniform(1.5, 3.0))
+        mesta.append((zz, xx, yy, int(rng.integers(1, 999))))
+    mesta.sort(key=lambda m: -m[0])
+    d = ImageDraw.Draw(img, "RGBA")
+    for zz, xx, yy, sd in mesta:
+        sh, sv = 0.92, 0.62
+        p = [cam.proj((xx - sh / 2, yy + sv / 2, zz)), cam.proj((xx + sh / 2, yy + sv / 2, zz)),
+             cam.proj((xx + sh / 2, yy - sv / 2, zz)), cam.proj((xx - sh / 2, yy - sv / 2, zz))]
+        shir = abs(p[1][0] - p[0][0]); vys = abs(p[2][1] - p[1][1])
+        if shir < 4 or vys < 3 or shir > 4000: continue
+        a = cam.proj((xx, CEIL, zz)); b = cam.proj((xx, yy + sv / 2, zz))
+        d.line([(a[0], a[1]), (b[0], b[1])], fill=(150, 152, 156, 235), width=1)
+        tex = list_tex(sd).resize((max(2, int(shir)), max(2, int(vys))), Image.LANCZOS)
+        img.alpha_composite(tex, (int(p[0][0]), int(p[0][1])))
+        d.rectangle([p[0][0], p[0][1], p[0][0] + shir, p[0][1] + vys],
+                    outline=(214, 216, 219, 200), width=1)
+
 # ----------------------------------------------------------------- G01
 def g01_cam(t):
     """камера ни мгновения не стоит: разгон 0,4 → 3,6 м/с, поворот от окон к оси зала,
@@ -151,11 +258,12 @@ def g01(t):
     """белый зал как единственная площадка: глянцевый пол, окна, свет полосами, тросы"""
     cam, v = g01_cam(t)
     ZW = 60.0
-    img = room(cam)
+    img = room_p(cam)
     floor_mirror(img, cam, ZW)
     far_wall(img, cam, ZW, slot=True)
     beams(img, cam, cam.z + 1.0, min(ZW, cam.z + 34.0))
     extra_ropes(img, cam, n=26, seed=3, zmax=ZW)
+    listy(img, cam, ZW)
     return img
 
 # ----------------------------------------------------------------- G06
