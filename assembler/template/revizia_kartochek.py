@@ -23,7 +23,14 @@ def ревизия(proj):
         t = str(k.get("text") or "")
         # 1. дубль крупного слова
         верх = слова(t)
-        for поле in ("na_polu", "kick", "value"):
+        # ПОДПИСИ И ЛИСТЫ ТОЖЕ НЕ ПОВТОРЯЮТ ФРАЗУ (14.11, его слово по сцене
+        # 45 третьей темы: «два раза эта фраза повторяется, верхняя и нижняя
+        # — конфигурация НАТО, конфигурация НАТО. Почему здесь не
+        # исправлено?»). Первая проверка смотрела только три поля, а дубль
+        # сидел в `value_sub`: текст «КОНФИГУРАЦИЯ НАТО» и подпись под
+        # числом «конфигурация НАТО».
+        for поле in ("na_polu", "kick", "value", "value_sub", "title",
+                     "kick_sub", "podpis", "author"):
             зн = str(k.get(поле) or "")
             for w in зн.split():
                 w2 = w.strip(",.!?;:«»\"()—-–").lower()
@@ -42,6 +49,14 @@ def ревизия(proj):
                 elif re.search(r"[.!?]\s+\S", tt):
                     беды.append((sid, vid, "ОБРЫВОК: хвост после точки — «%s»" % tt[-28:]))
         # 3. досье без имени / коротко
+        for лист in (k.get("sheets") or []):
+            for w in str(лист).split():
+                w2 = w.strip(",.!?;:«»\"()—-–").lower()
+                if len(w2) < 5:
+                    continue
+                if w2 in верх or any(len(v) >= 5 and v[:5] == w2[:5] for v in верх):
+                    беды.append((sid, vid, "ДУБЛЬ В ЛИСТЕ: «%s» повторяет текст" % лист))
+                    break
         if "dossier" in vid:
             rows = k.get("rows") or []
             есть_имя = any(re.search(r"\b[А-ЯЁ][а-яё]{2,}", str(r)) for r in rows)
