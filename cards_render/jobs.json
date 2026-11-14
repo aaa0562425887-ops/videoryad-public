@@ -1,0 +1,1282 @@
+[
+ {
+  "scene": 2,
+  "view": "sceny.prolog",
+  "mode": "cli",
+  "script": "sceny_cli.py",
+  "dur": 9.8,
+  "channel": "ПЛАНЕТА",
+  "watermark": "ПЛАНЕТА",
+  "cfg": {
+   "view": "prolog",
+   "seconds": 9.8,
+   "fps": 30,
+   "t0": 0.0,
+   "kwargs": {
+    "text": "ЦЕНА БУДУЩЕГО",
+    "channel": "ПЛАНЕТА",
+    "watermark": "ПЛАНЕТА",
+    "dur": 9.8
+   }
+  },
+  "kwargs": {
+   "text": "ЦЕНА БУДУЩЕГО",
+   "channel": "ПЛАНЕТА",
+   "watermark": "ПЛАНЕТА",
+   "dur": 9.8
+  }
+ },
+ {
+  "scene": 3,
+  "view": "vyrezka.gazeta",
+  "dur": 10.8,
+  "anim": 2.6,
+  "tail_zoom": 0.045,
+  "watermark": "ПЛАНЕТА",
+  "channel": "ПЛАНЕТА",
+  "kwargs": {
+   "photo": "cards/photo/card_003.jpg",
+   "author": "Геннадий Друзенко",
+   "title": "Счёт одного города",
+   "watermark": "ПЛАНЕТА"
+  }
+ },
+ {
+  "scene": 5,
+  "view": "zal_schetchik",
+  "dur": 10.8,
+  "anim": 2.6,
+  "tail_zoom": 0.045,
+  "watermark": "ПЛАНЕТА",
+  "channel": "ПЛАНЕТА",
+  "kwargs": {
+   "channel": "ПЛАНЕТА",
+   "dur": 10.8,
+   "sheets": [],
+   "text": "Аллея героев Лозовой",
+   "value": "277",
+   "value_sub": "погибших",
+   "watermark": "ПЛАНЕТА"
+  }
+ },
+ {
+  "scene": 7,
+  "view": "zal_shkala",
+  "dur": 10.8,
+  "anim": 2.6,
+  "tail_zoom": 0.045,
+  "watermark": "ПЛАНЕТА",
+  "channel": "ПЛАНЕТА",
+  "kwargs": {
+   "channel": "ПЛАНЕТА",
+   "dur": 10.8,
+   "sheets": [],
+   "text": "две тысячи двадцать шестом году. Туда же",
+   "value": "300 человек",
+   "value_sub": "ЧЕЛОВЕК",
+   "watermark": "ПЛАНЕТА"
+  }
+ },
+ {
+  "scene": 9,
+  "view": "slider",
+  "dur": 10.8,
+  "anim": 10.8,
+  "tail_zoom": 0.0,
+  "watermark": "ПЛАНЕТА",
+  "channel": "ПЛАНЕТА",
+  "kwargs": {},
+  "mode": "cli",
+  "script": "build_chart_slider.py",
+  "cfg": {
+   "title": "",
+   "min": 0.0,
+   "max": 100.0,
+   "low": 0.0,
+   "high": 100.0,
+   "marker_value": 50.0,
+   "marker_display": "50",
+   "seconds": 10.8,
+   "range_label": "РАЗБРОС ОЦЕНОК",
+   "caption": "",
+   "source": ""
+  }
+ },
+ {
+  "scene": 11,
+  "view": "film.film_single",
+  "dur": 10.8,
+  "anim": 2.6,
+  "tail_zoom": 0.045,
+  "watermark": "ПЛАНЕТА",
+  "channel": "ПЛАНЕТА",
+  "kwargs": {
+   "photo": "cards/photo/card_011.jpg",
+   "title": "Имена в одном городе",
+   "watermark": "ПЛАНЕТА"
+  }
+ },
+ {
+  "scene": 13,
+  "view": "charts.cartogram",
+  "dur": 10.8,
+  "anim": 10.8,
+  "tail_zoom": 0.045,
+  "watermark": "ПЛАНЕТА",
+  "channel": "ПЛАНЕТА",
+  "kwargs": {
+   "data": [
+    "Харьковская область",
+    "Киевская область"
+   ],
+   "level": "region",
+   "admin": "Украина",
+   "watermark": "ПЛАНЕТА"
+  }
+ },
+ {
+  "scene": 15,
+  "view": "zal",
+  "dur": 10.8,
+  "anim": 2.6,
+  "tail_zoom": 0.045,
+  "watermark": "ПЛАНЕТА",
+  "channel": "ПЛАНЕТА",
+  "kwargs": {
+   "text": "здесь предельно земной. Сколько ещё фамилий должно",
+   "words": [
+    "ЗЕМНОЙ",
+    "ДОЛЖНО"
+   ],
+   "sheets": [
+    "здесь предельно земной",
+    "Сколько ещё фамилий должно появиться н",
+    "прежде чем рядом со словом \"победа\" на"
+   ],
+   "channel": "ПЛАНЕТА",
+   "dur": 10.8,
+   "watermark": "ПЛАНЕТА"
+  }
+ },
+ {
+  "scene": 17,
+  "view": "bars",
+  "dur": 10.8,
+  "anim": 10.8,
+  "tail_zoom": 0.0,
+  "watermark": "ПЛАНЕТА",
+  "channel": "ПЛАНЕТА",
+  "kwargs": {},
+  "mode": "cli",
+  "script": "build_chart_bars.py",
+  "cfg": {
+   "title": "Смертность и рождаемость",
+   "caption": "",
+   "seconds": 10.8,
+   "bars": [
+    {
+     "label": "УМЕРЛИ",
+     "value": 1.0,
+     "color": "4A90E2"
+    },
+    {
+     "label": "РОДИЛИСЬ",
+     "value": 0.33,
+     "color": "48BB78"
+    }
+   ]
+  }
+ },
+ {
+  "scene": 18,
+  "view": "zal_slova",
+  "dur": 9.8,
+  "anim": 2.6,
+  "tail_zoom": 0.045,
+  "watermark": "ПЛАНЕТА",
+  "channel": "ПЛАНЕТА",
+  "kwargs": {
+   "channel": "ПЛАНЕТА",
+   "dur": 9.8,
+   "sheets": [
+    "за границей",
+    "За годы там появились работа"
+   ],
+   "text": "за границей. За годы там появились работа",
+   "na_polu": "ГРАНИЦЕЙ",
+   "watermark": "ПЛАНЕТА"
+  }
+ },
+ {
+  "scene": 19,
+  "view": "zal_pol",
+  "dur": 9.8,
+  "anim": 2.6,
+  "tail_zoom": 0.045,
+  "watermark": "ПЛАНЕТА",
+  "channel": "ПЛАНЕТА",
+  "kwargs": {
+   "channel": "ПЛАНЕТА",
+   "dur": 9.8,
+   "sheets": [
+    "тем слабее действует призыв однажды со",
+    "Киевский институт демографии называет"
+   ],
+   "text": "тем слабее действует призыв однажды",
+   "na_polu": "ОДНАЖДЫ",
+   "watermark": "ПЛАНЕТА"
+  }
+ },
+ {
+  "scene": 21,
+  "view": "sceny.mehanizm",
+  "mode": "cli",
+  "script": "sceny_cli.py",
+  "dur": 10.4,
+  "channel": "ПЛАНЕТА",
+  "watermark": "ПЛАНЕТА",
+  "cfg": {
+   "view": "mehanizm",
+   "seconds": 10.4,
+   "fps": 30,
+   "t0": 0.0,
+   "kwargs": {
+    "text": "Кто на кого жмёт",
+    "channel": "ПЛАНЕТА",
+    "watermark": "ПЛАНЕТА",
+    "dur": 10.4,
+    "pary": [
+     "Власти>Рынок труда",
+     "Иностранцы>Рабочие места",
+     "Отъезд>Нехватка рук"
+    ]
+   }
+  },
+  "kwargs": {
+   "text": "Кто на кого жмёт",
+   "channel": "ПЛАНЕТА",
+   "watermark": "ПЛАНЕТА",
+   "dur": 10.4,
+   "pary": [
+    "Власти>Рынок труда",
+    "Иностранцы>Рабочие места",
+    "Отъезд>Нехватка рук"
+   ]
+  }
+ },
+ {
+  "scene": 22,
+  "view": "zal_kub",
+  "dur": 10.1,
+  "anim": 2.6,
+  "tail_zoom": 0.045,
+  "watermark": "ПЛАНЕТА",
+  "channel": "ПЛАНЕТА",
+  "kwargs": {
+   "channel": "ПЛАНЕТА",
+   "dur": 10.1,
+   "sheets": [
+    "будущий дефицит населения и кадров",
+    "На исчезновение собственного населения"
+   ],
+   "text": "будущий дефицит населения и кадров. На исчезновение",
+   "kick": "ИСЧЕЗНОВЕНИЕ",
+   "watermark": "ПЛАНЕТА"
+  }
+ },
+ {
+  "scene": 23,
+  "view": "doc",
+  "dur": 10.6,
+  "anim": 3.4,
+  "tail_zoom": 0.04,
+  "watermark": "ПЛАНЕТА",
+  "channel": "ПЛАНЕТА",
+  "kwargs": {
+   "text": "Граждан не хватает, зато протокол первого заседания наверняка будет составлен вовремя. Однако пригласить иностранцев проще, чем вернуть украинцев, которые уже закрепились в других странах.",
+   "mark": "ИНОСТРАНЦЕВ",
+   "watermark": "ПЛАНЕТА"
+  }
+ },
+ {
+  "scene": 24,
+  "view": "cinematic.depth_of_field",
+  "dur": 9.7,
+  "anim": 9.7,
+  "tail_zoom": 0.0,
+  "watermark": "ПЛАНЕТА",
+  "channel": "ПЛАНЕТА",
+  "kwargs": {
+   "photo": "cards/photo/card_024.jpg",
+   "watermark": "ПЛАНЕТА"
+  },
+  "mode": "frame"
+ },
+ {
+  "scene": 25,
+  "view": "film.film_strip",
+  "dur": 10.9,
+  "anim": 10.9,
+  "tail_zoom": 0.045,
+  "watermark": "ПЛАНЕТА",
+  "channel": "ПЛАНЕТА",
+  "kwargs": {
+   "shots": [
+    "cards/photo/card_025.jpg",
+    "cards/photo/card_025_2.jpg",
+    "cards/photo/card_025_3.jpg"
+   ],
+   "title": "Жизнь, которую не бросают",
+   "watermark": "ПЛАНЕТА"
+  }
+ },
+ {
+  "scene": 26,
+  "view": "strike",
+  "dur": 10.0,
+  "anim": 3.0,
+  "tail_zoom": 0.045,
+  "watermark": "ПЛАНЕТА",
+  "channel": "ПЛАНЕТА",
+  "kwargs": {
+   "text": "Уехали временно. Через годы там работа, жильё и школа. Каждый год снижает шанс вернуться.",
+   "struck": "временно",
+   "fix": "на годы",
+   "watermark": "ПЛАНЕТА"
+  }
+ },
+ {
+  "scene": 27,
+  "view": "charts.slope",
+  "dur": 10.3,
+  "anim": 2.6,
+  "tail_zoom": 0.045,
+  "watermark": "ПЛАНЕТА",
+  "channel": "ПЛАНЕТА",
+  "kwargs": {
+   "items": [
+    {
+     "label": "Потребление",
+     "from": 100.0,
+     "to": 77.0
+    },
+    {
+     "label": "Металлургия",
+     "from": 100.0,
+     "to": 10.0
+    }
+   ],
+   "source": "данные по промышленности",
+   "watermark": "ПЛАНЕТА"
+  }
+ },
+ {
+  "scene": 28,
+  "view": "sceny.tribuna",
+  "mode": "cli",
+  "script": "sceny_cli.py",
+  "dur": 9.8,
+  "channel": "ПЛАНЕТА",
+  "watermark": "ПЛАНЕТА",
+  "cfg": {
+   "view": "tribuna",
+   "seconds": 9.8,
+   "fps": 30,
+   "t0": 0.0,
+   "kwargs": {
+    "text": "Рассчитывать на скорое завершение не следует",
+    "channel": "ПЛАНЕТА",
+    "watermark": "ПЛАНЕТА",
+    "dur": 9.8,
+    "role": "заместитель главы Офиса президента"
+   }
+  },
+  "kwargs": {
+   "text": "Рассчитывать на скорое завершение не следует",
+   "channel": "ПЛАНЕТА",
+   "watermark": "ПЛАНЕТА",
+   "dur": 9.8,
+   "role": "заместитель главы Офиса президента"
+  }
+ },
+ {
+  "scene": 29,
+  "view": "split",
+  "dur": 10.7,
+  "anim": 2.6,
+  "tail_zoom": 0.045,
+  "watermark": "ПЛАНЕТА",
+  "channel": "ПЛАНЕТА",
+  "kwargs": {
+   "text": "Рассчитывать на скорое завершение не следует",
+   "author": "Ирина Верещук",
+   "photo": "cards/photo/card_029.jpg",
+   "watermark": "ПЛАНЕТА"
+  }
+ },
+ {
+  "scene": 30,
+  "view": "charts.cartogram",
+  "dur": 10.2,
+  "anim": 10.2,
+  "tail_zoom": 0.045,
+  "watermark": "ПЛАНЕТА",
+  "channel": "ПЛАНЕТА",
+  "kwargs": {
+   "data": [
+    "Россия",
+    "Украина"
+   ],
+   "watermark": "ПЛАНЕТА"
+  }
+ },
+ {
+  "scene": 31,
+  "view": "photo",
+  "dur": 9.9,
+  "anim": 9.9,
+  "tail_zoom": 0.0,
+  "watermark": "ПЛАНЕТА",
+  "channel": "ПЛАНЕТА",
+  "kwargs": {
+   "watermark": "ПЛАНЕТА",
+   "photo": "cards/photo/card_031.jpg",
+   "lines": [
+    "запас воды",
+    "фонари и повербанки",
+    "свет до 22:00"
+   ]
+  }
+ },
+ {
+  "scene": 32,
+  "view": "charts.cartogram",
+  "dur": 10.5,
+  "anim": 10.5,
+  "tail_zoom": 0.045,
+  "watermark": "ПЛАНЕТА",
+  "channel": "ПЛАНЕТА",
+  "kwargs": {
+   "data": [
+    "Украина",
+    "Польша",
+    "Германия"
+   ],
+   "title": "Где теперь украинцы",
+   "mode": "bubble",
+   "watermark": "ПЛАНЕТА"
+  }
+ },
+ {
+  "scene": 33,
+  "view": "sceny.repliki",
+  "mode": "cli",
+  "script": "sceny_cli.py",
+  "dur": 10.1,
+  "channel": "ПЛАНЕТА",
+  "watermark": "ПЛАНЕТА",
+  "cfg": {
+   "view": "repliki",
+   "seconds": 10.1,
+   "fps": 30,
+   "t0": 0.0,
+   "kwargs": {
+    "text": "Четыре голоса об одном",
+    "channel": "ПЛАНЕТА",
+    "watermark": "ПЛАНЕТА",
+    "dur": 10.1,
+    "repliki_": [
+     "Друзенко=277 фамилий в одном городе",
+     "Гнап=механизм под иностранных рабочих",
+     "Верещук=зима будет тяжёлой",
+     "Кучеренко=ни одного объекта не закончили"
+    ]
+   }
+  },
+  "kwargs": {
+   "text": "Четыре голоса об одном",
+   "channel": "ПЛАНЕТА",
+   "watermark": "ПЛАНЕТА",
+   "dur": 10.1,
+   "repliki_": [
+    "Друзенко=277 фамилий в одном городе",
+    "Гнап=механизм под иностранных рабочих",
+    "Верещук=зима будет тяжёлой",
+    "Кучеренко=ни одного объекта не закончили"
+   ]
+  }
+ },
+ {
+  "scene": 34,
+  "view": "zal_slova",
+  "dur": 10.8,
+  "anim": 2.6,
+  "tail_zoom": 0.045,
+  "watermark": "ПЛАНЕТА",
+  "channel": "ПЛАНЕТА",
+  "kwargs": {
+   "channel": "ПЛАНЕТА",
+   "dur": 10.8,
+   "sheets": [
+    "европейское будущее и национальное вел",
+    "Все слова на своих местах"
+   ],
+   "text": "европейское будущее и национальное",
+   "na_polu": "НАЦИОНАЛЬНОЕ",
+   "watermark": "ПЛАНЕТА"
+  }
+ },
+ {
+  "scene": 35,
+  "view": "zal_efir",
+  "dur": 9.6,
+  "anim": 2.6,
+  "tail_zoom": 0.045,
+  "watermark": "ПЛАНЕТА",
+  "channel": "ПЛАНЕТА",
+  "kwargs": {
+   "channel": "ПЛАНЕТА",
+   "dur": 9.6,
+   "sheets": [],
+   "text": "Прогноз на зиму",
+   "say": "Конфликт быстро не закончится",
+   "author": "Ирина Верещук",
+   "watermark": "ПЛАНЕТА"
+  }
+ },
+ {
+  "scene": 36,
+  "view": "zal_g01",
+  "dur": 10.4,
+  "anim": 10.4,
+  "tail_zoom": 0.045,
+  "watermark": "ПЛАНЕТА",
+  "channel": "ПЛАНЕТА",
+  "kwargs": {
+   "channel": "ПЛАНЕТА",
+   "dur": 10.4,
+   "sheets": [],
+   "text": "решений. Дальше начинается",
+   "watermark": "ПЛАНЕТА"
+  }
+ },
+ {
+  "scene": 37,
+  "view": "zal_g44",
+  "dur": 10.0,
+  "anim": 10.0,
+  "tail_zoom": 0.045,
+  "watermark": "ПЛАНЕТА",
+  "channel": "ПЛАНЕТА",
+  "kwargs": {
+   "channel": "ПЛАНЕТА",
+   "dur": 10.0,
+   "sheets": [],
+   "text": "Света взяли меньше",
+   "value": "23 %",
+   "value_sub": "к августу прошлого года",
+   "watermark": "ПЛАНЕТА"
+  }
+ },
+ {
+  "scene": 38,
+  "view": "zal_g18",
+  "dur": 10.6,
+  "anim": 10.6,
+  "tail_zoom": 0.045,
+  "watermark": "ПЛАНЕТА",
+  "channel": "ПЛАНЕТА",
+  "kwargs": {
+   "channel": "ПЛАНЕТА",
+   "dur": 10.6,
+   "sheets": [],
+   "text": "Металлургия встала",
+   "value": "90 %",
+   "value_sub": "мощностей повреждены или остановлены",
+   "watermark": "ПЛАНЕТА"
+  }
+ },
+ {
+  "scene": 39,
+  "view": "duel",
+  "dur": 9.8,
+  "anim": 3.2,
+  "tail_zoom": 0.035,
+  "watermark": "ПЛАНЕТА",
+  "channel": "ПЛАНЕТА",
+  "kwargs": {
+   "top": {
+    "who": "Отчёт",
+    "text": "Потребление снизилось — значит дефицит сократился",
+    "accent": null,
+    "source": ""
+   },
+   "bottom": {
+    "who": "Причина",
+    "text": "Электричество перестало требоваться остановленным заводам",
+    "accent": null,
+    "source": ""
+   },
+   "watermark": "ПЛАНЕТА"
+  }
+ },
+ {
+  "scene": 40,
+  "view": "zal_makety",
+  "dur": 10.3,
+  "anim": 2.6,
+  "tail_zoom": 0.045,
+  "watermark": "ПЛАНЕТА",
+  "channel": "ПЛАНЕТА",
+  "kwargs": {
+   "channel": "ПЛАНЕТА",
+   "dur": 10.3,
+   "sheets": [],
+   "text": "Свет перестал требоваться",
+   "makety": [
+    "лэп=ЭНЕРГОСЕТИ",
+    "здание=ЗАВОДЫ"
+   ],
+   "watermark": "ПЛАНЕТА"
+  }
+ },
+ {
+  "scene": 41,
+  "view": "charts.waterfall",
+  "dur": 10.7,
+  "anim": 10.7,
+  "tail_zoom": 0.045,
+  "watermark": "ПЛАНЕТА",
+  "channel": "ПЛАНЕТА",
+  "kwargs": {
+   "start": {
+    "label": "Выделено",
+    "value": 750.0
+   },
+   "steps": [
+    {
+     "label": "Готовых объектов",
+     "value": 0.0
+    },
+    {
+     "label": "Просят ещё",
+     "value": 400.0
+    }
+   ],
+   "end": {
+    "label": "ИТОГ"
+   },
+   "title": "Куда ушли деньги",
+   "watermark": "ПЛАНЕТА"
+  }
+ },
+ {
+  "scene": 42,
+  "view": "marker_serif",
+  "dur": 9.7,
+  "anim": 2.6,
+  "tail_zoom": 0.045,
+  "watermark": "ПЛАНЕТА",
+  "channel": "ПЛАНЕТА",
+  "kwargs": {
+   "text": "потребления. Производство сжалось, ресурсов требуется меньше, показатели выглядят спокойнее. Не экономика, а",
+   "accent": "Производство",
+   "watermark": "ПЛАНЕТА"
+  }
+ },
+ {
+  "scene": 43,
+  "view": "sceny.globus_map",
+  "mode": "cli",
+  "script": "sceny_cli.py",
+  "dur": 10.2,
+  "channel": "ПЛАНЕТА",
+  "watermark": "ПЛАНЕТА",
+  "cfg": {
+   "view": "globus",
+   "seconds": 10.2,
+   "fps": 30,
+   "t0": 0.0,
+   "kwargs": {
+    "text": "Защита энергообъектов Киевской области",
+    "channel": "ПЛАНЕТА",
+    "watermark": "ПЛАНЕТА",
+    "dur": 10.2,
+    "region": "Украина"
+   }
+  },
+  "kwargs": {
+   "text": "Защита энергообъектов Киевской области",
+   "channel": "ПЛАНЕТА",
+   "watermark": "ПЛАНЕТА",
+   "dur": 10.2,
+   "region": "Украина"
+  }
+ },
+ {
+  "scene": 44,
+  "view": "cinematic.dossier",
+  "dur": 10.5,
+  "anim": 10.5,
+  "tail_zoom": 0.045,
+  "watermark": "ПЛАНЕТА",
+  "channel": "ПЛАНЕТА",
+  "kwargs": {
+   "rows": [
+    "народный депутат",
+    "тема: защита энергообъектов",
+    "вывод: ни одного готового"
+   ],
+   "title": "ДОСЬЕ",
+   "photo": "cards/photo/card_044.jpg",
+   "stamp": "ПЕРВОИСТОЧНИК",
+   "watermark": "ПЛАНЕТА"
+  }
+ },
+ {
+  "scene": 45,
+  "view": "zal_pol",
+  "dur": 10.0,
+  "anim": 2.6,
+  "tail_zoom": 0.045,
+  "watermark": "ПЛАНЕТА",
+  "channel": "ПЛАНЕТА",
+  "kwargs": {
+   "channel": "ПЛАНЕТА",
+   "dur": 10.0,
+   "sheets": [
+    "половина программы",
+    "Итог проще и потому выразительнее гото"
+   ],
+   "text": "половина программы. Итог проще и потому",
+   "na_polu": "ПРОГРАММЫ",
+   "watermark": "ПЛАНЕТА"
+  }
+ },
+ {
+  "scene": 46,
+  "view": "vyrezka.figura",
+  "dur": 10.8,
+  "anim": 2.6,
+  "tail_zoom": 0.045,
+  "watermark": "ПЛАНЕТА",
+  "channel": "ПЛАНЕТА",
+  "kwargs": {
+   "photo": "cards/photo/card_046.jpg",
+   "author": "Алексей Кучеренко",
+   "watermark": "ПЛАНЕТА"
+  }
+ },
+ {
+  "scene": 47,
+  "view": "poster.poster",
+  "dur": 9.6,
+  "anim": 9.6,
+  "tail_zoom": 0.0,
+  "watermark": "ПЛАНЕТА",
+  "channel": "ПЛАНЕТА",
+  "kwargs": {
+   "title": "Защита как воронка",
+   "hero_photo": "cards/photo/card_047.jpg",
+   "watermark": "ПЛАНЕТА"
+  },
+  "mode": "frame"
+ },
+ {
+  "scene": 48,
+  "view": "charts.pie",
+  "dur": 10.4,
+  "anim": 10.4,
+  "tail_zoom": 0.045,
+  "watermark": "ПЛАНЕТА",
+  "channel": "ПЛАНЕТА",
+  "kwargs": {
+   "segments": [
+    {
+     "label": "Повреждены или остановлены",
+     "value": 90.0
+    },
+    {
+     "label": "Работают",
+     "value": 10.0
+    }
+   ],
+   "title": "Металлургические мощности",
+   "watermark": "ПЛАНЕТА"
+  }
+ },
+ {
+  "scene": 49,
+  "view": "zal_g48",
+  "dur": 10.1,
+  "anim": 10.1,
+  "tail_zoom": 0.045,
+  "watermark": "ПЛАНЕТА",
+  "channel": "ПЛАНЕТА",
+  "kwargs": {
+   "channel": "ПЛАНЕТА",
+   "dur": 10.1,
+   "sheets": [],
+   "text": "зато счёт обновили. Но у строительства",
+   "watermark": "ПЛАНЕТА"
+  }
+ },
+ {
+  "scene": 50,
+  "view": "charts.line",
+  "dur": 10.6,
+  "anim": 2.6,
+  "tail_zoom": 0.045,
+  "watermark": "ПЛАНЕТА",
+  "channel": "ПЛАНЕТА",
+  "kwargs": {
+   "x_labels": [
+    "Запланировано",
+    "В работе",
+    "Завершено"
+   ],
+   "series": [
+    {
+     "name": "Объекты защиты",
+     "values": [
+      26.0,
+      26.0,
+      0.0
+     ]
+    }
+   ],
+   "title": "Объекты защиты",
+   "source": "Алексей Кучеренко",
+   "watermark": "ПЛАНЕТА"
+  }
+ },
+ {
+  "scene": 51,
+  "view": "quote",
+  "dur": 9.9,
+  "anim": 2.6,
+  "tail_zoom": 0.045,
+  "watermark": "ПЛАНЕТА",
+  "channel": "ПЛАНЕТА",
+  "kwargs": {
+   "text": "Куда ушли деньги и что именно за них успели построить? Двадцать шесть площадок дали ноль готовых сооружений.",
+   "accent": "ноль готовых",
+   "title": "Вопрос депутата",
+   "watermark": "ПЛАНЕТА"
+  }
+ },
+ {
+  "scene": 52,
+  "view": "charts.network",
+  "dur": 10.3,
+  "anim": 10.3,
+  "tail_zoom": 0.045,
+  "watermark": "ПЛАНЕТА",
+  "channel": "ПЛАНЕТА",
+  "kwargs": {
+   "nodes": [
+    {
+     "id": "Подрядчик",
+     "label": "Подрядчик",
+     "weight": 750.0
+    },
+    {
+     "id": "Область",
+     "label": "Область",
+     "weight": 750.0
+    },
+    {
+     "id": "Кучеренко",
+     "label": "Кучеренко",
+     "weight": 0.0
+    }
+   ],
+   "links": [
+    {
+     "from": "Подрядчик",
+     "to": "Область",
+     "weight": 750.0
+    },
+    {
+     "from": "Кучеренко",
+     "to": "Подрядчик",
+     "weight": 0.0
+    }
+   ],
+   "watermark": "ПЛАНЕТА"
+  }
+ },
+ {
+  "scene": 53,
+  "view": "pull",
+  "dur": 10.7,
+  "anim": 2.6,
+  "tail_zoom": 0.05,
+  "watermark": "ПЛАНЕТА",
+  "channel": "ПЛАНЕТА",
+  "kwargs": {
+   "text": "остаётся только не мешать. Внутренние мастера освоения аванса и сами знают, как оставить объект без защиты. Пока подрядчики обсуждают",
+   "accent": "Внутренние",
+   "watermark": "ПЛАНЕТА"
+  }
+ },
+ {
+  "scene": 54,
+  "view": "devices.device_scene",
+  "dur": 9.8,
+  "anim": 2.6,
+  "tail_zoom": 0.045,
+  "watermark": "ПЛАНЕТА",
+  "channel": "ПЛАНЕТА",
+  "kwargs": {
+   "content_path": "cards/photo/card_054.jpg",
+   "items": [
+    "Киев гасит уличный свет",
+    "Мощность уходит критическим объектам"
+   ],
+   "source": "Киевгорсвет",
+   "watermark": "ПЛАНЕТА"
+  }
+ },
+ {
+  "scene": 55,
+  "view": "charts.radar",
+  "dur": 10.2,
+  "anim": 10.2,
+  "tail_zoom": 0.045,
+  "watermark": "ПЛАНЕТА",
+  "channel": "ПЛАНЕТА",
+  "kwargs": {
+   "axes": [
+    "Энергетика",
+    "Металлургия",
+    "Демография",
+    "Защита",
+    "Освещение"
+   ],
+   "series": [
+    {
+     "label": "Где слабее всего",
+     "values": [
+      2.0,
+      1.0,
+      1.0,
+      0.0,
+      1.0
+     ]
+    }
+   ],
+   "title": "Где слабее всего",
+   "watermark": "ПЛАНЕТА"
+  }
+ },
+ {
+  "scene": 56,
+  "view": "sceny.relsy",
+  "mode": "cli",
+  "script": "sceny_cli.py",
+  "dur": 10.5,
+  "channel": "ПЛАНЕТА",
+  "watermark": "ПЛАНЕТА",
+  "cfg": {
+   "view": "relsy",
+   "seconds": 10.5,
+   "fps": 30,
+   "t0": 0.0,
+   "kwargs": {
+    "text": "Как страна шла к темноте",
+    "channel": "ПЛАНЕТА",
+    "watermark": "ПЛАНЕТА",
+    "dur": 10.5,
+    "sobytiya": [
+     "Август: промышленность берёт меньше света",
+     "Сентябрь: металлургия остановлена",
+     "Ноябрь: Киев гасит улицы"
+    ]
+   }
+  },
+  "kwargs": {
+   "text": "Как страна шла к темноте",
+   "channel": "ПЛАНЕТА",
+   "watermark": "ПЛАНЕТА",
+   "dur": 10.5,
+   "sobytiya": [
+    "Август: промышленность берёт меньше света",
+    "Сентябрь: металлургия остановлена",
+    "Ноябрь: Киев гасит улицы"
+   ]
+  }
+ },
+ {
+  "scene": 57,
+  "view": "sceny.lenta",
+  "mode": "cli",
+  "script": "sceny_cli.py",
+  "dur": 10.0,
+  "channel": "ПЛАНЕТА",
+  "watermark": "ПЛАНЕТА",
+  "cfg": {
+   "view": "lenta",
+   "seconds": 10.0,
+   "fps": 30,
+   "t0": 0.0,
+   "kwargs": {
+    "text": "Сводка одного вечера",
+    "channel": "ПЛАНЕТА",
+    "watermark": "ПЛАНЕТА",
+    "dur": 10.0,
+    "soobshcheniya": [
+     "Киев полностью гасит уличное освещение",
+     "Мощность уходит на критические объекты",
+     "Линии оповещения работают до 22:00"
+    ]
+   }
+  },
+  "kwargs": {
+   "text": "Сводка одного вечера",
+   "channel": "ПЛАНЕТА",
+   "watermark": "ПЛАНЕТА",
+   "dur": 10.0,
+   "soobshcheniya": [
+    "Киев полностью гасит уличное освещение",
+    "Мощность уходит на критические объекты",
+    "Линии оповещения работают до 22:00"
+   ]
+  }
+ },
+ {
+  "scene": 58,
+  "view": "paper_typed",
+  "dur": 10.8,
+  "anim": 2.8,
+  "tail_zoom": 0.04,
+  "watermark": "ПЛАНЕТА",
+  "channel": "ПЛАНЕТА",
+  "kwargs": {
+   "text": "Двести семьдесят семь фамилий. Расчёт даёт от двухсот до трёхсот тысяч безвозвратных потерь.",
+   "title": "Аллея героев",
+   "watermark": "ПЛАНЕТА"
+  }
+ },
+ {
+  "scene": 59,
+  "view": "torn_split.torn_split",
+  "dur": 9.7,
+  "anim": 2.6,
+  "tail_zoom": 0.045,
+  "watermark": "ПЛАНЕТА",
+  "channel": "ПЛАНЕТА",
+  "kwargs": {
+   "a_path": "cards/photo/card_059.jpg",
+   "b_path": "cards/photo/card_059_2.jpg",
+   "title": "Два расчёта",
+   "watermark": "ПЛАНЕТА"
+  }
+ },
+ {
+  "scene": 60,
+  "view": "paper_hand",
+  "dur": 10.4,
+  "anim": 2.8,
+  "tail_zoom": 0.04,
+  "watermark": "ПЛАНЕТА",
+  "channel": "ПЛАНЕТА",
+  "kwargs": {
+   "text": "Двадцать шесть объектов. Ноль законченных сооружений. Семьсот пятьдесят миллионов аванса.",
+   "title": "К списку добавить",
+   "watermark": "ПЛАНЕТА"
+  }
+ },
+ {
+  "scene": 61,
+  "view": "cinematic.evidence_wall",
+  "dur": 10.1,
+  "anim": 10.1,
+  "tail_zoom": 0.0,
+  "watermark": "ПЛАНЕТА",
+  "channel": "ПЛАНЕТА",
+  "kwargs": {
+   "shots": [
+    [
+     "cards/photo/card_061.jpg",
+     240,
+     380,
+     -4,
+     "ГЕНЕРАТОРЫ"
+    ],
+    [
+     "cards/photo/card_061_2.jpg",
+     800,
+     380,
+     3,
+     "ЗАРЯДКА В ПОДЪЕЗДЕ"
+    ],
+    [
+     "cards/photo/card_061_3.jpg",
+     1360,
+     380,
+     -2,
+     "ЛИФТЫ СТОЯТ"
+    ]
+   ],
+   "title": "Что привело к темноте",
+   "watermark": "ПЛАНЕТА"
+  },
+  "mode": "frame"
+ },
+ {
+  "scene": 62,
+  "view": "zal_ekran",
+  "dur": 10.6,
+  "anim": 10.6,
+  "tail_zoom": 0.045,
+  "watermark": "ПЛАНЕТА",
+  "channel": "ПЛАНЕТА",
+  "kwargs": {
+   "channel": "ПЛАНЕТА",
+   "dur": 10.6,
+   "sheets": [],
+   "text": "Что показывают с экрана",
+   "say": "Ноль завершённых объектов — это этап успеха",
+   "author": "официальный доклад",
+   "watermark": "ПЛАНЕТА"
+  }
+ },
+ {
+  "scene": 63,
+  "view": "sceny.prohod",
+  "mode": "cli",
+  "script": "sceny_cli.py",
+  "dur": 9.9,
+  "channel": "ПЛАНЕТА",
+  "watermark": "ПЛАНЕТА",
+  "cfg": {
+   "view": "prohod",
+   "seconds": 9.9,
+   "fps": 30,
+   "t0": 0.0,
+   "kwargs": {
+    "text": "Что поправимо, а что нет",
+    "channel": "ПЛАНЕТА",
+    "watermark": "ПЛАНЕТА",
+    "dur": 9.9,
+    "tezisy": [
+     "Трансформатор заменят",
+     "Освещение вернут",
+     "Дорогу отремонтируют",
+     "Человека не вернёт никто"
+    ]
+   }
+  },
+  "kwargs": {
+   "text": "Что поправимо, а что нет",
+   "channel": "ПЛАНЕТА",
+   "watermark": "ПЛАНЕТА",
+   "dur": 9.9,
+   "tezisy": [
+    "Трансформатор заменят",
+    "Освещение вернут",
+    "Дорогу отремонтируют",
+    "Человека не вернёт никто"
+   ]
+  }
+ },
+ {
+  "scene": 64,
+  "view": "sceny.kreslo",
+  "mode": "cli",
+  "script": "sceny_cli.py",
+  "dur": 10.3,
+  "channel": "ПЛАНЕТА",
+  "watermark": "ПЛАНЕТА",
+  "cfg": {
+   "view": "kreslo",
+   "seconds": 10.3,
+   "fps": 30,
+   "t0": 0.0,
+   "kwargs": {
+    "text": "Человека не вернёт никто",
+    "channel": "ПЛАНЕТА",
+    "watermark": "ПЛАНЕТА",
+    "dur": 10.3,
+    "role": "подрядчик"
+   }
+  },
+  "kwargs": {
+   "text": "Человека не вернёт никто",
+   "channel": "ПЛАНЕТА",
+   "watermark": "ПЛАНЕТА",
+   "dur": 10.3,
+   "role": "подрядчик"
+  }
+ },
+ {
+  "scene": 65,
+  "view": "charts.map_dist",
+  "dur": 10.7,
+  "anim": 2.6,
+  "tail_zoom": 0.045,
+  "watermark": "ПЛАНЕТА",
+  "channel": "ПЛАНЕТА",
+  "kwargs": {
+   "points": [
+    {
+     "label": "Лозовая",
+     "lat": 48.89,
+     "lon": 36.32,
+     "accent": false
+    },
+    {
+     "label": "Киев",
+     "lat": 50.45,
+     "lon": 30.52,
+     "accent": false
+    }
+   ],
+   "watermark": "ПЛАНЕТА"
+  }
+ },
+ {
+  "scene": 66,
+  "view": "sceny.pechat",
+  "mode": "cli",
+  "script": "sceny_cli.py",
+  "dur": 9.8,
+  "channel": "ПЛАНЕТА",
+  "watermark": "ПЛАНЕТА",
+  "cfg": {
+   "view": "pechat",
+   "seconds": 9.8,
+   "fps": 30,
+   "t0": 0.0,
+   "kwargs": {
+    "text": "разговор о величии хорошо звучит лишь до",
+    "channel": "ПЛАНЕТА",
+    "watermark": "ПЛАНЕТА",
+    "dur": 9.8,
+    "stamp": "утверждено"
+   }
+  },
+  "kwargs": {
+   "text": "разговор о величии хорошо звучит лишь до",
+   "channel": "ПЛАНЕТА",
+   "watermark": "ПЛАНЕТА",
+   "dur": 9.8,
+   "stamp": "утверждено"
+  }
+ },
+ {
+  "scene": 67,
+  "view": "tape",
+  "dur": 10.6,
+  "anim": 2.4,
+  "tail_zoom": 0.04,
+  "watermark": "ПЛАНЕТА",
+  "channel": "ПЛАНЕТА",
+  "kwargs": {
+   "text": "получить помощь и дождаться очередной победной речи. Ей ещё нужны люди, которые смогут эту речь услышать не из другой",
+   "accent": "очередной",
+   "watermark": "ПЛАНЕТА"
+  }
+ }
+]
