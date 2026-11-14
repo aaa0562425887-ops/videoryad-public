@@ -1,0 +1,68 @@
+{
+ "scenes": [
+  {
+   "id": 3,
+   "start_sec": 0,
+   "duration_sec": 10,
+   "text": "",
+   "source": "web_search",
+   "source_query": "Владимир Зеленский выступление с обращением"
+  },
+  {
+   "id": 8,
+   "start_sec": 10,
+   "duration_sec": 10,
+   "text": "",
+   "source": "web_search",
+   "source_query": "улица Банковая офис президента Украины Киев"
+  },
+  {
+   "id": 9,
+   "start_sec": 20,
+   "duration_sec": 10,
+   "text": "",
+   "source": "web_search",
+   "source_query": "здание Пентагона Вашингтон вид сверху"
+  },
+  {
+   "id": 11,
+   "start_sec": 30,
+   "duration_sec": 10,
+   "text": "",
+   "source": "web_search",
+   "source_query": "Урсула фон дер Ляйен пресс-конференция Еврокомиссия"
+  },
+  {
+   "id": 12,
+   "start_sec": 40,
+   "duration_sec": 10,
+   "text": "",
+   "source": "web_search",
+   "source_query": "здание Европейского совета в Брюсселе"
+  },
+  {
+   "id": 20,
+   "start_sec": 50,
+   "duration_sec": 10,
+   "text": "",
+   "source": "web_search",
+   "source_query": "Сергей Лавров пресс-конференция МИД России"
+  },
+  {
+   "id": 45,
+   "start_sec": 60,
+   "duration_sec": 10,
+   "text": "",
+   "source": "web_search",
+   "source_query": "Виктор Орбан премьер-министр Венгрии выступление"
+  },
+  {
+   "id": 22,
+   "start_sec": 70,
+   "duration_sec": 10,
+   "text": "",
+   "source": "web_search",
+   "source_query": "зал заседаний Верховной рады Украины Киев"
+  }
+ ]
+}
