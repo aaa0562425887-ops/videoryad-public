@@ -231,7 +231,7 @@
   "channel": "5 МИНУТ",
   "kwargs": {
    "text": "Власти заранее готовятся закрывать провалы иностранцами",
-   "author": "Дмитрий Гнап",
+   "author": "журналист",
    "photo": "cards/photo/card_021.jpg",
    "watermark": "5 МИНУТ"
   }
@@ -466,7 +466,7 @@
   "channel": "5 МИНУТ",
   "kwargs": {
    "photo": "cards/photo/card_030.jpg",
-   "author": "Геннадий Друзенко",
+   "author": "волонтёр",
    "title": "Сколько осталось для величия",
    "watermark": "5 МИНУТ"
   }
@@ -802,7 +802,7 @@
   "channel": "5 МИНУТ",
   "kwargs": {
    "photo": "cards/photo/card_047.jpg",
-   "author": "Алексей Кучеренко",
+   "author": "народный депутат",
    "title": "Ни одного завершённого",
    "watermark": "5 МИНУТ"
   }
