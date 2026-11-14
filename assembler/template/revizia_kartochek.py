@@ -64,6 +64,24 @@ def ревизия(proj):
                 беды.append((sid, vid, "ДОСЬЕ без имени человека"))
             if len(rows) < 4:
                 беды.append((sid, vid, "ДОСЬЕ строк %d — лист полупустой" % len(rows)))
+    # 3-бис. ЗАДАНИЕ НОВЕЕ КЛИПА — ПРАВКА НЕ ДОЕХАЛА ДО КАДРА (14.11, его
+    # слово: «дата исправлена только в задании — это как вообще? ты не отдал
+    # её на переделку, но вывел мне дашборд»). Ревизия обязана отвечать за
+    # то, что видно НА ЭКРАНЕ, а не за то, что лежит в json: иначе «0
+    # замечаний» означает лишь «я поправил файлы», и он смотрит старый клип.
+    for f in sorted(glob.glob(os.path.join(q, "scene_*.json"))):
+        sid = int(re.search(r"scene_(\d+)", f).group(1))
+        клип = os.path.join(proj, "images", "scene_%03d.mp4" % sid)
+        if not os.path.exists(клип):
+            continue
+        try:
+            if os.path.getmtime(f) > os.path.getmtime(клип) + 1:
+                беды.append((sid, "клип",
+                             "ЗАДАНИЕ НОВЕЕ КЛИПА — правка в кадр НЕ попала, "
+                             "нужна перерисовка"))
+        except OSError:
+            continue
+
     # 4. скобки в надписях
     ov = os.path.join(proj, "overlays.json")
     if os.path.exists(ov):
