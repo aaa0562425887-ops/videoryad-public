@@ -1,0 +1,20 @@
+{
+ "scenes": [
+  {
+   "id": 1,
+   "start_sec": 0,
+   "duration_sec": 10,
+   "text": "",
+   "source": "web_search",
+   "source_query": "Сергей Рябков заместитель министра иностранных дел России брифинг"
+  },
+  {
+   "id": 2,
+   "start_sec": 10,
+   "duration_sec": 10,
+   "text": "",
+   "source": "web_search",
+   "source_query": "Сергей Рябков замминистра иностранных дел России портрет"
+  }
+ ]
+}
