@@ -1,0 +1,592 @@
+{
+ "channel": "ПЛАНЕТА",
+ "scenes": [
+  {
+   "id": 1,
+   "start_sec": 0.0,
+   "duration_sec": 10.8,
+   "text": "",
+   "source": "local_donor",
+   "source_query": "Владимир Зеленский выступает с обращением 2026"
+  },
+  {
+   "id": 2,
+   "start_sec": 10.8,
+   "duration_sec": 9.8,
+   "text": "",
+   "source": "card:prolog",
+   "source_query": "карточка «prolog» — кадр рисуется в облаке, фетч не нужен"
+  },
+  {
+   "id": 3,
+   "start_sec": 20.6,
+   "duration_sec": 10.8,
+   "text": "",
+   "source": "card:vyrezka",
+   "source_query": "карточка «vyrezka» — кадр рисуется в облаке, фетч не нужен"
+  },
+  {
+   "id": 4,
+   "start_sec": 31.4,
+   "duration_sec": 9.8,
+   "text": "",
+   "source": "local_donor",
+   "source_query": "5min-2-strashnye-poteri-1511/scene_016.jpg",
+   "fx": "flash"
+  },
+  {
+   "id": 5,
+   "start_sec": 41.2,
+   "duration_sec": 10.8,
+   "text": "",
+   "source": "card:zal_schetchik",
+   "source_query": "карточка «zal_schetchik» — кадр рисуется в облаке, фетч не нужен"
+  },
+  {
+   "id": 6,
+   "start_sec": 52.0,
+   "duration_sec": 9.8,
+   "text": "",
+   "source": "local_donor",
+   "source_query": "5min-2-strashnye-poteri-1511/scene_004.jpg",
+   "fx": "depth"
+  },
+  {
+   "id": 7,
+   "start_sec": 61.8,
+   "duration_sec": 10.8,
+   "text": "",
+   "source": "card:zal_shkala",
+   "source_query": "карточка «zal_shkala» — кадр рисуется в облаке, фетч не нужен"
+  },
+  {
+   "id": 8,
+   "start_sec": 72.6,
+   "duration_sec": 9.8,
+   "text": "",
+   "source": "local_donor",
+   "source_query": "5min-2-strashnye-poteri-1511/scene_006.jpg",
+   "fx": "inset"
+  },
+  {
+   "id": 9,
+   "start_sec": 82.4,
+   "duration_sec": 10.8,
+   "text": "",
+   "source": "card:slider",
+   "source_query": "карточка «slider» — кадр рисуется в облаке, фетч за сценой не идёт",
+   "card": {
+    "kind": "slider",
+    "код": "A5",
+    "watermark": "ПЛАНЕТА",
+    "anim": 10.8
+   }
+  },
+  {
+   "id": 10,
+   "start_sec": 93.2,
+   "duration_sec": 9.8,
+   "text": "",
+   "source": "local_donor",
+   "source_query": "5min-2-strashnye-poteri-1511/scene_011.jpg",
+   "fx": "mosaic"
+  },
+  {
+   "id": 11,
+   "start_sec": 103.0,
+   "duration_sec": 10.8,
+   "text": "",
+   "source": "card:film_frame",
+   "source_query": "карточка «film_frame» — кадр рисуется в облаке, фетч не нужен"
+  },
+  {
+   "id": 12,
+   "start_sec": 113.8,
+   "duration_sec": 9.8,
+   "text": "",
+   "source": "local_donor",
+   "source_query": "5min-2-strashnye-poteri-1511/scene_013.jpg",
+   "fx": "panels"
+  },
+  {
+   "id": 13,
+   "start_sec": 123.6,
+   "duration_sec": 10.8,
+   "text": "",
+   "source": "card:map_regions",
+   "source_query": "карточка «map_regions» — кадр рисуется в облаке, фетч не нужен"
+  },
+  {
+   "id": 14,
+   "start_sec": 134.4,
+   "duration_sec": 9.8,
+   "text": "",
+   "source": "local_donor",
+   "source_query": "5min-2-strashnye-poteri-1511/scene_014.jpg",
+   "fx": "tear"
+  },
+  {
+   "id": 15,
+   "start_sec": 144.2,
+   "duration_sec": 10.8,
+   "text": "",
+   "source": "card:zal",
+   "source_query": "карточка «zal» — кадр рисуется в облаке, фетч не нужен"
+  },
+  {
+   "id": 16,
+   "start_sec": 155.0,
+   "duration_sec": 9.8,
+   "text": "",
+   "source": "local_donor",
+   "source_query": "5min-2-strashnye-poteri-1511/scene_015.jpg",
+   "fx": "wipe"
+  },
+  {
+   "id": 17,
+   "start_sec": 164.8,
+   "duration_sec": 10.8,
+   "text": "",
+   "source": "card:bars",
+   "source_query": "карточка «bars» — кадр рисуется в облаке, фетч за сценой не идёт",
+   "card": {
+    "kind": "bars",
+    "код": "A4",
+    "title": "Смертность и рождаемость",
+    "watermark": "ПЛАНЕТА",
+    "anim": 10.8
+   }
+  },
+  {
+   "id": 18,
+   "start_sec": 175.6,
+   "duration_sec": 9.8,
+   "text": "",
+   "source": "card:zal_slova",
+   "source_query": "карточка «zal_slova» — кадр рисуется в облаке, фетч не нужен"
+  },
+  {
+   "id": 19,
+   "start_sec": 185.4,
+   "duration_sec": 9.8,
+   "text": "",
+   "source": "card:zal_pol",
+   "source_query": "карточка «zal_pol» — кадр рисуется в облаке, фетч не нужен"
+  },
+  {
+   "id": 20,
+   "start_sec": 195.2,
+   "duration_sec": 9.8,
+   "text": "",
+   "source": "local_donor",
+   "source_query": "5min-2-strashnye-poteri-1511/scene_017.mp4"
+  },
+  {
+   "id": 21,
+   "start_sec": 205.0,
+   "duration_sec": 10.4,
+   "text": "",
+   "source": "card:mehanizm",
+   "source_query": "карточка «mehanizm» — кадр рисуется в облаке, фетч не нужен"
+  },
+  {
+   "id": 22,
+   "start_sec": 215.4,
+   "duration_sec": 10.1,
+   "text": "",
+   "source": "card:zal_kub",
+   "source_query": "карточка «zal_kub» — кадр рисуется в облаке, фетч не нужен"
+  },
+  {
+   "id": 23,
+   "start_sec": 225.5,
+   "duration_sec": 10.6,
+   "text": "",
+   "source": "card:doc",
+   "source_query": "карточка «doc» — кадр рисуется в облаке, фетч не нужен"
+  },
+  {
+   "id": 24,
+   "start_sec": 236.1,
+   "duration_sec": 9.7,
+   "text": "",
+   "source": "card:dof",
+   "source_query": "карточка «dof» — кадр рисуется в облаке, фетч за сценой не идёт",
+   "card": {
+    "kind": "dof",
+    "код": "A64",
+    "watermark": "ПЛАНЕТА",
+    "anim": 9.7
+   }
+  },
+  {
+   "id": 25,
+   "start_sec": 245.8,
+   "duration_sec": 10.9,
+   "text": "",
+   "source": "card:film",
+   "source_query": "карточка «film» — кадр рисуется в облаке, фетч не нужен"
+  },
+  {
+   "id": 26,
+   "start_sec": 256.7,
+   "duration_sec": 10,
+   "text": "",
+   "source": "card:strike",
+   "source_query": "карточка «strike» — кадр рисуется в облаке, фетч не нужен"
+  },
+  {
+   "id": 27,
+   "start_sec": 266.7,
+   "duration_sec": 10.3,
+   "text": "",
+   "source": "card:slope",
+   "source_query": "карточка «slope» — кадр рисуется в облаке, фетч не нужен"
+  },
+  {
+   "id": 28,
+   "start_sec": 277.0,
+   "duration_sec": 9.8,
+   "text": "",
+   "source": "card:tribuna",
+   "source_query": "карточка «tribuna» — кадр рисуется в облаке, фетч не нужен"
+  },
+  {
+   "id": 29,
+   "start_sec": 286.8,
+   "duration_sec": 10.7,
+   "text": "",
+   "source": "card:split",
+   "source_query": "карточка «split» — кадр рисуется в облаке, фетч не нужен"
+  },
+  {
+   "id": 30,
+   "start_sec": 297.5,
+   "duration_sec": 10.2,
+   "text": "",
+   "source": "card:map",
+   "source_query": "карточка «map» — кадр рисуется в облаке, фетч не нужен"
+  },
+  {
+   "id": 31,
+   "start_sec": 307.7,
+   "duration_sec": 9.9,
+   "text": "",
+   "source": "card:photo",
+   "source_query": "карточка «photo» — кадр рисуется в облаке, фетч за сценой не идёт",
+   "card": {
+    "kind": "photo",
+    "lines": [
+     "запас воды",
+     "фонари и повербанки",
+     "свет до 22:00"
+    ],
+    "watermark": "ПЛАНЕТА",
+    "anim": 9.9,
+    "photo": "/mnt/d/media-library/БАЗА/БЫТ-УКРАИНА/ЖИЛЬЦЫ-ЗАРЯЖАЮТ-ТЕЛЕФОНЫ/03_2048x1536.jpg"
+   }
+  },
+  {
+   "id": 32,
+   "start_sec": 317.6,
+   "duration_sec": 10.5,
+   "text": "",
+   "source": "card:bubbles",
+   "source_query": "карточка «bubbles» — кадр рисуется в облаке, фетч не нужен"
+  },
+  {
+   "id": 33,
+   "start_sec": 328.1,
+   "duration_sec": 10.1,
+   "text": "",
+   "source": "card:repliki",
+   "source_query": "карточка «repliki» — кадр рисуется в облаке, фетч не нужен"
+  },
+  {
+   "id": 34,
+   "start_sec": 338.2,
+   "duration_sec": 10.8,
+   "text": "",
+   "source": "card:zal_slova",
+   "source_query": "карточка «zal_slova» — кадр рисуется в облаке, фетч не нужен"
+  },
+  {
+   "id": 35,
+   "start_sec": 349.0,
+   "duration_sec": 9.6,
+   "text": "",
+   "source": "card:zal_efir",
+   "source_query": "карточка «zal_efir» — кадр рисуется в облаке, фетч не нужен"
+  },
+  {
+   "id": 36,
+   "start_sec": 358.6,
+   "duration_sec": 10.4,
+   "text": "",
+   "source": "card:zal_g01",
+   "source_query": "карточка «zal_g01» — кадр рисуется в облаке, фетч не нужен"
+  },
+  {
+   "id": 37,
+   "start_sec": 369.0,
+   "duration_sec": 10,
+   "text": "",
+   "source": "card:zal_g44",
+   "source_query": "карточка «zal_g44» — кадр рисуется в облаке, фетч не нужен"
+  },
+  {
+   "id": 38,
+   "start_sec": 379.0,
+   "duration_sec": 10.6,
+   "text": "",
+   "source": "card:zal_g18",
+   "source_query": "карточка «zal_g18» — кадр рисуется в облаке, фетч не нужен"
+  },
+  {
+   "id": 39,
+   "start_sec": 389.6,
+   "duration_sec": 9.8,
+   "text": "",
+   "source": "card:duel",
+   "source_query": "карточка «duel» — кадр рисуется в облаке, фетч не нужен"
+  },
+  {
+   "id": 40,
+   "start_sec": 399.4,
+   "duration_sec": 10.3,
+   "text": "",
+   "source": "card:zal_makety",
+   "source_query": "карточка «zal_makety» — кадр рисуется в облаке, фетч не нужен"
+  },
+  {
+   "id": 41,
+   "start_sec": 409.7,
+   "duration_sec": 10.7,
+   "text": "",
+   "source": "card:waterfall",
+   "source_query": "карточка «waterfall» — кадр рисуется в облаке, фетч не нужен"
+  },
+  {
+   "id": 42,
+   "start_sec": 420.4,
+   "duration_sec": 9.7,
+   "text": "",
+   "source": "card:marker_serif",
+   "source_query": "карточка «marker_serif» — кадр рисуется в облаке, фетч не нужен"
+  },
+  {
+   "id": 43,
+   "start_sec": 430.1,
+   "duration_sec": 10.2,
+   "text": "",
+   "source": "card:globus_map",
+   "source_query": "карточка «globus_map» — кадр рисуется в облаке, фетч не нужен"
+  },
+  {
+   "id": 44,
+   "start_sec": 440.3,
+   "duration_sec": 10.5,
+   "text": "",
+   "source": "card:dossier",
+   "source_query": "карточка «dossier» — кадр рисуется в облаке, фетч не нужен"
+  },
+  {
+   "id": 45,
+   "start_sec": 450.8,
+   "duration_sec": 10,
+   "text": "",
+   "source": "card:zal_pol",
+   "source_query": "карточка «zal_pol» — кадр рисуется в облаке, фетч не нужен"
+  },
+  {
+   "id": 46,
+   "start_sec": 460.8,
+   "duration_sec": 10.8,
+   "text": "",
+   "source": "card:vyrezka_kontur",
+   "source_query": "карточка «vyrezka_kontur» — кадр рисуется в облаке, фетч не нужен"
+  },
+  {
+   "id": 47,
+   "start_sec": 471.6,
+   "duration_sec": 9.6,
+   "text": "",
+   "source": "card:poster",
+   "source_query": "карточка «poster» — кадр рисуется в облаке, фетч за сценой не идёт",
+   "card": {
+    "kind": "poster",
+    "код": "A6",
+    "title": "Защита как воронка",
+    "watermark": "ПЛАНЕТА",
+    "anim": 9.6
+   }
+  },
+  {
+   "id": 48,
+   "start_sec": 481.2,
+   "duration_sec": 10.4,
+   "text": "",
+   "source": "card:pie",
+   "source_query": "карточка «pie» — кадр рисуется в облаке, фетч не нужен"
+  },
+  {
+   "id": 49,
+   "start_sec": 491.6,
+   "duration_sec": 10.1,
+   "text": "",
+   "source": "card:zal_g48",
+   "source_query": "карточка «zal_g48» — кадр рисуется в облаке, фетч не нужен"
+  },
+  {
+   "id": 50,
+   "start_sec": 501.7,
+   "duration_sec": 10.6,
+   "text": "",
+   "source": "card:line",
+   "source_query": "карточка «line» — кадр рисуется в облаке, фетч не нужен"
+  },
+  {
+   "id": 51,
+   "start_sec": 512.3,
+   "duration_sec": 9.9,
+   "text": "",
+   "source": "card:quote",
+   "source_query": "карточка «quote» — кадр рисуется в облаке, фетч не нужен"
+  },
+  {
+   "id": 52,
+   "start_sec": 522.2,
+   "duration_sec": 10.3,
+   "text": "",
+   "source": "card:network",
+   "source_query": "карточка «network» — кадр рисуется в облаке, фетч не нужен"
+  },
+  {
+   "id": 53,
+   "start_sec": 532.5,
+   "duration_sec": 10.7,
+   "text": "",
+   "source": "card:pull",
+   "source_query": "карточка «pull» — кадр рисуется в облаке, фетч не нужен"
+  },
+  {
+   "id": 54,
+   "start_sec": 543.2,
+   "duration_sec": 9.8,
+   "text": "",
+   "source": "card:device",
+   "source_query": "карточка «device» — кадр рисуется в облаке, фетч не нужен"
+  },
+  {
+   "id": 55,
+   "start_sec": 553.0,
+   "duration_sec": 10.2,
+   "text": "",
+   "source": "card:radar",
+   "source_query": "карточка «radar» — кадр рисуется в облаке, фетч не нужен"
+  },
+  {
+   "id": 56,
+   "start_sec": 563.2,
+   "duration_sec": 10.5,
+   "text": "",
+   "source": "card:relsy",
+   "source_query": "карточка «relsy» — кадр рисуется в облаке, фетч не нужен"
+  },
+  {
+   "id": 57,
+   "start_sec": 573.7,
+   "duration_sec": 10,
+   "text": "",
+   "source": "card:lenta",
+   "source_query": "карточка «lenta» — кадр рисуется в облаке, фетч не нужен"
+  },
+  {
+   "id": 58,
+   "start_sec": 583.7,
+   "duration_sec": 10.8,
+   "text": "",
+   "source": "card:paper_typed",
+   "source_query": "карточка «paper_typed» — кадр рисуется в облаке, фетч не нужен"
+  },
+  {
+   "id": 59,
+   "start_sec": 594.5,
+   "duration_sec": 9.7,
+   "text": "",
+   "source": "card:torn",
+   "source_query": "карточка «torn» — кадр рисуется в облаке, фетч не нужен"
+  },
+  {
+   "id": 60,
+   "start_sec": 604.2,
+   "duration_sec": 10.4,
+   "text": "",
+   "source": "card:paper_hand",
+   "source_query": "карточка «paper_hand» — кадр рисуется в облаке, фетч не нужен"
+  },
+  {
+   "id": 61,
+   "start_sec": 614.6,
+   "duration_sec": 10.1,
+   "text": "",
+   "source": "card:wall",
+   "source_query": "карточка «wall» — кадр рисуется в облаке, фетч за сценой не идёт",
+   "card": {
+    "kind": "wall",
+    "код": "A56",
+    "title": "Что привело к темноте",
+    "watermark": "ПЛАНЕТА",
+    "anim": 10.1
+   }
+  },
+  {
+   "id": 62,
+   "start_sec": 624.7,
+   "duration_sec": 10.6,
+   "text": "",
+   "source": "card:zal_ekran",
+   "source_query": "карточка «zal_ekran» — кадр рисуется в облаке, фетч не нужен"
+  },
+  {
+   "id": 63,
+   "start_sec": 635.3,
+   "duration_sec": 9.9,
+   "text": "",
+   "source": "card:prohod",
+   "source_query": "карточка «prohod» — кадр рисуется в облаке, фетч не нужен"
+  },
+  {
+   "id": 64,
+   "start_sec": 645.2,
+   "duration_sec": 10.3,
+   "text": "",
+   "source": "card:kreslo",
+   "source_query": "карточка «kreslo» — кадр рисуется в облаке, фетч не нужен"
+  },
+  {
+   "id": 65,
+   "start_sec": 655.5,
+   "duration_sec": 10.7,
+   "text": "",
+   "source": "card:map_dist",
+   "source_query": "карточка «map_dist» — кадр рисуется в облаке, фетч не нужен"
+  },
+  {
+   "id": 66,
+   "start_sec": 666.2,
+   "duration_sec": 9.8,
+   "text": "",
+   "source": "card:pechat",
+   "source_query": "карточка «pechat» — кадр рисуется в облаке, фетч не нужен"
+  },
+  {
+   "id": 67,
+   "start_sec": 676.0,
+   "duration_sec": 10.6,
+   "text": "",
+   "source": "card:tape",
+   "source_query": "карточка «tape» — кадр рисуется в облаке, фетч не нужен"
+  }
+ ]
+}
