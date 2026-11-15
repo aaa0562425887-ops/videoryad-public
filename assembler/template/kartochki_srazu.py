@@ -1401,11 +1401,13 @@ def main():
             print("ничего не поставлено (нужен ключ --stavit)")
             return 0
         поставлено, отказы = 0, []
+        _ok_sceny = set()
         for ном, вид, т, кл in назначенные:
             r = subprocess.run([sys.executable, CARD_PUT, a.scenes, str(ном), вид] + кл,
                                capture_output=True, text=True)
             if r.returncode == 0:
                 поставлено += 1
+                _ok_sceny.add(ном)
                 print("  [ОК]    сцена %d → %s" % (ном, вид))
             else:
                 хвост = (r.stderr or r.stdout or "").strip().splitlines()
@@ -1433,9 +1435,9 @@ def main():
         # ответил [ОТКАЗ] и вид остался прежним. Второй прогон снёс 17
         # настоящих записей до трёх, и гейт обязательных рухнул на девяти
         # элементах, которые до того считал закрытыми.
-        _postavleno_sceny = {н for н, *_ in назначенные} if "назначенные" in dir() else set()
-        _зам_журнал = [з for з in _зам_журнал
-                       if not _postavleno_sceny or з.get("сцена") in _postavleno_sceny]
+        # В журнал идут только сцены, которые card_put РЕАЛЬНО поставил:
+        # на отказе вид остаётся прежним, и запись о замене была бы ложью.
+        _зам_журнал = [з for з in _зам_журнал if з.get("сцена") in _ok_sceny]
         if _зам_журнал:
             _путь = os.path.join(_dir, "zameny_vidov.json")
             _было = []
