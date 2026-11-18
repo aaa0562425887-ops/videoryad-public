@@ -1,0 +1,76 @@
+{
+ "1": {
+  "photo": "overlays/scene_001.jpg",
+  "sound": "pop",
+  "at": 2.2,
+  "shape": "rect",
+  "scale": 1.0,
+  "style": "right"
+ },
+ "12": {
+  "photo": "overlays/scene_012.jpg",
+  "sound": "ding",
+  "at": 2.6,
+  "shape": "circle",
+  "scale": 1.0,
+  "style": "up-right"
+ },
+ "16": {
+  "photo": "overlays/scene_016.jpg",
+  "sound": "pop",
+  "at": 2.8,
+  "shape": "rect",
+  "scale": 1.0,
+  "style": "left"
+ },
+ "21": {
+  "photo": "overlays/scene_021.jpg",
+  "sound": "whoosh",
+  "at": 3.0,
+  "shape": "rect",
+  "scale": 1.0,
+  "style": "right"
+ },
+ "40": {
+  "photo": "overlays/scene_040.jpg",
+  "sound": "pop",
+  "at": 3.4,
+  "shape": "rect",
+  "scale": 1.0,
+  "style": "up-right"
+ },
+ "52": {
+  "photo": "overlays/scene_052.jpg",
+  "sound": "whoosh",
+  "at": 3.6,
+  "shape": "rect",
+  "scale": 1.0,
+  "style": "left"
+ },
+ "63": {
+  "photo": "overlays/scene_063.jpg",
+  "sound": "pop",
+  "at": 4.0,
+  "shape": "rect",
+  "scale": 1.2,
+  "style": "right"
+ },
+ "67": {
+  "text": {
+   "words": "ДВА ВЗГЛЯДА",
+   "sub": "версия Михаила Виноградова",
+   "style": "mask_plate",
+   "pos": "ml",
+   "at": 0.5
+  }
+ },
+ "25": {
+  "text": {
+   "words": "КТО ПЛАТИТ",
+   "sub": "PURL и европейские расходы",
+   "style": "mask_plate",
+   "pos": "ml",
+   "at": 0.5
+  }
+ }
+}
