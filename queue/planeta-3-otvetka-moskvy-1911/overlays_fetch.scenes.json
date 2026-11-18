@@ -1,0 +1,84 @@
+{
+ "scenes": [
+  {
+   "id": 1,
+   "start_sec": 0,
+   "duration_sec": 5,
+   "text": "",
+   "source": "press_photo",
+   "source_query": "Писториус Германия оборона заявление"
+  },
+  {
+   "id": 5,
+   "start_sec": 0,
+   "duration_sec": 5,
+   "text": "",
+   "source": "press_photo",
+   "source_query": "Нептун ракета Украина испытания"
+  },
+  {
+   "id": 12,
+   "start_sec": 0,
+   "duration_sec": 5,
+   "text": "",
+   "source": "press_photo",
+   "source_query": "Рамштайн заседание министры обороны"
+  },
+  {
+   "id": 16,
+   "start_sec": 0,
+   "duration_sec": 5,
+   "text": "",
+   "source": "press_photo",
+   "source_query": "Крымский мост спутниковый снимок"
+  },
+  {
+   "id": 21,
+   "start_sec": 0,
+   "duration_sec": 5,
+   "text": "",
+   "source": "press_photo",
+   "source_query": "Виноградов политолог интервью"
+  },
+  {
+   "id": 25,
+   "start_sec": 0,
+   "duration_sec": 5,
+   "text": "",
+   "source": "press_photo",
+   "source_query": "Еврокомиссия заседание представители"
+  },
+  {
+   "id": 40,
+   "start_sec": 0,
+   "duration_sec": 5,
+   "text": "",
+   "source": "press_photo",
+   "source_query": "Зеленский иностранные партнёры встреча"
+  },
+  {
+   "id": 52,
+   "start_sec": 0,
+   "duration_sec": 5,
+   "text": "",
+   "source": "press_photo",
+   "source_query": "Трамп Белый дом заявление"
+  },
+  {
+   "id": 57,
+   "start_sec": 0,
+   "duration_sec": 5,
+   "text": "",
+   "source": "press_photo",
+   "source_query": "Днепровская ГЭС инфраструктура"
+  },
+  {
+   "id": 63,
+   "start_sec": 0,
+   "duration_sec": 5,
+   "text": "",
+   "source": "press_photo",
+   "source_query": "Крымский мост повреждённый пролёт"
+  }
+ ]
+}
