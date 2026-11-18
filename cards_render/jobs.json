@@ -1,0 +1,19 @@
+[
+ {
+  "scene": 46,
+  "view": "zal_g44",
+  "dur": 7.1,
+  "anim": 7.1,
+  "tail_zoom": 0.045,
+  "watermark": "ПЛАНЕТА",
+  "channel": "ПЛАНЕТА",
+  "kwargs": {
+   "channel": "ПЛАНЕТА",
+   "dur": 7.1,
+   "sheets": [],
+   "text": "Выбор переезжает дальше",
+   "value": "?",
+   "watermark": "ПЛАНЕТА"
+  }
+ }
+]
