@@ -320,6 +320,12 @@ def s23(t, dur):
     lit = (win * 1.0 + glow * 0.35) * fl * off
     a += lit[:, :, None] * np.array([215, 150, 70], np.float32)
     img = Image.fromarray(np.clip(a, 0, 255).astype(np.uint8), "RGB")
+    d = ImageDraw.Draw(img)
+    # переплёт окна и штора
+    d.rectangle([(x0 + x1) / 2 - 3, y0, (x0 + x1) / 2 + 3, y1], fill=(18, 16, 18))
+    d.rectangle([x0, (y0 + y1) / 2 - 3, x1, (y0 + y1) / 2 + 3], fill=(18, 16, 18))
+    d.rectangle([x0 - 6, y0 - 6, x1 + 6, y0], fill=(16, 15, 17))
+    d.rectangle([x0 - 6, y1, x1 + 6, y1 + 6], fill=(16, 15, 17))
     img = C.vignette(img, 0.6)
     img = C.over(img, C.caption("Кент, Коннектикут", "29 ноября 2023", None, C.seg(t, 0.6, 1.4))).convert("RGB")
     return C.finish(img, t, dur, fi=0.6, fo=2.0, grain_k=0.05)
