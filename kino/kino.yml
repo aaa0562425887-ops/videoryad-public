@@ -109,7 +109,6 @@ jobs:
         env: {GH_TOKEN: "${{ github.token }}"}
         run: |
           mkdir -p clips
-          find clips_self -name 'kino_*.mp4' -exec cp -f {} clips/ \; 2>/dev/null || true
           IFS=',' read -ra RUNS <<< "${{ github.event.inputs.sborka }}"
           for r in "${RUNS[@]}"; do
             [ "$r" = "self" ] && continue
@@ -117,6 +116,8 @@ jobs:
             gh run download "$r" -R "${{ github.repository }}" -D tmpdl || true
             find tmpdl -name 'kino_*.mp4' -exec cp -f {} clips/ \;
           done
+          # клипы ЭТОГО прогона — поверх всех прежних
+          find clips_self -name 'kino_*.mp4' -exec cp -f {} clips/ \; 2>/dev/null || true
           ls clips
       - name: Сборка и звук
         env:

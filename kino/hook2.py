@@ -488,10 +488,15 @@ def s10(t, dur):
         return C.grain(C.over(img, cap("The Washington Post", "5 марта 2014", "колонка Генри Киссинджера", C.seg(tt, 0.6, 1.4))).convert("RGB"), t, 0.03)
 
     def smysl(tt, d):
-        bg = C.paper(W, H, seed=37, tone=(34, 32, 30)).filter(ImageFilter.GaussianBlur(2))
-        img = C.kb(bg, tt / d, 0.04, 0.5, 0.5)
+        # фон — та же газетная полоса, притушенная и медленно плывущая (пустого кадра нет)
+        if "page" not in B._s10:
+            B._s10["page"] = B.newspaper_page()
+        page = B._s10["page"]
+        pg = page.crop((0, 150, page.size[0], 150 + int(page.size[0] * 9 / 16))).resize((W, H), Image.LANCZOS)
+        img = dark_video(C.kb(pg.filter(ImageFilter.GaussianBlur(2)), tt / d, 0.08, 0.3, 0.3), 0.28)
         k1, k2 = C.seg(tt, c_itog - c_smysl, c_itog - c_smysl + 0.5), C.seg(tt, c_sank - c_smysl, c_sank - c_smysl + 0.5)
-        return C.over(img, word("СНАЧАЛА — ИТОГ", k1, H * 0.42, 150),
+        return C.over(img, C.alpha(word("СМЫСЛ — В НАЗВАНИИ", C.seg(tt, 0.1, 0.5), H * 0.42, 110, "head_l", C.GREY, 0.1), 1 - k1),
+                      word("СНАЧАЛА — ИТОГ", k1, H * 0.42, 150),
                       red_line(C.seg(tt, c_itog - c_smysl + 0.3, c_itog - c_smysl + 1.0), W / 2 - 160, W / 2 + 160, H * 0.42 + 40, 5),
                       word("ПОТОМ — САНКЦИИ", k2, H * 0.42 + 190, 110, "head_l", C.GREY, 0.1))
 
@@ -628,8 +633,10 @@ def s12(t, dur):
         return C.grain(karta(tt, d), t, 0.03)
 
     def spor(tt, d):
-        img = dark_video(karta(tt + (c_bez - c_pol), d, nums=False), 0.4)
-        return C.over(img, word("СПОР О СЛОВАХ", C.seg(tt, c_slov - c_bez, c_slov - c_bez + 0.5), H * 0.42, 150),
+        img = dark_video(karta(tt + (c_bez - c_pol), d, nums=False), 0.78)
+        k0 = C.seg(tt, 0.1, 0.5) * (1 - C.seg(tt, c_slov - c_bez - 0.3, c_slov - c_bez))
+        return C.over(img, word("БЕЗ ЭТОГО ФАКТА", k0, H * 0.42, 110, "head_l", C.GREY, 0.1),
+                      word("СПОР О СЛОВАХ", C.seg(tt, c_slov - c_bez, c_slov - c_bez + 0.5), H * 0.42, 150),
                       red_line(C.seg(tt, c_pam - c_bez - 0.3, c_pam - c_bez + 0.4), W / 2 - 400, W / 2 + 400, H * 0.42 - 50, 9),
                       word("СПОР О ПАМЯТИ", C.seg(tt, c_pam - c_bez, c_pam - c_bez + 0.5), H * 0.42 + 170, 150))
 
