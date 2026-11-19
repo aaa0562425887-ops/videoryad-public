@@ -438,6 +438,7 @@ class Vid:
             stdout=subprocess.PIPE, stderr=subprocess.DEVNULL, bufsize=10 ** 7)
         self.t_open = t
         self.i = -1
+        self.eof = False
 
     def at(self, t):
         if not self.ok:
@@ -447,12 +448,18 @@ class Vid:
             self._open(t)
             want = 0
         w, h = self.size
-        while self.i < want:
+        while self.i < want and not getattr(self, "eof", False):
             raw = self.p.stdout.read(w * h * 3)
             if len(raw) < w * h * 3:
+                self.eof = True          # запись кончилась — держим последний кадр
                 break
             self.last = Image.frombytes("RGB", (w, h), raw)
             self.i += 1
+        if self.last is None and getattr(self, "eof", False) and self.t_open and self.t_open > 0.5:
+            # открылись за концом файла — возьмём последний кадр записи
+            self._open(max(0.0, self.t_open - 2.0))
+            self.eof = False
+            return self.at(t)
         return self.last if self.last is not None else placeholder(self.label, self.size)
 
 

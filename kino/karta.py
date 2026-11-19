@@ -287,6 +287,6 @@ def world(size=(W, H), lon=(-20, 150), lat=(-5, 72)):
     S.TXT = C.WHITE
     S.TXT2 = C.GREY
     S.TXT3 = C.GREY
-    m = dotmap.DotMap(size[0], size[1], lon=lon, lat=lat, step=6, dot=2.0,
-                      color=(76, 78, 84), bg=C.BG)
+    m = dotmap.DotMap(size[0], size[1], lon=lon, lat=lat, step=6, dot=2.3,
+                      color=(104, 106, 114), bg=C.BG)
     return m

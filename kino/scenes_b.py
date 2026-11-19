@@ -286,7 +286,7 @@ def s13(t, dur):
         _s13["v"] = C.Vid(name, CUTS.get("wef_2023_s13", 0.0), size=(1280, 720))
         _s13["name"] = name
     ins = C.scene_info("13")["insert"]
-    img = speech_frame(_s13["v"], t, ins, "Генри Киссинджер", "Давос · видеосвязь из дома", "январь 2023 · о мае 2022", PEREVOD["13"],
+    img = speech_frame(_s13["v"], t, ins, "Генри Киссинджер", "Давос, видеосвязь", "январь 2023", PEREVOD["13"],
                        tag_src="запись Всемирного экономического форума")
     return C.finish(img, t, dur, fi=0.6, fo=0.6, grain_k=0.025)
 
