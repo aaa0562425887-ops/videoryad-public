@@ -1,0 +1,1231 @@
+[
+ {
+  "scene": 3,
+  "view": "sceny.prolog",
+  "mode": "cli",
+  "script": "sceny_cli.py",
+  "dur": 3.5,
+  "channel": "ПЛАНЕТА",
+  "watermark": "ПЛАНЕТА",
+  "cfg": {
+   "view": "prolog",
+   "seconds": 3.5,
+   "fps": 30,
+   "t0": 0.0,
+   "kwargs": {
+    "text": "Они знают. И поднимают ставки",
+    "channel": "ПЛАНЕТА",
+    "watermark": "ПЛАНЕТА",
+    "dur": 3.5
+   }
+  },
+  "kwargs": {
+   "text": "Они знают. И поднимают ставки",
+   "channel": "ПЛАНЕТА",
+   "watermark": "ПЛАНЕТА",
+   "dur": 3.5
+  }
+ },
+ {
+  "scene": 4,
+  "view": "zal_slova",
+  "dur": 10.2,
+  "anim": 2.6,
+  "tail_zoom": 0.045,
+  "watermark": "ПЛАНЕТА",
+  "channel": "ПЛАНЕТА",
+  "kwargs": {
+   "channel": "ПЛАНЕТА",
+   "dur": 10.2,
+   "sheets": [],
+   "text": "Счёт в конце принесут не им",
+   "na_polu": "ПОДПИШИТЕСЬ",
+   "watermark": "ПЛАНЕТА"
+  }
+ },
+ {
+  "scene": 8,
+  "view": "charts.line",
+  "dur": 10.3,
+  "anim": 2.6,
+  "tail_zoom": 0.045,
+  "watermark": "ПЛАНЕТА",
+  "channel": "ПЛАНЕТА",
+  "kwargs": {
+   "x_labels": [
+    "Уверения",
+    "Немного военных",
+    "Нет в боях"
+   ],
+   "series": [
+    {
+     "name": "Позиция Парижа",
+     "values": [
+      1.0,
+      1.0,
+      1.0
+     ]
+    }
+   ],
+   "source": "власти Франции",
+   "sobytiya": true,
+   "watermark": "ПЛАНЕТА"
+  }
+ },
+ {
+  "scene": 13,
+  "view": "doc",
+  "dur": 10.3,
+  "anim": 3.4,
+  "tail_zoom": 0.04,
+  "watermark": "ПЛАНЕТА",
+  "channel": "ПЛАНЕТА",
+  "kwargs": {
+   "text": "Военные уже отправлены, а парламенту новость сообщат, когда он случайно спросит. В этой же схеме фигурировала миссия Gerfaut, официально размещённая в Польше",
+   "mark": "миссия Gerfaut",
+   "stamp": "Польша",
+   "watermark": "ПЛАНЕТА"
+  }
+ },
+ {
+  "scene": 16,
+  "view": "zal_efir",
+  "dur": 11.3,
+  "anim": 2.6,
+  "tail_zoom": 0.045,
+  "watermark": "ПЛАНЕТА",
+  "channel": "ПЛАНЕТА",
+  "kwargs": {
+   "channel": "ПЛАНЕТА",
+   "dur": 11.3,
+   "sheets": [],
+   "text": "Спор, таким образом, переехал",
+   "say": "Теперь министр подтверждает всё открыто",
+   "author": "Жан Ноэль Барро",
+   "role": "министр иностранных дел Франции",
+   "watermark": "ПЛАНЕТА"
+  }
+ },
+ {
+  "scene": 18,
+  "view": "tape",
+  "dur": 8.9,
+  "anim": 2.4,
+  "tail_zoom": 0.04,
+  "watermark": "ПЛАНЕТА",
+  "channel": "ПЛАНЕТА",
+  "kwargs": {
+   "text": "Человек в форме остаётся тем же, техника остаётся той же, территория остаётся той же",
+   "accent": "территория",
+   "watermark": "ПЛАНЕТА"
+  }
+ },
+ {
+  "scene": 19,
+  "view": "paper_typed",
+  "dur": 8.5,
+  "anim": 2.8,
+  "tail_zoom": 0.04,
+  "watermark": "ПЛАНЕТА",
+  "channel": "ПЛАНЕТА",
+  "kwargs": {
+   "text": "Европейская подготовка к столкновению с Россией идёт давно",
+   "watermark": "ПЛАНЕТА"
+  }
+ },
+ {
+  "scene": 20,
+  "view": "film.film_strip",
+  "dur": 17.8,
+  "anim": 17.8,
+  "tail_zoom": 0.045,
+  "watermark": "ПЛАНЕТА",
+  "channel": "ПЛАНЕТА",
+  "kwargs": {
+   "shots": [
+    "cards/photo/card_020.jpg",
+    "cards/photo/card_020_2.jpg",
+    "cards/photo/card_020_3.jpg",
+    "cards/photo/card_020_4.jpg"
+   ],
+   "title": "НАПРАВЛЕНИЮ",
+   "captions": [
+    "Совет-Министров-По",
+    "Совет-Министров-По",
+    "Учения-Нато-Бронет",
+    "Учения-Нато-Бронет"
+   ],
+   "watermark": "ПЛАНЕТА"
+  }
+ },
+ {
+  "scene": 21,
+  "view": "cinematic.dossier",
+  "dur": 10.1,
+  "anim": 10.1,
+  "tail_zoom": 0.045,
+  "watermark": "ПЛАНЕТА",
+  "channel": "ПЛАНЕТА",
+  "kwargs": {
+   "rows": [
+    "Кристен Михал",
+    "должность — премьер-министр Эстонии",
+    "план — цифровые системы за границей",
+    "суть — реестры населения и земли"
+   ],
+   "title": "Кристен Михал",
+   "photo": "cards/photo/card_021.jpg",
+   "stamp": "ПЕРВОИСТОЧНИК",
+   "watermark": "ПЛАНЕТА"
+  }
+ },
+ {
+  "scene": 22,
+  "view": "devices.device_scene",
+  "dur": 11.1,
+  "anim": 2.6,
+  "tail_zoom": 0.045,
+  "watermark": "ПЛАНЕТА",
+  "channel": "ПЛАНЕТА",
+  "kwargs": {
+   "content_path": "cards/photo/card_022.jpg",
+   "items": [
+    "реестры — население, земля, недвижимость",
+    "где — за пределами страны"
+   ],
+   "watermark": "ПЛАНЕТА"
+  }
+ },
+ {
+  "scene": 23,
+  "view": "zal_kub",
+  "dur": 10.7,
+  "anim": 2.6,
+  "tail_zoom": 0.045,
+  "watermark": "ПЛАНЕТА",
+  "channel": "ПЛАНЕТА",
+  "kwargs": {
+   "channel": "ПЛАНЕТА",
+   "dur": 10.7,
+   "sheets": [],
+   "text": "Центры данных Эстонии должны сохраниться",
+   "kick": "Таллин готовит оборону",
+   "watermark": "ПЛАНЕТА"
+  }
+ },
+ {
+  "scene": 24,
+  "view": "zal_g48",
+  "dur": 11.7,
+  "anim": 11.7,
+  "tail_zoom": 0.045,
+  "watermark": "ПЛАНЕТА",
+  "channel": "ПЛАНЕТА",
+  "kwargs": {
+   "channel": "ПЛАНЕТА",
+   "dur": 11.7,
+   "sheets": [],
+   "text": "Вот вам и настоящая цена уверенных речей",
+   "watermark": "ПЛАНЕТА"
+  }
+ },
+ {
+  "scene": 25,
+  "view": "zal_g01",
+  "dur": 9.8,
+  "anim": 9.8,
+  "tail_zoom": 0.045,
+  "watermark": "ПЛАНЕТА",
+  "channel": "ПЛАНЕТА",
+  "kwargs": {
+   "channel": "ПЛАНЕТА",
+   "dur": 9.8,
+   "sheets": [],
+   "text": "Ищут розетку в соседнем помещении",
+   "watermark": "ПЛАНЕТА"
+  }
+ },
+ {
+  "scene": 26,
+  "view": "charts.cartogram",
+  "dur": 14.9,
+  "anim": 14.9,
+  "tail_zoom": 0.045,
+  "watermark": "ПЛАНЕТА",
+  "channel": "ПЛАНЕТА",
+  "kwargs": {
+   "data": [
+    "Эстония",
+    "Латвия",
+    "Литва"
+   ],
+   "title": "Потому что дальше география выходит к до",
+   "mode": "bubble",
+   "watermark": "ПЛАНЕТА"
+  }
+ },
+ {
+  "scene": 27,
+  "view": "sceny.globus_map",
+  "mode": "cli",
+  "script": "sceny_cli.py",
+  "dur": 10.6,
+  "channel": "ПЛАНЕТА",
+  "watermark": "ПЛАНЕТА",
+  "cfg": {
+   "view": "globus",
+   "seconds": 10.6,
+   "fps": 30,
+   "t0": 0.0,
+   "kwargs": {
+    "text": "Для них всё начнётся сразу и рядом",
+    "channel": "ПЛАНЕТА",
+    "watermark": "ПЛАНЕТА",
+    "dur": 10.6,
+    "region": "Эстония"
+   }
+  },
+  "kwargs": {
+   "text": "Для них всё начнётся сразу и рядом",
+   "channel": "ПЛАНЕТА",
+   "watermark": "ПЛАНЕТА",
+   "dur": 10.6,
+   "region": "Эстония"
+  }
+ },
+ {
+  "scene": 29,
+  "view": "charts.cartogram",
+  "dur": 16.0,
+  "anim": 16.0,
+  "tail_zoom": 0.045,
+  "watermark": "ПЛАНЕТА",
+  "channel": "ПЛАНЕТА",
+  "kwargs": {
+   "data": [
+    "Харьюмаа"
+   ],
+   "title": "Резервные базы данных",
+   "level": "region",
+   "admin": "Эстония",
+   "watermark": "ПЛАНЕТА"
+  }
+ },
+ {
+  "scene": 30,
+  "view": "zal_pol",
+  "dur": 9.0,
+  "anim": 2.6,
+  "tail_zoom": 0.045,
+  "watermark": "ПЛАНЕТА",
+  "channel": "ПЛАНЕТА",
+  "kwargs": {
+   "channel": "ПЛАНЕТА",
+   "dur": 9.0,
+   "sheets": [],
+   "text": "Решили пойти против России",
+   "na_polu": "ЕДИНСТВО",
+   "watermark": "ПЛАНЕТА"
+  }
+ },
+ {
+  "scene": 31,
+  "view": "bars",
+  "dur": 9.6,
+  "anim": 9.6,
+  "tail_zoom": 0.0,
+  "watermark": "ПЛАНЕТА",
+  "channel": "ПЛАНЕТА",
+  "kwargs": {},
+  "mode": "cli",
+  "script": "build_chart_bars.py",
+  "cfg": {
+   "title": "Уровень последствий",
+   "caption": "",
+   "seconds": 9.6,
+   "bars": [
+    {
+     "label": "ЭКОНОМИКА",
+     "value": 0.2,
+     "color": "4A90E2"
+    },
+    {
+     "label": "ПРАВИТЕЛЬСТВО",
+     "value": 0.25,
+     "color": "48BB78"
+    },
+    {
+     "label": "ЭЛЕКТРОСТАНЦИЯ",
+     "value": 0.2,
+     "color": "84848A"
+    },
+    {
+     "label": "ПРЯМАЯ ВОЙНА",
+     "value": 0.95,
+     "color": "E8E8E8"
+    }
+   ]
+  }
+ },
+ {
+  "scene": 32,
+  "view": "charts.cartogram",
+  "dur": 9.5,
+  "anim": 9.5,
+  "tail_zoom": 0.045,
+  "watermark": "ПЛАНЕТА",
+  "channel": "ПЛАНЕТА",
+  "kwargs": {
+   "data": [
+    "Эстония",
+    "Латвия",
+    "Литва"
+   ],
+   "title": "Страны может не остаться",
+   "watermark": "ПЛАНЕТА"
+  }
+ },
+ {
+  "scene": 33,
+  "view": "slider",
+  "dur": 7.8,
+  "anim": 7.8,
+  "tail_zoom": 0.0,
+  "watermark": "ПЛАНЕТА",
+  "channel": "ПЛАНЕТА",
+  "kwargs": {},
+  "mode": "cli",
+  "script": "build_chart_slider.py",
+  "cfg": {
+   "title": "Соизмеримость сил",
+   "min": 0.0,
+   "max": 100.0,
+   "low": 0.0,
+   "high": 15.0,
+   "marker_value": 12.0,
+   "marker_display": "12",
+   "seconds": 7.8,
+   "range_label": "РАЗБРОС ОЦЕНОК",
+   "caption": "Собственная сила несоизмерима со ставками",
+   "source": ""
+  }
+ },
+ {
+  "scene": 34,
+  "view": "sceny.mehanizm",
+  "mode": "cli",
+  "script": "sceny_cli.py",
+  "dur": 8.5,
+  "channel": "ПЛАНЕТА",
+  "watermark": "ПЛАНЕТА",
+  "cfg": {
+   "view": "mehanizm",
+   "seconds": 8.5,
+   "fps": 30,
+   "t0": 0.0,
+   "kwargs": {
+    "text": "Пятая статья НАТО не снабжена колёсами",
+    "channel": "ПЛАНЕТА",
+    "watermark": "ПЛАНЕТА",
+    "dur": 8.5,
+    "pary": [
+     "Союзники>не полезут"
+    ]
+   }
+  },
+  "kwargs": {
+   "text": "Пятая статья НАТО не снабжена колёсами",
+   "channel": "ПЛАНЕТА",
+   "watermark": "ПЛАНЕТА",
+   "dur": 8.5,
+   "pary": [
+    "Союзники>не полезут"
+   ]
+  }
+ },
+ {
+  "scene": 35,
+  "view": "charts.map_dist",
+  "dur": 10.5,
+  "anim": 2.6,
+  "tail_zoom": 0.045,
+  "watermark": "ПЛАНЕТА",
+  "channel": "ПЛАНЕТА",
+  "kwargs": {
+   "points": [
+    {
+     "label": "Таллин",
+     "lat": 59.437,
+     "lon": 24.754,
+     "accent": false
+    },
+    {
+     "label": "Москва",
+     "lat": 55.751,
+     "lon": 37.617,
+     "accent": true
+    }
+   ],
+   "title": "Расстояние не изменить",
+   "admin": "Эстония",
+   "place": "Таллин",
+   "watermark": "ПЛАНЕТА"
+  }
+ },
+ {
+  "scene": 36,
+  "view": "cinematic.evidence_wall",
+  "dur": 8.1,
+  "anim": 8.1,
+  "tail_zoom": 0.0,
+  "watermark": "ПЛАНЕТА",
+  "channel": "ПЛАНЕТА",
+  "kwargs": {
+   "shots": [
+    [
+     "cards/photo/card_036.jpg",
+     240,
+     380,
+     -4,
+     "Threod Systems"
+    ],
+    [
+     "cards/photo/card_036_2.jpg",
+     800,
+     380,
+     3,
+     "KAPO расследует"
+    ],
+    [
+     "cards/photo/card_036_3.jpg",
+     1360,
+     380,
+     -2,
+     "Производство дронов"
+    ]
+   ],
+   "title": "Показательная история",
+   "watermark": "ПЛАНЕТА"
+  },
+  "mode": "frame"
+ },
+ {
+  "scene": 38,
+  "view": "zal_shkala",
+  "dur": 15.8,
+  "anim": 2.6,
+  "tail_zoom": 0.045,
+  "watermark": "ПЛАНЕТА",
+  "channel": "ПЛАНЕТА",
+  "kwargs": {
+   "channel": "ПЛАНЕТА",
+   "dur": 15.8,
+   "sheets": [],
+   "text": "Не одна компания в зоне внимания",
+   "value": "10",
+   "value_sub": "предприятий отрасли",
+   "watermark": "ПЛАНЕТА"
+  }
+ },
+ {
+  "scene": 39,
+  "view": "vyrezka.gazeta",
+  "dur": 11.8,
+  "anim": 2.6,
+  "tail_zoom": 0.045,
+  "watermark": "ПЛАНЕТА",
+  "channel": "ПЛАНЕТА",
+  "kwargs": {
+   "photo": "cards/photo/card_039.jpg",
+   "author": "Кристен Михал",
+   "role": "премьер-министр Эстонии",
+   "kick": "Закрытие переходов с Россией",
+   "watermark": "ПЛАНЕТА"
+  }
+ },
+ {
+  "scene": 40,
+  "view": "strike",
+  "dur": 7.2,
+  "anim": 3.0,
+  "tail_zoom": 0.045,
+  "watermark": "ПЛАНЕТА",
+  "channel": "ПЛАНЕТА",
+  "kwargs": {
+   "text": "Ответ выглядит внушительно и для заголовка подходит прекрасно",
+   "struck": "Ответ выглядит внушительно и",
+   "fix": "границу закрываем",
+   "watermark": "ПЛАНЕТА"
+  }
+ },
+ {
+  "scene": 41,
+  "view": "vyrezka.figura",
+  "dur": 10.3,
+  "anim": 2.6,
+  "tail_zoom": 0.045,
+  "watermark": "ПЛАНЕТА",
+  "channel": "ПЛАНЕТА",
+  "kwargs": {
+   "photo": "cards/photo/card_041.jpg",
+   "author": "Юлле Мадизе",
+   "role": "президент Эстонии",
+   "kick": "Юлле Мадизе о шлагбауме",
+   "watermark": "ПЛАНЕТА"
+  }
+ },
+ {
+  "scene": 42,
+  "view": "split",
+  "dur": 15.3,
+  "anim": 2.6,
+  "tail_zoom": 0.045,
+  "watermark": "ПЛАНЕТА",
+  "channel": "ПЛАНЕТА",
+  "kwargs": {
+   "text": "Закрытие границы не предотвратило бы нападения на оборонные предприятия",
+   "author": "Юлле Мадизе",
+   "role": "президент Эстонии",
+   "photo": "cards/photo/card_042.jpg",
+   "watermark": "ПЛАНЕТА"
+  }
+ },
+ {
+  "scene": 43,
+  "view": "poster.poster",
+  "dur": 11.7,
+  "anim": 11.7,
+  "tail_zoom": 0.0,
+  "watermark": "ПЛАНЕТА",
+  "channel": "ПЛАНЕТА",
+  "kwargs": {
+   "title": "Инструкция по применению",
+   "hero_photo": "cards/photo/card_043.jpg",
+   "bottom": "Предупреждение честное",
+   "facts": [
+    {
+     "label": "Лекарство",
+     "value": "не от этой болезни"
+    },
+    {
+     "label": "Последствия",
+     "value": "вполне настоящие"
+    }
+   ],
+   "watermark": "ПЛАНЕТА"
+  },
+  "mode": "frame"
+ },
+ {
+  "scene": 44,
+  "view": "charts.pie",
+  "dur": 8.0,
+  "anim": 8.0,
+  "tail_zoom": 0.045,
+  "watermark": "ПЛАНЕТА",
+  "channel": "ПЛАНЕТА",
+  "kwargs": {
+   "segments": [
+    {
+     "label": "Родители",
+     "value": 33.333333333333336
+    },
+    {
+     "label": "Дети",
+     "value": 33.333333333333336
+    },
+    {
+     "label": "Родственники",
+     "value": 33.333333333333336
+    }
+   ],
+   "title": "Поездки прекратятся",
+   "sobytiya": true,
+   "watermark": "ПЛАНЕТА"
+  }
+ },
+ {
+  "scene": 45,
+  "view": "quote",
+  "dur": 6.6,
+  "anim": 2.6,
+  "tail_zoom": 0.045,
+  "watermark": "ПЛАНЕТА",
+  "channel": "ПЛАНЕТА",
+  "kwargs": {
+   "text": "Угроза оборонным предприятиям при этом никуда не денется",
+   "accent": "предприятиям",
+   "watermark": "ПЛАНЕТА"
+  }
+ },
+ {
+  "scene": 46,
+  "view": "sceny.relsy",
+  "mode": "cli",
+  "script": "sceny_cli.py",
+  "dur": 7.8,
+  "channel": "ПЛАНЕТА",
+  "watermark": "ПЛАНЕТА",
+  "cfg": {
+   "view": "relsy",
+   "seconds": 7.8,
+   "fps": 30,
+   "t0": 0.0,
+   "kwargs": {
+    "text": "То же решение",
+    "channel": "ПЛАНЕТА",
+    "watermark": "ПЛАНЕТА",
+    "dur": 7.8,
+    "sobytiya": [
+     "Эстония закрывает",
+     "Литва присматривается"
+    ]
+   }
+  },
+  "kwargs": {
+   "text": "То же решение",
+   "channel": "ПЛАНЕТА",
+   "watermark": "ПЛАНЕТА",
+   "dur": 7.8,
+   "sobytiya": [
+    "Эстония закрывает",
+    "Литва присматривается"
+   ]
+  }
+ },
+ {
+  "scene": 47,
+  "view": "sceny.tribuna",
+  "mode": "cli",
+  "script": "sceny_cli.py",
+  "dur": 12.0,
+  "channel": "ПЛАНЕТА",
+  "watermark": "ПЛАНЕТА",
+  "cfg": {
+   "view": "tribuna",
+   "seconds": 12.0,
+   "fps": 30,
+   "t0": 0.0,
+   "kwargs": {
+    "text": "У Вильнюса имеется Калининградский транзит",
+    "channel": "ПЛАНЕТА",
+    "watermark": "ПЛАНЕТА",
+    "dur": 12.0,
+    "role": "президент Литвы"
+   }
+  },
+  "kwargs": {
+   "text": "У Вильнюса имеется Калининградский транзит",
+   "channel": "ПЛАНЕТА",
+   "watermark": "ПЛАНЕТА",
+   "dur": 12.0,
+   "role": "президент Литвы"
+  }
+ },
+ {
+  "scene": 48,
+  "view": "charts.network",
+  "dur": 11.2,
+  "anim": 11.2,
+  "tail_zoom": 0.045,
+  "watermark": "ПЛАНЕТА",
+  "channel": "ПЛАНЕТА",
+  "kwargs": {
+   "nodes": [
+    {
+     "id": "Литва",
+     "label": "Литва",
+     "weight": 2.0
+    },
+    {
+     "id": "Калининград",
+     "label": "Калининград",
+     "weight": 1.0
+    },
+    {
+     "id": "Россия",
+     "label": "Россия",
+     "weight": 1.0
+    }
+   ],
+   "links": [
+    {
+     "from": "Литва",
+     "to": "Калининград",
+     "weight": 1.0
+    },
+    {
+     "from": "Литва",
+     "to": "Россия",
+     "weight": 1.0
+    }
+   ],
+   "title": "Маршруты не исчезли",
+   "watermark": "ПЛАНЕТА"
+  }
+ },
+ {
+  "scene": 49,
+  "view": "film.film_single",
+  "dur": 8.1,
+  "anim": 2.6,
+  "tail_zoom": 0.045,
+  "watermark": "ПЛАНЕТА",
+  "channel": "ПЛАНЕТА",
+  "kwargs": {
+   "photo": "cards/photo/card_049.jpg",
+   "title": "Польша у границы с Калининградом",
+   "watermark": "ПЛАНЕТА"
+  }
+ },
+ {
+  "scene": 50,
+  "view": "torn_split.torn_split",
+  "dur": 14.6,
+  "anim": 2.6,
+  "tail_zoom": 0.045,
+  "watermark": "ПЛАНЕТА",
+  "channel": "ПЛАНЕТА",
+  "kwargs": {
+   "a_path": "cards/photo/card_050.jpg",
+   "b_path": "cards/photo/card_050_2.jpg",
+   "title": "Операция под чужим флагом",
+   "watermark": "ПЛАНЕТА"
+  }
+ },
+ {
+  "scene": 51,
+  "view": "zal_schetchik",
+  "dur": 10.2,
+  "anim": 2.6,
+  "tail_zoom": 0.045,
+  "watermark": "ПЛАНЕТА",
+  "channel": "ПЛАНЕТА",
+  "kwargs": {
+   "channel": "ПЛАНЕТА",
+   "dur": 10.2,
+   "sheets": [],
+   "text": "Польша утверждает: замысел сорван",
+   "value": "1",
+   "value_sub": "операция",
+   "watermark": "ПЛАНЕТА"
+  }
+ },
+ {
+  "scene": 52,
+  "view": "sceny.prohod",
+  "mode": "cli",
+  "script": "sceny_cli.py",
+  "dur": 9.8,
+  "channel": "ПЛАНЕТА",
+  "watermark": "ПЛАНЕТА",
+  "cfg": {
+   "view": "prohod",
+   "seconds": 9.8,
+   "fps": 30,
+   "t0": 0.0,
+   "kwargs": {
+    "text": "Описание плана кинематографично",
+    "channel": "ПЛАНЕТА",
+    "watermark": "ПЛАНЕТА",
+    "dur": 9.8,
+    "tezisy": [
+     "Цель",
+     "Направление",
+     "Роли мнимых диверсантов",
+     "Результат"
+    ]
+   }
+  },
+  "kwargs": {
+   "text": "Описание плана кинематографично",
+   "channel": "ПЛАНЕТА",
+   "watermark": "ПЛАНЕТА",
+   "dur": 9.8,
+   "tezisy": [
+    "Цель",
+    "Направление",
+    "Роли мнимых диверсантов",
+    "Результат"
+   ]
+  }
+ },
+ {
+  "scene": 53,
+  "view": "photo",
+  "dur": 13.1,
+  "anim": 13.1,
+  "tail_zoom": 0.0,
+  "watermark": "ПЛАНЕТА",
+  "channel": "ПЛАНЕТА",
+  "kwargs": {
+   "kick": "Польша · операция",
+   "watermark": "ПЛАНЕТА",
+   "photo": "cards/photo/card_053.jpg",
+   "lines": [
+    "Кто готовил нападение — не уточняется",
+    "Где задержаны исполнители — не уточняется",
+    "Каким способом остановили — не уточняется"
+   ]
+  }
+ },
+ {
+  "scene": 54,
+  "view": "charts.slope",
+  "dur": 8.4,
+  "anim": 2.6,
+  "tail_zoom": 0.045,
+  "watermark": "ПЛАНЕТА",
+  "channel": "ПЛАНЕТА",
+  "kwargs": {
+   "items": [
+    {
+     "label": "Сценарий",
+     "from": 1.0,
+     "to": 1.0,
+     "to_label": "Развязка"
+    },
+    {
+     "label": "Угроза",
+     "from": 1.0,
+     "to": 1.0,
+     "to_label": "Молчание"
+    }
+   ],
+   "left_label": "Показано",
+   "right_label": "Скрыто",
+   "title": "Польское усиление остаётся",
+   "source": "СМИ",
+   "sobytiya": true,
+   "watermark": "ПЛАНЕТА"
+  }
+ },
+ {
+  "scene": 55,
+  "view": "cinematic.depth_of_field",
+  "dur": 13.7,
+  "anim": 13.7,
+  "tail_zoom": 0.0,
+  "watermark": "ПЛАНЕТА",
+  "channel": "ПЛАНЕТА",
+  "kwargs": {
+   "photo": "cards/photo/card_055.jpg",
+   "kick": "Инструкторы · границы · признание",
+   "title": "Не случайные эпизоды",
+   "watermark": "ПЛАНЕТА"
+  },
+  "mode": "frame"
+ },
+ {
+  "scene": 56,
+  "view": "charts.waterfall",
+  "dur": 11.1,
+  "anim": 11.1,
+  "tail_zoom": 0.045,
+  "watermark": "ПЛАНЕТА",
+  "channel": "ПЛАНЕТА",
+  "kwargs": {
+   "start": {
+    "label": "Франция",
+    "value": 1.0
+   },
+   "steps": [
+    {
+     "label": "Эстония",
+     "value": 1.0
+    },
+    {
+     "label": "Польша",
+     "value": 1.0
+    },
+    {
+     "label": "Литва",
+     "value": 1.0
+    }
+   ],
+   "end": {
+    "label": "ИТОГ"
+   },
+   "title": "Процесс набирает скорость",
+   "sobytiya": true,
+   "watermark": "ПЛАНЕТА"
+  }
+ },
+ {
+  "scene": 57,
+  "view": "zal_g18",
+  "dur": 16.6,
+  "anim": 16.6,
+  "tail_zoom": 0.045,
+  "watermark": "ПЛАНЕТА",
+  "channel": "ПЛАНЕТА",
+  "kwargs": {
+   "channel": "ПЛАНЕТА",
+   "dur": 16.6,
+   "sheets": [],
+   "text": "Союзники не собрали цель",
+   "value": "70 МЛРД ДОЛЛАРОВ",
+   "watermark": "ПЛАНЕТА"
+  }
+ },
+ {
+  "scene": 59,
+  "view": "zal_g44",
+  "dur": 7.1,
+  "anim": 7.1,
+  "tail_zoom": 0.045,
+  "watermark": "ПЛАНЕТА",
+  "channel": "ПЛАНЕТА",
+  "kwargs": {
+   "channel": "ПЛАНЕТА",
+   "dur": 7.1,
+   "sheets": [],
+   "text": "Сумма уже согласована",
+   "value": "70 МЛРД",
+   "watermark": "ПЛАНЕТА"
+  }
+ },
+ {
+  "scene": 60,
+  "view": "paper_hand",
+  "dur": 4.4,
+  "anim": 2.8,
+  "tail_zoom": 0.04,
+  "watermark": "ПЛАНЕТА",
+  "channel": "ПЛАНЕТА",
+  "kwargs": {
+   "text": "Получается знакомая европейская конструкция. Инструкторов отправили",
+   "watermark": "ПЛАНЕТА"
+  }
+ },
+ {
+  "scene": 63,
+  "view": "zal",
+  "dur": 6.0,
+  "anim": 2.6,
+  "tail_zoom": 0.045,
+  "watermark": "ПЛАНЕТА",
+  "channel": "ПЛАНЕТА",
+  "kwargs": {
+   "text": "Подготовка становится всё материальнее",
+   "words": [
+    "КУРС"
+   ],
+   "sheets": [
+    "Инструкторы",
+    "Закрытие границ",
+    "Резервные серверы",
+    "Военные закупки",
+    "Оборонные заводы",
+    "Эвакуация систем"
+   ],
+   "channel": "ПЛАНЕТА",
+   "dur": 6.0,
+   "watermark": "ПЛАНЕТА"
+  }
+ },
+ {
+  "scene": 64,
+  "view": "sceny.pechat",
+  "mode": "cli",
+  "script": "sceny_cli.py",
+  "dur": 13.7,
+  "channel": "ПЛАНЕТА",
+  "watermark": "ПЛАНЕТА",
+  "cfg": {
+   "view": "pechat",
+   "seconds": 13.7,
+   "fps": 30,
+   "t0": 0.0,
+   "kwargs": {
+    "text": "Уязвимые страны держатся без страха",
+    "channel": "ПЛАНЕТА",
+    "watermark": "ПЛАНЕТА",
+    "dur": 13.7,
+    "stamp": "СЕКРЕТНО"
+   }
+  },
+  "kwargs": {
+   "text": "Уязвимые страны держатся без страха",
+   "channel": "ПЛАНЕТА",
+   "watermark": "ПЛАНЕТА",
+   "dur": 13.7,
+   "stamp": "СЕКРЕТНО"
+  }
+ },
+ {
+  "scene": 65,
+  "view": "sceny.kreslo",
+  "mode": "cli",
+  "script": "sceny_cli.py",
+  "dur": 13.4,
+  "channel": "ПЛАНЕТА",
+  "watermark": "ПЛАНЕТА",
+  "cfg": {
+   "view": "kreslo",
+   "seconds": 13.4,
+   "fps": 30,
+   "t0": 0.0,
+   "kwargs": {
+    "text": "Планы допускают потерю территории",
+    "channel": "ПЛАНЕТА",
+    "watermark": "ПЛАНЕТА",
+    "dur": 13.4,
+    "role": "правительство в изгнании"
+   }
+  },
+  "kwargs": {
+   "text": "Планы допускают потерю территории",
+   "channel": "ПЛАНЕТА",
+   "watermark": "ПЛАНЕТА",
+   "dur": 13.4,
+   "role": "правительство в изгнании"
+  }
+ },
+ {
+  "scene": 66,
+  "view": "duel",
+  "dur": 11.7,
+  "anim": 3.2,
+  "tail_zoom": 0.035,
+  "watermark": "ПЛАНЕТА",
+  "channel": "ПЛАНЕТА",
+  "kwargs": {
+   "top": {
+    "who": "",
+    "text": "Большая европейская война не включается одной кнопкой после слов французского министра",
+    "accent": null,
+    "source": ""
+   },
+   "bottom": {
+    "who": "",
+    "text": "Её не запускает отдельно один поджог",
+    "accent": null,
+    "source": ""
+   },
+   "watermark": "ПЛАНЕТА"
+  }
+ },
+ {
+  "scene": 67,
+  "view": "sceny.lenta",
+  "mode": "cli",
+  "script": "sceny_cli.py",
+  "dur": 5.2,
+  "channel": "ПЛАНЕТА",
+  "watermark": "ПЛАНЕТА",
+  "cfg": {
+   "view": "lenta",
+   "seconds": 5.2,
+   "fps": 30,
+   "t0": 0.0,
+   "kwargs": {
+    "text": "Она приближается иначе",
+    "channel": "ПЛАНЕТА",
+    "watermark": "ПЛАНЕТА",
+    "dur": 5.2,
+    "soobshcheniya": [
+     "Вчерашние крайние варианты входят в госпланы",
+     "Процесс набирает ход"
+    ]
+   }
+  },
+  "kwargs": {
+   "text": "Она приближается иначе",
+   "channel": "ПЛАНЕТА",
+   "watermark": "ПЛАНЕТА",
+   "dur": 5.2,
+   "soobshcheniya": [
+    "Вчерашние крайние варианты входят в госпланы",
+    "Процесс набирает ход"
+   ]
+  }
+ },
+ {
+  "scene": 68,
+  "view": "zal_ekran",
+  "dur": 6.9,
+  "anim": 6.9,
+  "tail_zoom": 0.045,
+  "watermark": "ПЛАНЕТА",
+  "channel": "ПЛАНЕТА",
+  "kwargs": {
+   "channel": "ПЛАНЕТА",
+   "dur": 6.9,
+   "sheets": [],
+   "text": "Это повседневная повестка",
+   "say": "Тайное военное присутствие становится официальным",
+   "author": "Жан Ноэль Барро",
+   "role": "министр иностранных дел Франции",
+   "source": "французское телевидение",
+   "watermark": "ПЛАНЕТА"
+  }
+ },
+ {
+  "scene": 69,
+  "view": "marker_serif",
+  "dur": 11.3,
+  "anim": 2.6,
+  "tail_zoom": 0.045,
+  "watermark": "ПЛАНЕТА",
+  "channel": "ПЛАНЕТА",
+  "kwargs": {
+   "text": "Поэтому к руководителям стран Балтии остаётся прямой вопрос",
+   "accent": "Балтии",
+   "watermark": "ПЛАНЕТА"
+  }
+ },
+ {
+  "scene": 70,
+  "view": "sceny.repliki",
+  "mode": "cli",
+  "script": "sceny_cli.py",
+  "dur": 16.7,
+  "channel": "ПЛАНЕТА",
+  "watermark": "ПЛАНЕТА",
+  "cfg": {
+   "view": "repliki",
+   "seconds": 16.7,
+   "fps": 30,
+   "t0": 0.0,
+   "kwargs": {
+    "text": "Остаётся прямой вопрос",
+    "channel": "ПЛАНЕТА",
+    "watermark": "ПЛАНЕТА",
+    "dur": 16.7,
+    "repliki_": [
+     "Автор|Готовите системы к бегству?",
+     "Автор|Цену заплатит кто угодно?",
+     "Зритель|Напишите в комментариях",
+     "Автор|На что рассчитана уверенность?"
+    ]
+   }
+  },
+  "kwargs": {
+   "text": "Остаётся прямой вопрос",
+   "channel": "ПЛАНЕТА",
+   "watermark": "ПЛАНЕТА",
+   "dur": 16.7,
+   "repliki_": [
+    "Автор|Готовите системы к бегству?",
+    "Автор|Цену заплатит кто угодно?",
+    "Зритель|Напишите в комментариях",
+    "Автор|На что рассчитана уверенность?"
+   ]
+  }
+ },
+ {
+  "scene": 71,
+  "view": "pull",
+  "dur": 14.04,
+  "anim": 2.6,
+  "tail_zoom": 0.05,
+  "watermark": "ПЛАНЕТА",
+  "channel": "ПЛАНЕТА",
+  "kwargs": {
+   "text": "Союзники могут обещать помощь, министры могут произносить грозные речи, а чиновники могут заранее копировать реестры",
+   "accent": "чиновники",
+   "watermark": "ПЛАНЕТА"
+  }
+ }
+]
