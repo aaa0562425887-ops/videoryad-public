@@ -220,7 +220,7 @@ ECON_LINES = ["Два дня разговора, восемь часов.",
 def s22(t, dur):
     if "v" not in _s22:
         name = "economist_2023.mp4" if os.path.exists(C.apath("economist_2023.mp4")) else "kissinger_100_2023.mp4"
-        _s22["v"] = C.Vid(name, CUTS.get(name, 0.0), size=(1152, 648))
+        _s22["v"] = C.Vid(name, CUTS.get(name, 0.0), size=(1152, 648), zoom=1.18, cx=1.0, cy=0.0)
         _s22["name"] = name
     ins = C.scene_info("22")["insert"]
     # панель эфира заполняет кадр: слева запись, справа расшифровка бежит
