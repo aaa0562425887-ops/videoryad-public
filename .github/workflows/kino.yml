@@ -13,7 +13,10 @@ on:
         description: "расшифровать звук: файл:язык через запятую (пусто — нет)"
         default: ""
       sborka:
-        description: "собрать фильм из клипов этих прогонов (run_id через запятую, поздние поверх ранних; пусто — нет)"
+        description: "собрать фильм из клипов этих прогонов (run_id через запятую, поздние поверх ранних; self — клипы этого же прогона; пусто — нет)"
+        default: ""
+      otrezok:
+        description: "собрать только эти сцены подряд (01,02,03,04 — первая минута); пусто — весь фильм"
         default: ""
 concurrency:
   group: kino-${{ github.run_id }}
@@ -80,7 +83,8 @@ jobs:
           path: tr/*.json
           retention-days: 2
   sborka:
-    if: github.event.inputs.sborka != ''
+    needs: [clip]
+    if: ${{ always() && github.event.inputs.sborka != '' && needs.clip.result != 'failure' }}
     runs-on: ubuntu-latest
     timeout-minutes: 90
     steps:
@@ -97,12 +101,18 @@ jobs:
           os.symlink(p, os.path.expanduser("~/.local/bin/ffmpeg"))
           EOF
           sudo apt-get install -y -qq fonts-liberation >/dev/null 2>&1 || true
+      - name: Клипы этого же прогона
+        if: contains(github.event.inputs.sborka, 'self')
+        uses: actions/download-artifact@v4
+        with: {path: clips_self, pattern: "kino-*", merge-multiple: true}
       - name: Клипы из прогонов
         env: {GH_TOKEN: "${{ github.token }}"}
         run: |
           mkdir -p clips
+          find clips_self -name 'kino_*.mp4' -exec cp -f {} clips/ \; 2>/dev/null || true
           IFS=',' read -ra RUNS <<< "${{ github.event.inputs.sborka }}"
           for r in "${RUNS[@]}"; do
+            [ "$r" = "self" ] && continue
             rm -rf tmpdl; mkdir tmpdl
             gh run download "$r" -R "${{ github.repository }}" -D tmpdl || true
             find tmpdl -name 'kino_*.mp4' -exec cp -f {} clips/ \;
@@ -111,6 +121,7 @@ jobs:
       - name: Сборка и звук
         env:
           KINO_ARCHIV: ${{ github.workspace }}/kino/archiv
+          KINO_SCENES: ${{ github.event.inputs.otrezok }}
         run: |
           cd kino
           python3 sborka.py "$GITHUB_WORKSPACE/clips" golos/golos.mp3 golos/golos.srt "$GITHUB_WORKSPACE/film_golos.mp4"

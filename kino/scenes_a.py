@@ -20,83 +20,6 @@ def scene(sid):
     return deco
 
 
-# ───────────────────────── 01 · Лист на столе ─────────────────────────
-_s01 = {}
-
-
-@scene("01")
-def s01(t, dur):
-    """лист висит на двух тросах посреди зала, опускается с потолка; камера
-    идёт к нему, пока строка не заполнит кадр; красная черта — на реплике"""
-    cam = ZK.Cam(x=0.0, y=1.30, z=C.lerp(0.0, 6.3, C.smoother(t / dur)))
-    img = ZK.hall(cam)
-    k_fall = C.out_back(C.seg(t, 0.4, 2.6)) if hasattr(C, "out_back") else C.out_cubic(C.seg(t, 0.4, 2.6))
-    red = C.seg(t, C.cue("01", "а взамен получает", 11.5), C.cue("01", "а взамен получает", 11.5) + 1.6)
-    key = round(red, 2)
-    if key not in _s01:
-        _s01[key] = ZK.sheet_tex(["Донбасс", "в обмен на НАТО"], fsize=118, kind="serif_b",
-                                 title="Абу-Даби · проект", red_line=red)
-    tex = _s01[key]
-    sw, sh, cz = 2.3, 1.63, 9.0
-    cy = 1.30 + (1 - k_fall) * 4.2
-    sway = (1 - C.seg(t, 2.6, 6.0)) * 0.05 * math.sin(t * 3.1)
-    c = ZK.Z.quad((0.0, cy, cz), sw, sh, yaw=sway, roll=sway * 0.4)
-    ZK.Z.wire(img, cam, (c[0][0] + 0.15, c[0][1], c[0][2]))
-    ZK.Z.wire(img, cam, (c[1][0] - 0.15, c[1][1], c[1][2]))
-    ZK.Z.floor_shadow(img, cam, c, tex)
-    ZK.Z.paste_quad(img, tex, [cam.proj(p) for p in c])
-    img = ZK.Z.embers(img, cam, ZK.Z.cluster(2.4, 0.3, 10.5, 0.5, 3, 1) + ZK.Z.cluster(-2.6, 0.25, 12.5, 0.45, 3, 2), t)
-    img = img.convert("RGB")
-    img = C.vignette(img, 0.3)
-    return C.finish(img, t, dur, fi=1.2, fo=0.8, grain_k=0.025)
-
-
-# ───────────────────────── 02 · Линия, которая будет двигаться ─────────────────────────
-@scene("02")
-def s02(t, dur):
-    base = K.base()
-    # медленный наезд на восток
-    zoom = 0.10 * C.smoother(t / dur)
-    base = C.kb(base, 1.0, zoom, 0.68, 0.55)
-    k_line = C.seg(t, 1.0, 7.5)
-    lay = [K.line_layer(K.LINE_NOW, k_line, dash=(16, 10), width=5)]
-    # после прорисовки линия перестаёт пунктирить — становится сплошной
-    k_cities = C.seg(t, 4.0, 6.0)
-    lay.append(K.city_layer(["Киев", "Харьков", "Донецк", "Луганск", "Запорожье", "Херсон"],
-                            k_cities, side={"Херсон": "l"}))
-    lay.append(K.date_tag("2026", C.seg(t, 7.0, 8.2), sub="линия фронта"))
-    # окно карты сдвинулось зумом — слои тоже надо сдвинуть: проще рисовать их в том же зуме
-    img = C.over(base, *[C.kb(l, 1.0, zoom, 0.68, 0.55) for l in lay])
-    img = img.convert("RGB")
-    return C.finish(img, t, dur, fi=0.8, fo=0.6, grain_k=0.03, vig=0.2)
-
-
-# ───────────────────────── 03 · Титр фильма ─────────────────────────
-@scene("03")
-def s03(t, dur):
-    img = Image.new("RGB", (W, H), (5, 5, 6))
-    k = C.smoother(C.seg(t, 0.4, 1.8))
-    pap = C.paper(W, H, seed=21, tone=(52, 48, 44)).filter(ImageFilter.GaussianBlur(2))
-    img = Image.blend(img, pap, 0.5 * k)
-    lay = C.layer()
-    d = ImageDraw.Draw(lay)
-    a = int(255 * k)
-    f = C.font("head", 300 * SS)
-    C.tracked(d, W / 2 * SS, (H / 2 + 60) * SS, "ЛИНИЯ", f, C.WHITE + (a,), 0.10, "ms")
-    # красная черта под словом — сама «линия», прорисовывается
-    kl = C.seg(t, 1.2, 2.8)
-    x0, x1 = (W / 2 - 330) * SS, (W / 2 + 330) * SS
-    d.rectangle([x0, (H / 2 + 92) * SS, x0 + (x1 - x0) * C.out_cubic(kl), (H / 2 + 97) * SS], fill=C.RED + (255,))
-    k2 = C.smoother(C.seg(t, 2.0, 3.0))
-    f2 = C.font("serif_i", 46 * SS)
-    C.tracked(d, W / 2 * SS, (H / 2 + 165) * SS, "последний прогноз Киссинджера", f2,
-              C.GREY + (int(255 * k2),), 0.02, "ms")
-    img = C.over(img, lay).convert("RGB")
-    img = C.vignette(img, 0.6)
-    img = C.grain(img, t, 0.05)
-    return C.in_out_fade(img, t, dur, 0.0, 1.4)
-
-
 # ───────────────────────── 04 · Шкала жизни ─────────────────────────
 VEHI = [(1923, "Фюрт, Бавария", "рождение"), (1938, "эмиграция", "chamberlain_1938.jpg"),
         (1971, "тайно в Пекин", "kissinger_zhou_1971.jpg"), (1973, "Нобелевская премия", "nobel_1973.jpg"),
@@ -114,55 +37,7 @@ def _thumb(name, size=(220, 124)):
     return _thumbs[name]
 
 
-@scene("04")
-def s04(t, dur):
-    # титр акта первые 2,2 с
-    if t < 2.2:
-        return C.act_title("I", "Человек", t, 2.2)
-    tt = t - 2.2
-    dd = dur - 2.2
-    img = Image.new("RGB", (W, H), C.BG)
-    # шкала шире кадра: камера едет слева направо
-    total = 4200
-    x_off = -C.smoother(tt / dd) * (total - W + 240) + 120
-    y = 600
-    lay = C.layer(total + 400, H)
-    d = ImageDraw.Draw(lay)
-    d.line([(120 * SS, y * SS), ((total + 120) * SS, y * SS)], fill=C.GREY3 + (255,), width=2 * SS)
-    f_year = C.font("head", 56 * SS)
-    f_lab = C.font("head_l", 26 * SS)
-    for i, (year, label, th) in enumerate(VEHI):
-        x = 120 + i / (len(VEHI) - 1) * total
-        # веха появляется, когда камера подъезжает
-        k = C.seg(x + x_off, W * 0.72, W * 0.55)
-        k = C.smoother(k)
-        if k <= 0:
-            continue
-        a = int(255 * k)
-        d.line([(x * SS, (y - 10 - 26 * k) * SS), (x * SS, (y + 10) * SS)], fill=C.RED + (a,), width=3 * SS)
-        d.ellipse([(x - 6) * SS, (y - 6) * SS, (x + 6) * SS, (y + 6) * SS], fill=C.WHITE + (a,))
-        C.tracked(d, x * SS, (y + 70) * SS, str(year), f_year, C.WHITE + (a,), 0.04, "ms")
-        C.tracked(d, x * SS, (y + 106) * SS, label.upper(), f_lab, C.GREY + (a,), 0.22, "ms")
-    big = C.done(lay, total + 400, H)
-    img.paste(big.convert("RGB"), (int(x_off), 0), big)
-    # миниатюры кадров над вехами (не через SS, они растровые)
-    for i, (year, label, th) in enumerate(VEHI):
-        if not th:
-            continue
-        x = 120 + i / (len(VEHI) - 1) * total + x_off
-        k = C.smoother(C.seg(x, W * 0.72, W * 0.55))
-        if k <= 0:
-            continue
-        tm = _thumb(th)
-        if tm is None:
-            continue
-        card = Image.new("RGB", (tm.size[0] + 4, tm.size[1] + 4), C.GREY2)
-        card.paste(tm, (2, 2))
-        card = card.convert("RGBA")
-        card.putalpha(int(255 * k))
-        yy = y - 60 - card.size[1] - (1 - k) * 30
-        img.paste(card, (int(x - card.size[0] / 2), int(yy)), card)
-    return C.finish(img, tt, dd, fi=0.6, fo=0.5, grain_k=0.03, vig=0.35)
+# сцены 01-04 — в hook.py (первая минута, переделка 19.11 по журналу)
 
 
 # ───────────────────────── 05 · Пекин, 1971 ─────────────────────────
@@ -400,3 +275,6 @@ def s09(t, dur):
     lays.append(K.date_tag("1994", C.seg(t, 0.8, 1.8), sub="НАТО идёт на восток"))
     img = C.over(base, *lays).convert("RGB")
     return C.finish(img, t, dur, fi=0.6, fo=0.6, grain_k=0.03, vig=0.3)
+
+
+import hook  # noqa: E402,F401  — сцены 01-04 поверх реестра

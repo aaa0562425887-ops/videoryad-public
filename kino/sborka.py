@@ -74,6 +74,11 @@ def main():
     clips, mp3, srt, out = sys.argv[1:5]
     tm = json.load(open(os.path.join(HERE, "timing.json"), encoding="utf-8"))
     scenes = tm["scenes"]
+    # отрезок фильма: KINO_SCENES="01,02,03,04" — собрать только эти сцены (первая минута на утверждение)
+    only = [x.strip() for x in os.environ.get("KINO_SCENES", "").split(",") if x.strip()]
+    if only:
+        scenes = [sc for sc in scenes if sc["id"] in only]
+        print("отрезок:", ", ".join(sc["id"] for sc in scenes))
     tmp = os.path.join(HERE, "sborka_tmp")
     os.makedirs(tmp, exist_ok=True)
     # 1. список клипов по порядку; проверяем, что все есть
@@ -92,7 +97,7 @@ def main():
         raise SystemExit("нет клипов сцен: %s" % ", ".join(missing))
     # 2. звуковая дорожка: диктор режется на куски, между ними — оригинал
     parts = []
-    cursor = 0.0           # позиция в голосе диктора
+    cursor = scenes[0]["voice_start"] if only else 0.0   # позиция в голосе диктора
     for sc in scenes:
         if sc["insert"] <= 0:
             continue
@@ -128,17 +133,18 @@ def main():
     open(alist, "w", encoding="utf-8").write("".join("file '%s'\n" % p for p in parts))
     audio = os.path.join(tmp, "audio.wav")
     run([FF, "-nostdin", "-v", "error", "-y", "-f", "concat", "-safe", "0", "-i", alist, "-c", "copy", audio])
-    # 3. субтитры
-    ass = os.path.join(tmp, "captions.ass")
-    srt_shift(srt, scenes, ass)
+    # 3. субтитры — СНЯТЫ его решением 19.11 (журнал п.43); вернуть: KINO_SUBS=1
+    vf = []
+    if os.environ.get("KINO_SUBS"):
+        ass = os.path.join(tmp, "captions.ass")
+        srt_shift(srt, scenes, ass)
+        vf = ["-vf", "ass='%s'" % ass.replace("\\", "/").replace(":", "\\:")]
     if os.environ.get("KINO_NO_VIDEO"):
-        print("проба: звук и субтитры собраны в", tmp)
+        print("проба: звук собран в", tmp)
         return
-    # 4. склейка видео + звук + субтитры
-    ass_f = ass.replace("\\", "/").replace(":", "\\:")
+    # 4. склейка видео + звук
     run([FF, "-nostdin", "-hide_banner", "-loglevel", "error", "-y",
-         "-f", "concat", "-safe", "0", "-i", lst, "-i", audio,
-         "-vf", "ass='%s'" % ass_f,
+         "-f", "concat", "-safe", "0", "-i", lst, "-i", audio] + vf + [
          "-c:v", "libx264", "-preset", "medium", "-crf", "22", "-maxrate", "12M", "-bufsize", "24M",
          "-pix_fmt", "yuv420p", "-af", "apad", "-c:a", "aac", "-b:a", "192k", "-shortest", "-movflags", "+faststart", out])
     print("готово:", out, os.path.getsize(out) // (1024 * 1024), "МБ")

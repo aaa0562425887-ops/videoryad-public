@@ -6,9 +6,9 @@
 
     python3 zvuk.py <film.mp4> <out.mp4>
 
-Музыка — наши треки кодом (~/.claude/audio-gen/music): mystery как тема,
-calm/tense как вариации по актам, −24 дБ под голосом, провалы в тишину
-перед поворотами. Звуки — банк ~/.claude/audio-gen/sfx, −14 дБ.
+Музыка — ЕГО четыре трека из D:\\YouTube\\МЕДИОТЕКА (zvuk/music/*.mp3), ~20% громкости
+(−14 дБ), раскладка по актам в AKTY. Звуки — банк ~/.claude/audio-gen/sfx, −20 дБ.
+Отрезок фильма: KINO_SCENES="01,02,03,04" (как у sborka.py).
 """
 import json
 import os
@@ -23,17 +23,26 @@ FF = C.ffmpeg()
 MUS = os.path.join(HERE, "zvuk", "music")
 SFX = os.path.join(HERE, "zvuk", "sfx")
 
-# акты → настроение темы (вариации одной темы: разные дорожки одного синтезатора)
-AKTY = [("01", "mystery"), ("04", "calm"), ("10", "tense"), ("19", "mystery"), ("24", "tense"), ("30", "calm")]
-MUSIC_DB = -24.0
-SFX_DB = -14.0
+# ЕГО ЧЕТЫРЕ ТРЕКА (19.11, журнал п.26-32), раскладка по актам моя, недостающее — повтором:
+# eyes «Eyes of Glory» тревожный · topass «To Pass Time» тревожное · inception энергичный · immortality помпезный
+AKTY = [("01", "eyes"), ("10", "topass"), ("13", "inception"), ("19", "eyes"),
+        ("24", "immortality"), ("26", "topass"), ("28", "inception"), ("30", "immortality")]
+# «если сейчас это 100%, то процентов 20» → −14 дБ от его исходника; треки сперва выравниваются к −17 дБ средней
+MUSIC_DB = -14.0
+MEAN = {"eyes": -17.7, "topass": -14.1, "inception": -15.5, "immortality": -22.7, "mystery": -17.0, "calm": -17.0, "tense": -17.0}
+SFX_DB = -20.0     # «шелест… чуть тише» (п.4): было −14
 
 # события звука: сцена → [(время от начала сцены или фраза, звук)]
 EVENTS = {
-    "01": [(0.4, "whoosh"), ("а взамен получает", "scribble")],
-    "02": [(1.0, "scribble"), (7.0, "tick")],
-    "03": [(1.2, "impact")],
-    "04": [(2.2, "tick"), (5.0, "tick"), (7.5, "tick"), (10.0, "tick")],
+    "01": [("Четырнадцатого ноября", "tick"), ("Украина уходит", "scribble"), ("а взамен получает", "whoosh"),
+           ("Киев отказался", "thud")],
+    "02": [(0.0, "tick"), (0.45, "tick"), (0.9, "tick"), (1.35, "tick"), (1.8, "tick"), (2.25, "tick"),
+           ("Её автор", "whoosh"), (4.9, "swoosh"), (6.0, "swoosh"), ("голосом Кремля", "pop"),
+           ("Теперь обе редакции", "thud"), ("что именно он говорил", "click"), ("что из этого уже", "click"),
+           ("в чём он промахнулся", "click"), ("и главное", "click"), ("какие территории", "scribble")],
+    "03": [(0.0, "click"), (2.0, "click"), (4.2, "scribble"), (6.0, "impact")],
+    "04": [(1.4, "whoosh"), (2.6, "tick"), (3.8, "tick"), (5.0, "tick"), (6.2, "tick"), (7.4, "tick"), (8.6, "tick"),
+           (9.8, "tick"), (11.0, "tick")],
     "05": [(0.5, "pop")],
     "07": [(0.4, "thud"), ("он сам всё это устраивал", "rise")],
     "09": [("Польши", "tick"), ("Чехии", "tick"), ("Венгрии", "tick")],
@@ -63,7 +72,14 @@ def main():
     tm = json.load(open(os.path.join(HERE, "timing.json"), encoding="utf-8"))
     scenes = {s["id"]: s for s in tm["scenes"]}
     order = [s["id"] for s in tm["scenes"]]
-    total = tm["scenes"][-1]["film_end"]
+    only = [x.strip() for x in os.environ.get("KINO_SCENES", "").split(",") if x.strip()]
+    if only:
+        order = [s for s in order if s in only]
+        t_shift = scenes[order[0]]["film_start"]           # отрезок начинается с нуля
+        total = scenes[order[-1]]["film_end"] - t_shift
+    else:
+        t_shift = 0.0
+        total = tm["scenes"][-1]["film_end"]
     inputs = ["-i", src]
     filters = []
     mixes = ["[0:a]"]
@@ -71,18 +87,21 @@ def main():
     # музыка по актам: каждый отрезок — свой вход, подрезан и с фейдами
     bounds = []
     for i, (sid, mood) in enumerate(AKTY):
-        t0 = scenes[sid]["film_start"]
-        t1 = scenes[AKTY[i + 1][0]]["film_start"] if i + 1 < len(AKTY) else total
-        bounds.append((t0, t1, mood))
+        t0 = scenes[sid]["film_start"] - t_shift
+        t1 = (scenes[AKTY[i + 1][0]]["film_start"] - t_shift) if i + 1 < len(AKTY) else total
+        t0, t1 = max(0.0, t0), min(total, t1)
+        if t1 - t0 > 1.0:
+            bounds.append((t0, t1, mood))
     for t0, t1, mood in bounds:
         path = os.path.join(MUS, mood + ".mp3")
         if not os.path.exists(path):
             continue
         dur = t1 - t0
+        gain = MUSIC_DB + (-17.0 - MEAN.get(mood, -17.0))
         inputs += ["-stream_loop", "-1", "-i", path]
-        filters.append("[%d:a]atrim=0:%.2f,asetpts=PTS-STARTPTS,afade=t=in:d=2.5,afade=t=out:st=%.2f:d=3.0,"
+        filters.append("[%d:a]atrim=0:%.2f,asetpts=PTS-STARTPTS,afade=t=in:d=1.5,afade=t=out:st=%.2f:d=3.0,"
                        "volume=%.1fdB,adelay=%d|%d,aresample=48000[m%d]"
-                       % (n, dur, max(0, dur - 3.0), MUSIC_DB, int(t0 * 1000), int(t0 * 1000), n))
+                       % (n, dur, max(0, dur - 3.0), gain, int(t0 * 1000), int(t0 * 1000), n))
         mixes.append("[m%d]" % n)
         n += 1
     # звуки на движении
@@ -94,7 +113,7 @@ def main():
             rel = when if isinstance(when, (int, float)) else C.cue(sid, when, None)
             if rel is None:
                 continue
-            t = scenes[sid]["film_start"] + rel
+            t = scenes[sid]["film_start"] - t_shift + rel
             inputs += ["-i", path]
             filters.append("[%d:a]volume=%.1fdB,adelay=%d|%d,aresample=48000[s%d]" % (n, SFX_DB, int(t * 1000), int(t * 1000), n))
             mixes.append("[s%d]" % n)

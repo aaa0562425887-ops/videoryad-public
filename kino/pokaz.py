@@ -83,7 +83,8 @@ video{width:720px;max-width:100%%;background:#000;display:block}
 </body></html>''' % (n_ok, len(tm["scenes"]), "\n".join(cards))
     open(os.path.join(folder, "index.html"), "w", encoding="utf-8").write(page)
     p = free_port(port)
-    subprocess.Popen([sys.executable, "-m", "http.server", str(p)], cwd=folder,
+    srv = os.path.join(HERE, "pokaz_server.py")
+    subprocess.Popen([sys.executable, srv, str(p)], cwd=folder,
                      stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL)
     print("http://localhost:%d/index.html  (%d из %d клипов)" % (p, n_ok, len(tm["scenes"])))
 
