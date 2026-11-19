@@ -1,0 +1,293 @@
+{
+ "voice_end": 874.634,
+ "scenes": [
+  {
+   "id": "01",
+   "voice_start": 0.12,
+   "voice_end": 20.84,
+   "insert": 0,
+   "dur": 20.72,
+   "film_start": 0.12,
+   "film_end": 20.84
+  },
+  {
+   "id": "02",
+   "voice_start": 20.84,
+   "voice_end": 47.613,
+   "insert": 0,
+   "dur": 26.773,
+   "film_start": 20.84,
+   "film_end": 47.613
+  },
+  {
+   "id": "03",
+   "voice_start": 47.613,
+   "voice_end": 55.908,
+   "insert": 0,
+   "dur": 8.295,
+   "film_start": 47.613,
+   "film_end": 55.908
+  },
+  {
+   "id": "04",
+   "voice_start": 55.908,
+   "voice_end": 68.92,
+   "insert": 0,
+   "dur": 13.012,
+   "film_start": 55.908,
+   "film_end": 68.92
+  },
+  {
+   "id": "05",
+   "voice_start": 68.92,
+   "voice_end": 79.948,
+   "insert": 0,
+   "dur": 11.028,
+   "film_start": 68.92,
+   "film_end": 79.948
+  },
+  {
+   "id": "06",
+   "voice_start": 79.948,
+   "voice_end": 107.332,
+   "insert": 0,
+   "dur": 27.384,
+   "film_start": 79.948,
+   "film_end": 107.332
+  },
+  {
+   "id": "07",
+   "voice_start": 107.332,
+   "voice_end": 128.539,
+   "insert": 0,
+   "dur": 21.207,
+   "film_start": 107.332,
+   "film_end": 128.539
+  },
+  {
+   "id": "08",
+   "voice_start": 128.539,
+   "voice_end": 153.684,
+   "insert": 0,
+   "dur": 25.145,
+   "film_start": 128.539,
+   "film_end": 153.684
+  },
+  {
+   "id": "09",
+   "voice_start": 153.684,
+   "voice_end": 167.983,
+   "insert": 0,
+   "dur": 14.299,
+   "film_start": 153.684,
+   "film_end": 167.983
+  },
+  {
+   "id": "10",
+   "voice_start": 167.983,
+   "voice_end": 187.659,
+   "insert": 0,
+   "dur": 19.676,
+   "film_start": 167.983,
+   "film_end": 187.659
+  },
+  {
+   "id": "11",
+   "voice_start": 187.659,
+   "voice_end": 221.38,
+   "insert": 0,
+   "dur": 33.721,
+   "film_start": 187.659,
+   "film_end": 221.38
+  },
+  {
+   "id": "12",
+   "voice_start": 221.38,
+   "voice_end": 253.331,
+   "insert": 0,
+   "dur": 31.951,
+   "film_start": 221.38,
+   "film_end": 253.331
+  },
+  {
+   "id": "13",
+   "voice_start": 253.331,
+   "voice_end": 279.491,
+   "insert": 10,
+   "dur": 36.16,
+   "film_start": 253.331,
+   "film_end": 289.491
+  },
+  {
+   "id": "14",
+   "voice_start": 279.491,
+   "voice_end": 302.433,
+   "insert": 0,
+   "dur": 22.942,
+   "film_start": 289.491,
+   "film_end": 312.433
+  },
+  {
+   "id": "15",
+   "voice_start": 302.433,
+   "voice_end": 312.697,
+   "insert": 0,
+   "dur": 10.264,
+   "film_start": 312.433,
+   "film_end": 322.697
+  },
+  {
+   "id": "16",
+   "voice_start": 312.697,
+   "voice_end": 325.973,
+   "insert": 6,
+   "dur": 19.276,
+   "film_start": 322.697,
+   "film_end": 341.973
+  },
+  {
+   "id": "17",
+   "voice_start": 325.973,
+   "voice_end": 340.019,
+   "insert": 0,
+   "dur": 14.046,
+   "film_start": 341.973,
+   "film_end": 356.019
+  },
+  {
+   "id": "18",
+   "voice_start": 340.019,
+   "voice_end": 364.575,
+   "insert": 0,
+   "dur": 24.555,
+   "film_start": 356.019,
+   "film_end": 380.575
+  },
+  {
+   "id": "19",
+   "voice_start": 364.575,
+   "voice_end": 375.717,
+   "insert": 0,
+   "dur": 11.142,
+   "film_start": 380.575,
+   "film_end": 391.717
+  },
+  {
+   "id": "20",
+   "voice_start": 375.717,
+   "voice_end": 400.816,
+   "insert": 13,
+   "dur": 38.099,
+   "film_start": 391.717,
+   "film_end": 429.816
+  },
+  {
+   "id": "21",
+   "voice_start": 400.816,
+   "voice_end": 424.039,
+   "insert": 0,
+   "dur": 23.223,
+   "film_start": 429.816,
+   "film_end": 453.039
+  },
+  {
+   "id": "22",
+   "voice_start": 424.039,
+   "voice_end": 457.55,
+   "insert": 0,
+   "dur": 33.511,
+   "film_start": 453.039,
+   "film_end": 486.55
+  },
+  {
+   "id": "23",
+   "voice_start": 457.55,
+   "voice_end": 467.32,
+   "insert": 0,
+   "dur": 9.77,
+   "film_start": 486.55,
+   "film_end": 496.32
+  },
+  {
+   "id": "24",
+   "voice_start": 467.32,
+   "voice_end": 474.622,
+   "insert": 0,
+   "dur": 7.302,
+   "film_start": 496.32,
+   "film_end": 503.622
+  },
+  {
+   "id": "25",
+   "voice_start": 474.622,
+   "voice_end": 493.568,
+   "insert": 0,
+   "dur": 18.946,
+   "film_start": 503.622,
+   "film_end": 522.568
+  },
+  {
+   "id": "24b",
+   "voice_start": 493.568,
+   "voice_end": 551.908,
+   "insert": 0,
+   "dur": 58.34,
+   "film_start": 522.568,
+   "film_end": 580.908
+  },
+  {
+   "id": "26",
+   "voice_start": 551.908,
+   "voice_end": 613.199,
+   "insert": 0,
+   "dur": 61.291,
+   "film_start": 580.908,
+   "film_end": 642.199
+  },
+  {
+   "id": "27",
+   "voice_start": 613.199,
+   "voice_end": 688.114,
+   "insert": 0,
+   "dur": 74.915,
+   "film_start": 642.199,
+   "film_end": 717.114
+  },
+  {
+   "id": "28",
+   "voice_start": 688.114,
+   "voice_end": 790.03,
+   "insert": 0,
+   "dur": 101.916,
+   "film_start": 717.114,
+   "film_end": 819.03
+  },
+  {
+   "id": "29",
+   "voice_start": 790.03,
+   "voice_end": 818.07,
+   "insert": 0,
+   "dur": 28.04,
+   "film_start": 819.03,
+   "film_end": 847.07
+  },
+  {
+   "id": "30",
+   "voice_start": 818.07,
+   "voice_end": 860.817,
+   "insert": 0,
+   "dur": 42.747,
+   "film_start": 847.07,
+   "film_end": 889.817
+  },
+  {
+   "id": "31",
+   "voice_start": 860.817,
+   "voice_end": 882.634,
+   "insert": 0,
+   "dur": 21.817,
+   "film_start": 889.817,
+   "film_end": 911.634
+  }
+ ]
+}

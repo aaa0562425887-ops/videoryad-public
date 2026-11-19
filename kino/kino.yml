@@ -1,0 +1,89 @@
+# Фильм «Последний прогноз Киссинджера»: каждая сцена на своей машине.
+name: kino
+on:
+  workflow_dispatch:
+    inputs:
+      scenes:
+        description: "какие сцены считать, списком JSON"
+        default: '["01","02","03"]'
+      workers:
+        description: "процессов на сцену"
+        default: "4"
+      transcribe:
+        description: "расшифровать звук: файл:язык через запятую (пусто — нет)"
+        default: ""
+concurrency:
+  group: kino-${{ github.run_id }}
+  cancel-in-progress: false
+permissions:
+  contents: write
+jobs:
+  clip:
+    runs-on: ubuntu-latest
+    timeout-minutes: 120
+    strategy:
+      fail-fast: false
+      max-parallel: 8
+      matrix:
+        scene: ${{ fromJSON(github.event.inputs.scenes) }}
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          sparse-checkout: kino
+      - name: Библиотеки
+        run: pip install --quiet --upgrade numpy pillow imageio-ffmpeg
+      - name: ffmpeg
+        run: |
+          python3 - <<'EOF'
+          import imageio_ffmpeg, os
+          p = imageio_ffmpeg.get_ffmpeg_exe()
+          os.makedirs(os.path.expanduser("~/.local/bin"), exist_ok=True)
+          os.symlink(p, os.path.expanduser("~/.local/bin/ffmpeg"))
+          print(p)
+          EOF
+      - name: Клип сцены
+        env:
+          KINO_ARCHIV: ${{ github.workspace }}/kino/archiv
+        run: |
+          cd kino
+          time python3 shard.py "${{ matrix.scene }}" "$GITHUB_WORKSPACE/kino_${{ matrix.scene }}.mp4" --workers ${{ github.event.inputs.workers }}
+      - uses: actions/upload-artifact@v4
+        with:
+          name: kino-${{ matrix.scene }}
+          path: kino_${{ matrix.scene }}.mp4
+          retention-days: 2
+  transcribe:
+    if: github.event.inputs.transcribe != ''
+    runs-on: ubuntu-latest
+    timeout-minutes: 60
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          sparse-checkout: kino
+      - run: pip install --quiet faster-whisper
+      - name: Расшифровка
+        run: |
+          cd kino
+          mkdir -p "$GITHUB_WORKSPACE/tr"
+          IFS=',' read -ra ITEMS <<< "${{ github.event.inputs.transcribe }}"
+          for it in "${ITEMS[@]}"; do
+            f="${it%%:*}"; l="${it##*:}"
+            python3 transcribe.py "archiv/$f" "$l" "$GITHUB_WORKSPACE/tr/${f%.*}.json"
+          done
+      - uses: actions/upload-artifact@v4
+        with:
+          name: kino-transcribe
+          path: tr/*.json
+          retention-days: 2
+  pack:
+    needs: [clip, transcribe]
+    if: always()
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/download-artifact@v4
+        with: {path: clips, merge-multiple: true}
+      - env: {GH_TOKEN: "${{ github.token }}"}
+        run: |
+          ls -la clips
+          tag="kino-${{ github.run_id }}"
+          gh release create "$tag" clips/* -R "${{ github.repository }}" -t "$tag" -n "Клипы сцен фильма."
