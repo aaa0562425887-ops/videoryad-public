@@ -22,6 +22,7 @@ permissions:
   contents: write
 jobs:
   clip:
+    if: github.event.inputs.scenes != '[]'
     runs-on: ubuntu-latest
     timeout-minutes: 120
     strategy:
