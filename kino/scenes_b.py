@@ -235,7 +235,7 @@ def speech_frame(vid, t, t_insert, name, place, date, lines, k_win=1.0, win=(128
     ww2, wh2 = int(ww * sc), int(wh * sc)
     fr = fr.resize((ww2, wh2), Image.LANCZOS)
     fr = C.fade(fr, C.lerp(1.0, 0.55, after))
-    x0, y0 = (W - ww2) // 2, int((H - wh2) // 2 - 30 * (1 - after))
+    x0, y0 = (W - ww2) // 2, int((H - wh2) // 2 - 80 * (1 - after))   # окно выше: под ним четыре строки перевода (п.66)
     # свечение рамки
     glow, pad = C.shadow_box((ww2, wh2), blur=40, a=int(140 * k_win))
     glow_img = Image.new("RGBA", glow.size, (0, 0, 0, 0))
@@ -261,20 +261,24 @@ def speech_frame(vid, t, t_insert, name, place, date, lines, k_win=1.0, win=(128
     if t < t_insert + 0.8:
         n = len(lines)
         per = t_insert / max(1, n)
-        # кегль перевода подбирается по самой длинной строке — в поля 96 px (журнал п.36/38)
+        # кегль перевода: по ширине — в поля 96 px (п.36/38); по высоте — ПОСЛЕДНЯЯ строка не ниже H-54 (п.66):
+        # межстрочное 1,15 кегля, не влезает — кегль меньше
         px = 40
+        lead = 1.15
         dm = ImageDraw.Draw(Image.new("RGBA", (4, 4)))
         while px > 22 and max(C.text_w(dm, ln, C.font("serif_i", px * SS)) for ln in lines) / SS > W - 2 * 96:
             px -= 2
+        # блок под окном; окно во весь кадр (сц.16) — блок ложится поверх нижней части, последняя строка ≥ 54 px от низа
+        y_first = min(y0 + wh2 + 52, H - 54 - (n - 1) * px * lead)
         fi = C.font("serif_i", px * SS)
-        yb = (y0 + wh2 + 70) * SS
+        yb = y_first * SS
         for i, ln in enumerate(lines):
             k = C.seg(t, i * per, i * per + 0.35)
             if k <= 0:
                 continue
             k_out = C.seg(t, t_insert, t_insert + 0.8)
             aa = int(255 * C.smoother(k) * (1 - k_out))
-            C.tracked(dl, W / 2 * SS, yb + i * px * 1.3 * SS, ln, fi, C.WHITE + (aa,), 0.0, "ms")
+            C.tracked(dl, W / 2 * SS, yb + i * px * lead * SS, ln, fi, C.WHITE + (aa,), 0.0, "ms")
         # тонкая полоска хода оригинала
         kp = C.seg(t, 0, t_insert)
         dl.rectangle([x0 * SS, (y0 + wh2 + 14) * SS, (x0 + ww2 * kp) * SS, (y0 + wh2 + 16) * SS], fill=C.RED + (200,))
