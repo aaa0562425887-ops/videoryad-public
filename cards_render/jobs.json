@@ -1,0 +1,170 @@
+[
+ {
+  "scene": 28,
+  "view": "paper_typed",
+  "dur": 10.9,
+  "anim": 2.8,
+  "tail_zoom": 0.04,
+  "watermark": "ПЛАНЕТА",
+  "channel": "ПЛАНЕТА",
+  "kwargs": {
+   "text": "Европейская подготовка к столкновению с Россией идёт давно",
+   "watermark": "ПЛАНЕТА"
+  }
+ },
+ {
+  "scene": 52,
+  "view": "sceny.prohod",
+  "mode": "cli",
+  "script": "sceny_cli.py",
+  "dur": 9.8,
+  "channel": "ПЛАНЕТА",
+  "watermark": "ПЛАНЕТА",
+  "cfg": {
+   "view": "prohod",
+   "seconds": 9.8,
+   "fps": 30,
+   "t0": 0.0,
+   "kwargs": {
+    "text": "Описание плана кинематографично",
+    "channel": "ПЛАНЕТА",
+    "watermark": "ПЛАНЕТА",
+    "dur": 9.8,
+    "tezisy": [
+     "Цель",
+     "Направление",
+     "Роли мнимых диверсантов",
+     "Результат"
+    ]
+   }
+  },
+  "kwargs": {
+   "text": "Описание плана кинематографично",
+   "channel": "ПЛАНЕТА",
+   "watermark": "ПЛАНЕТА",
+   "dur": 9.8,
+   "tezisy": [
+    "Цель",
+    "Направление",
+    "Роли мнимых диверсантов",
+    "Результат"
+   ]
+  }
+ },
+ {
+  "scene": 53,
+  "view": "photo",
+  "dur": 13.1,
+  "anim": 13.1,
+  "tail_zoom": 0.0,
+  "watermark": "ПЛАНЕТА",
+  "channel": "ПЛАНЕТА",
+  "kwargs": {
+   "kick": "Польша · операция",
+   "watermark": "ПЛАНЕТА",
+   "photo": "cards/photo/card_053.jpg",
+   "lines": [
+    "Кто готовил нападение — не уточняется",
+    "Где задержаны исполнители — не уточняется",
+    "Каким способом остановили — не уточняется"
+   ]
+  }
+ },
+ {
+  "scene": 54,
+  "view": "charts.slope",
+  "dur": 8.4,
+  "anim": 8.4,
+  "tail_zoom": 0.045,
+  "watermark": "ПЛАНЕТА",
+  "channel": "ПЛАНЕТА",
+  "kwargs": {
+   "items": [
+    {
+     "label": "Сценарий",
+     "from": 1.0,
+     "to": 1.0,
+     "to_label": "Развязка"
+    },
+    {
+     "label": "Угроза",
+     "from": 1.0,
+     "to": 1.0,
+     "to_label": "Молчание"
+    }
+   ],
+   "left_label": "Показано",
+   "right_label": "Скрыто",
+   "title": "Польское усиление остаётся",
+   "source": "СМИ",
+   "sobytiya": true,
+   "watermark": "ПЛАНЕТА"
+  }
+ },
+ {
+  "scene": 65,
+  "view": "sceny.kreslo",
+  "mode": "cli",
+  "script": "sceny_cli.py",
+  "dur": 13.4,
+  "channel": "ПЛАНЕТА",
+  "watermark": "ПЛАНЕТА",
+  "cfg": {
+   "view": "kreslo",
+   "seconds": 13.4,
+   "fps": 30,
+   "t0": 0.0,
+   "kwargs": {
+    "text": "Планы допускают потерю территории",
+    "channel": "ПЛАНЕТА",
+    "watermark": "ПЛАНЕТА",
+    "dur": 13.4,
+    "role": "правительство в изгнании"
+   }
+  },
+  "kwargs": {
+   "text": "Планы допускают потерю территории",
+   "channel": "ПЛАНЕТА",
+   "watermark": "ПЛАНЕТА",
+   "dur": 13.4,
+   "role": "правительство в изгнании"
+  }
+ },
+ {
+  "scene": 66,
+  "view": "duel",
+  "dur": 11.7,
+  "anim": 11.7,
+  "tail_zoom": 0.035,
+  "watermark": "ПЛАНЕТА",
+  "channel": "ПЛАНЕТА",
+  "kwargs": {
+   "top": {
+    "who": "",
+    "text": "Большая европейская война не включается одной кнопкой",
+    "accent": null,
+    "source": ""
+   },
+   "bottom": {
+    "who": "",
+    "text": "Её не запускает один поджог, переход или публикация",
+    "accent": null,
+    "source": ""
+   },
+   "watermark": "ПЛАНЕТА"
+  }
+ },
+ {
+  "scene": 69,
+  "view": "marker_serif",
+  "dur": 11.3,
+  "anim": 11.3,
+  "tail_zoom": 0.045,
+  "watermark": "ПЛАНЕТА",
+  "channel": "ПЛАНЕТА",
+  "kwargs": {
+   "text": "Каждый шаг выглядит небольшим, пока лестница не ведёт на крышу",
+   "watermark": "ПЛАНЕТА"
+  }
+ }
+]
