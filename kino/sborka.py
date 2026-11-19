@@ -103,9 +103,10 @@ def main():
             continue
         # голос до начала этой сцены
         seg = os.path.join(tmp, "v_%s.wav" % sc["id"])
-        run([FF, "-nostdin", "-v", "error", "-y", "-ss", "%.3f" % cursor, "-to", "%.3f" % sc["voice_start"],
-             "-i", mp3, "-ac", "2", "-ar", "48000", seg])
-        parts.append(seg)
+        if sc["voice_start"] - cursor > 0.02:      # пауза в самом начале отрезка — голоса до неё нет
+            run([FF, "-nostdin", "-v", "error", "-y", "-ss", "%.3f" % cursor, "-to", "%.3f" % sc["voice_start"],
+                 "-i", mp3, "-ac", "2", "-ar", "48000", seg])
+            parts.append(seg)
         cursor = sc["voice_start"]
         # оригинал на длину вставки
         name, start = INSERT_AUDIO.get(sc["id"], (None, 0.0))
