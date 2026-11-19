@@ -60,7 +60,7 @@ jobs:
       - uses: actions/checkout@v4
         with:
           sparse-checkout: kino
-      - run: pip install --quiet faster-whisper
+      - run: pip install --quiet faster-whisper imageio-ffmpeg numpy
       - name: Расшифровка
         run: |
           cd kino
