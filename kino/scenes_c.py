@@ -275,27 +275,54 @@ def s22(t, dur):
 _s23 = {}
 
 
+def _house():
+    """ночной дом в Коннектикуте — силуэт кодом (фото дома в архиве нет):
+    тёмная крыша, стена, одно окно; свет окна рисуется отдельно"""
+    im = Image.new("RGB", (W, H), (9, 9, 12))
+    d = ImageDraw.Draw(im)
+    # небо с зерном, дальние деревья
+    sky = C.noise(W, H, 91, 60.0).filter(ImageFilter.GaussianBlur(30))
+    a = np.asarray(im, np.float32) + (np.asarray(sky, np.float32) - 128)[:, :, None] * 0.05
+    im = Image.fromarray(np.clip(a, 0, 255).astype(np.uint8), "RGB")
+    d = ImageDraw.Draw(im)
+    rng = np.random.default_rng(3)
+    for k in range(60):
+        x = rng.uniform(-100, W + 100)
+        h = rng.uniform(160, 420)
+        d.polygon([(x - 60, H * 0.72), (x, H * 0.72 - h), (x + 60, H * 0.72)], fill=(13, 13, 16))
+    # дом
+    wall = (22, 21, 24)
+    d.rectangle([W * 0.30, H * 0.46, W * 0.70, H * 0.78], fill=wall)
+    d.polygon([(W * 0.27, H * 0.46), (W * 0.50, H * 0.24), (W * 0.73, H * 0.46)], fill=(17, 16, 19))
+    d.rectangle([W * 0.58, H * 0.30, W * 0.62, H * 0.40], fill=(15, 14, 17))   # труба
+    # тёмные окна
+    for x in (0.34, 0.60):
+        d.rectangle([W * x, H * 0.54, W * (x + 0.07), H * 0.64], fill=(14, 13, 15))
+    d.rectangle([W * 0.47, H * 0.60, W * 0.53, H * 0.78], fill=(14, 13, 15))     # дверь
+    # земля
+    d.rectangle([0, H * 0.78, W, H], fill=(11, 11, 13))
+    return im
+
+
 @scene("23")
 def s23(t, dur):
-    if "p" not in _s23:
-        nm = "kent_ct_house.jpg" if os.path.exists(C.apath("kent_ct_house.jpg")) else "kissinger_portrait_late.jpg"
-        _s23["p"] = C.foto(nm).convert("L").convert("RGB")
-        _s23["house"] = nm.startswith("kent")
-    p = C.kb(_s23["p"], t / dur, 0.04, 0.5, 0.3)
-    # живой свет: тёплое пятно, мерцает, гаснет на последней трети
-    a = np.asarray(p, np.float32)
+    if "h" not in _s23:
+        _s23["h"] = _house()
+    img = _s23["h"].copy()
+    # одно окно горит тёплым светом, мерцает, гаснет
+    a = np.asarray(img, np.float32)
+    fl = 1.0 + 0.07 * math.sin(t * 17) * math.sin(t * 5.3 + 1)
+    off = 1 - C.smoother(C.seg(t, dur * 0.50, dur * 0.72))
+    x0, x1, y0, y1 = W * 0.34, W * 0.41, H * 0.54, H * 0.64
     yy, xx = np.mgrid[0:H, 0:W]
-    cx, cy = W * 0.68, H * 0.42
-    r = np.sqrt(((xx - cx) / 520) ** 2 + ((yy - cy) / 420) ** 2)
-    fl = 1.0 + 0.08 * math.sin(t * 17) * math.sin(t * 5.3 + 1)
-    off = 1 - C.smoother(C.seg(t, dur * 0.55, dur * 0.80))
-    light = np.exp(-r ** 2) * 0.9 * fl * off
-    a = a * (0.42 + light[:, :, None]) + light[:, :, None] * np.array([38, 26, 10], np.float32)
+    win = ((xx >= x0) & (xx <= x1) & (yy >= y0) & (yy <= y1)).astype(np.float32)
+    glow = np.exp(-(((xx - (x0 + x1) / 2) / 260) ** 2 + ((yy - (y0 + y1) / 2) / 200) ** 2))
+    lit = (win * 1.0 + glow * 0.35) * fl * off
+    a += lit[:, :, None] * np.array([215, 150, 70], np.float32)
     img = Image.fromarray(np.clip(a, 0, 255).astype(np.uint8), "RGB")
-    img = C.vignette(img, 0.7)
-    cap = C.caption("Кент, Коннектикут", "29 ноября 2023", None, C.seg(t, 0.6, 1.4))
-    img = C.over(img, cap).convert("RGB")
-    return C.finish(img, t, dur, fi=0.6, fo=2.0, grain_k=0.04)
+    img = C.vignette(img, 0.6)
+    img = C.over(img, C.caption("Кент, Коннектикут", "29 ноября 2023", None, C.seg(t, 0.6, 1.4))).convert("RGB")
+    return C.finish(img, t, dur, fi=0.6, fo=2.0, grain_k=0.05)
 
 
 # ───────────────────────── 24 · Стена улик ─────────────────────────
