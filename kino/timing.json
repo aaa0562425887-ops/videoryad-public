@@ -1,5 +1,5 @@
 {
- "voice_end": 874.634,
+ "voice_end": 866.113,
  "scenes": [
   {
    "id": "01",
@@ -256,38 +256,38 @@
   {
    "id": "28",
    "voice_start": 688.114,
-   "voice_end": 790.03,
+   "voice_end": 786.881,
    "insert": 0,
-   "dur": 101.916,
+   "dur": 98.767,
    "film_start": 725.114,
-   "film_end": 827.03
+   "film_end": 823.881
   },
   {
    "id": "29",
-   "voice_start": 790.03,
-   "voice_end": 818.07,
+   "voice_start": 786.881,
+   "voice_end": 814.921,
    "insert": 0,
    "dur": 28.04,
-   "film_start": 827.03,
-   "film_end": 855.07
+   "film_start": 823.881,
+   "film_end": 851.921
   },
   {
    "id": "30",
-   "voice_start": 818.07,
-   "voice_end": 860.817,
+   "voice_start": 814.921,
+   "voice_end": 852.479,
    "insert": 0,
-   "dur": 42.747,
-   "film_start": 855.07,
-   "film_end": 897.817
+   "dur": 37.558,
+   "film_start": 851.921,
+   "film_end": 889.479
   },
   {
    "id": "31",
-   "voice_start": 860.817,
-   "voice_end": 882.634,
+   "voice_start": 852.479,
+   "voice_end": 874.113,
    "insert": 0,
-   "dur": 21.817,
-   "film_start": 897.817,
-   "film_end": 919.634
+   "dur": 21.634,
+   "film_start": 889.479,
+   "film_end": 911.113
   }
  ]
 }
