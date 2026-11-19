@@ -767,3 +767,6 @@ def s31(t, dur):
         C.tracked(d, W / 2 * SS, (H / 2 + 50 + i * 40) * SS, ln.upper(), f, C.GREY + (a,), 0.18, "ms")
     img = C.over(img, C.done(lay)).convert("RGB")
     return C.in_out_fade(C.grain(img, t, 0.03), tt, dur - t_end, 0.0, 1.5)
+
+
+import hook2  # noqa: E402,F401  — сцены 05-12 поверх реестра (второй отрезок, 19.11)

@@ -261,7 +261,12 @@ def speech_frame(vid, t, t_insert, name, place, date, lines, k_win=1.0, win=(128
     if t < t_insert + 0.8:
         n = len(lines)
         per = t_insert / max(1, n)
-        fi = C.font("serif_i", 40 * SS)
+        # кегль перевода подбирается по самой длинной строке — в поля 96 px (журнал п.36/38)
+        px = 40
+        dm = ImageDraw.Draw(Image.new("RGBA", (4, 4)))
+        while px > 22 and max(C.text_w(dm, ln, C.font("serif_i", px * SS)) for ln in lines) / SS > W - 2 * 96:
+            px -= 2
+        fi = C.font("serif_i", px * SS)
         yb = (y0 + wh2 + 70) * SS
         for i, ln in enumerate(lines):
             k = C.seg(t, i * per, i * per + 0.35)
@@ -269,7 +274,7 @@ def speech_frame(vid, t, t_insert, name, place, date, lines, k_win=1.0, win=(128
                 continue
             k_out = C.seg(t, t_insert, t_insert + 0.8)
             aa = int(255 * C.smoother(k) * (1 - k_out))
-            C.tracked(dl, W / 2 * SS, yb + i * 52 * SS, ln, fi, C.WHITE + (aa,), 0.0, "ms")
+            C.tracked(dl, W / 2 * SS, yb + i * px * 1.3 * SS, ln, fi, C.WHITE + (aa,), 0.0, "ms")
         # тонкая полоска хода оригинала
         kp = C.seg(t, 0, t_insert)
         dl.rectangle([x0 * SS, (y0 + wh2 + 14) * SS, (x0 + ww2 * kp) * SS, (y0 + wh2 + 16) * SS], fill=C.RED + (200,))
