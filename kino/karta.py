@@ -155,8 +155,23 @@ def base(okno=UA, hot="Ukraine", size=(W, H), relief=True):
     return im.copy()
 
 
+_line_cache = {}
+
+
 def line_layer(coords, k=1.0, okno=UA, color=C.RED, width=5, dash=None, glow=True, head=True):
     """красная линия, прорисованная на долю k по длине; dash=(штрих, зазор)"""
+    key = None
+    if k >= 1.0:
+        key = (tuple(map(tuple, coords)), okno.lon, okno.lat, tuple(color), width, dash, glow)
+        if key in _line_cache:
+            return _line_cache[key].copy()
+    res = _line_layer(coords, k, okno, color, width, dash, glow, head)
+    if key is not None:
+        _line_cache[key] = res.copy()
+    return res
+
+
+def _line_layer(coords, k, okno, color, width, dash, glow, head):
     im = C.layer()
     d = ImageDraw.Draw(im)
     pts = [np.array(p) for p in okno.pts(coords, SS)]
@@ -214,8 +229,23 @@ def line_layer(coords, k=1.0, okno=UA, color=C.RED, width=5, dash=None, glow=Tru
     return C.done(im)
 
 
+_zone_cache = {}
+
+
 def zone_layer(coords, k=1.0, okno=UA, color=C.RED, fill_a=70, outline=True, hatch=False):
     """зона на карте: полупрозрачная заливка, по желанию штриховка"""
+    key = None
+    if k >= 1.0:
+        key = (tuple(coords), okno.lon, okno.lat, tuple(color), fill_a, outline, hatch)
+        if key in _zone_cache:
+            return _zone_cache[key].copy()
+    res = _zone_layer(coords, k, okno, color, fill_a, outline, hatch)
+    if key is not None:
+        _zone_cache[key] = res.copy()
+    return res
+
+
+def _zone_layer(coords, k, okno, color, fill_a, outline, hatch):
     im = C.layer()
     d = ImageDraw.Draw(im)
     pts = okno.pts(coords, SS)
@@ -237,8 +267,23 @@ def zone_layer(coords, k=1.0, okno=UA, color=C.RED, fill_a=70, outline=True, hat
     return C.done(im)
 
 
+_city_cache = {}
+
+
 def city_layer(names, k=1.0, okno=UA, px=26, side=None, dot=True, color=C.WHITE):
     """точки городов с подписями; side: словарь имя→'l'/'r'"""
+    key = None
+    if k >= 1.0:
+        key = (tuple(names), okno.lon, okno.lat, px, tuple(sorted((side or {}).items())), dot, tuple(color))
+        if key in _city_cache:
+            return _city_cache[key].copy()
+    res = _city_layer(names, k, okno, px, side, dot, color)
+    if key is not None:
+        _city_cache[key] = res.copy()
+    return res
+
+
+def _city_layer(names, k, okno, px, side, dot, color):
     im = C.layer()
     d = ImageDraw.Draw(im)
     f = C.font("head_r", px * SS)

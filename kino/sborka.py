@@ -107,9 +107,16 @@ def main():
         ins = os.path.join(tmp, "i_%s.wav" % sc["id"])
         src = C.apath(name) if name else None
         if src and os.path.exists(src):
+            # уровень оригинала подтягиваем к голосу диктора (−20 дБ средней)
+            meas = subprocess.run([FF, "-nostdin", "-ss", "%.3f" % start, "-t", "%.3f" % sc["insert"], "-i", src,
+                                   "-vn", "-af", "volumedetect", "-f", "null", "-"],
+                                  capture_output=True, text=True).stderr
+            m = re.search(r"mean_volume: ([-\d.]+) dB", meas)
+            gain = (-20.0 - float(m.group(1))) if m else 0.0
+            gain = max(-10.0, min(16.0, gain))
             run([FF, "-nostdin", "-v", "error", "-y", "-ss", "%.3f" % start, "-t", "%.3f" % sc["insert"],
                  "-i", src, "-vn", "-ac", "2", "-ar", "48000",
-                 "-af", "afade=t=in:d=0.3,afade=t=out:st=%.2f:d=0.5,volume=1.0" % (sc["insert"] - 0.5), ins])
+                 "-af", "afade=t=in:d=0.3,afade=t=out:st=%.2f:d=0.5,volume=%.1fdB" % (sc["insert"] - 0.5, gain), ins])
         else:
             run([FF, "-nostdin", "-v", "error", "-y", "-f", "lavfi", "-i", "anullsrc=r=48000:cl=stereo",
                  "-t", "%.3f" % sc["insert"], ins])
