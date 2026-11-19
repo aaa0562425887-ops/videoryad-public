@@ -12,6 +12,9 @@ on:
       transcribe:
         description: "расшифровать звук: файл:язык через запятую (пусто — нет)"
         default: ""
+      sborka:
+        description: "собрать фильм из клипов этих прогонов (run_id через запятую, поздние поверх ранних; пусто — нет)"
+        default: ""
 concurrency:
   group: kino-${{ github.run_id }}
   cancel-in-progress: false
@@ -75,8 +78,49 @@ jobs:
           name: kino-transcribe
           path: tr/*.json
           retention-days: 2
+  sborka:
+    if: github.event.inputs.sborka != ''
+    runs-on: ubuntu-latest
+    timeout-minutes: 90
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          sparse-checkout: kino
+      - run: pip install --quiet numpy pillow imageio-ffmpeg
+      - name: ffmpeg
+        run: |
+          python3 - <<'EOF'
+          import imageio_ffmpeg, os
+          p = imageio_ffmpeg.get_ffmpeg_exe()
+          os.makedirs(os.path.expanduser("~/.local/bin"), exist_ok=True)
+          os.symlink(p, os.path.expanduser("~/.local/bin/ffmpeg"))
+          EOF
+          sudo apt-get install -y -qq fonts-liberation >/dev/null 2>&1 || true
+      - name: Клипы из прогонов
+        env: {GH_TOKEN: "${{ github.token }}"}
+        run: |
+          mkdir -p clips
+          IFS=',' read -ra RUNS <<< "${{ github.event.inputs.sborka }}"
+          for r in "${RUNS[@]}"; do
+            rm -rf tmpdl; mkdir tmpdl
+            gh run download "$r" -R "${{ github.repository }}" -D tmpdl || true
+            find tmpdl -name 'kino_*.mp4' -exec cp -f {} clips/ \;
+          done
+          ls clips
+      - name: Сборка и звук
+        env:
+          KINO_ARCHIV: ${{ github.workspace }}/kino/archiv
+        run: |
+          cd kino
+          python3 sborka.py "$GITHUB_WORKSPACE/clips" golos/golos.mp3 golos/golos.srt "$GITHUB_WORKSPACE/film_golos.mp4"
+          python3 zvuk.py "$GITHUB_WORKSPACE/film_golos.mp4" "$GITHUB_WORKSPACE/film.mp4"
+      - uses: actions/upload-artifact@v4
+        with:
+          name: kino-film
+          path: film.mp4
+          retention-days: 3
   pack:
-    needs: [clip, transcribe]
+    needs: [clip, transcribe, sborka]
     if: always()
     runs-on: ubuntu-latest
     steps:

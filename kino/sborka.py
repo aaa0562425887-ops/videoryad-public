@@ -18,13 +18,17 @@ import sys
 HERE = os.path.dirname(os.path.abspath(__file__))
 sys.path.insert(0, HERE)
 import core as C          # noqa: E402
-from cuts import BIG      # noqa: E402
+from cuts import CUTS     # noqa: E402
 
 FF = C.ffmpeg()
-BIG_DIR = os.environ.get("KINO_BIG", "/mnt/d/YouTube/ФИЛЬМЫ/КИССИНДЖЕР-ЛИНИЯ/archiv/video")
 
 # откуда брать звук оригинала для вставок: (файл в большом архиве, секунда)
-INSERT_AUDIO = BIG
+INSERT_AUDIO = {
+    "13": ("wef_2023.mp4", CUTS.get("wef_2023_s13", 0.0)),
+    "16": ("zelensky_2022_05_25.mp4", CUTS.get("zelensky_2022_05_25.mp4", 0.0)),
+    "20": ("wef_2023_b.mp4", CUTS.get("wef_2023_s20", 0.0)),
+    "22": ("economist_2023.mp4", CUTS.get("economist_2023.mp4", 0.0)),
+}
 
 
 def run(cmd):
@@ -101,7 +105,7 @@ def main():
         # оригинал на длину вставки
         name, start = INSERT_AUDIO.get(sc["id"], (None, 0.0))
         ins = os.path.join(tmp, "i_%s.wav" % sc["id"])
-        src = os.path.join(BIG_DIR, name) if name else None
+        src = C.apath(name) if name else None
         if src and os.path.exists(src):
             run([FF, "-nostdin", "-v", "error", "-y", "-ss", "%.3f" % start, "-t", "%.3f" % sc["insert"],
                  "-i", src, "-vn", "-ac", "2", "-ar", "48000",
@@ -120,16 +124,17 @@ def main():
     # 3. субтитры
     ass = os.path.join(tmp, "captions.ass")
     srt_shift(srt, scenes, ass)
+    if os.environ.get("KINO_NO_VIDEO"):
+        print("проба: звук и субтитры собраны в", tmp)
+        return
     # 4. склейка видео + звук + субтитры
     ass_f = ass.replace("\\", "/").replace(":", "\\:")
     run([FF, "-nostdin", "-hide_banner", "-loglevel", "error", "-y",
          "-f", "concat", "-safe", "0", "-i", lst, "-i", audio,
          "-vf", "ass='%s'" % ass_f,
          "-c:v", "libx264", "-preset", "medium", "-crf", "20", "-pix_fmt", "yuv420p",
-         "-c:a", "aac", "-b:a", "192k", "-shortest", "-movflags", "+faststart", out])
-    d = subprocess.run([FF.replace("ffmpeg", "ffprobe"), "-v", "error", "-show_entries", "format=duration",
-                        "-of", "csv=p=0", out], capture_output=True, text=True).stdout.strip()
-    print("готово:", out, "длительность", d, "с")
+         "-af", "apad", "-c:a", "aac", "-b:a", "192k", "-shortest", "-movflags", "+faststart", out])
+    print("готово:", out, os.path.getsize(out) // (1024 * 1024), "МБ")
 
 
 if __name__ == "__main__":

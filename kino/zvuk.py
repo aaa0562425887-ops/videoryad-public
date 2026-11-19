@@ -20,9 +20,8 @@ sys.path.insert(0, HERE)
 import core as C  # noqa: E402
 
 FF = C.ffmpeg()
-AG = os.path.expanduser("~/.claude/audio-gen")
-MUS = os.path.join(AG, "music")
-SFX = os.path.join(AG, "sfx")
+MUS = os.path.join(HERE, "zvuk", "music")
+SFX = os.path.join(HERE, "zvuk", "sfx")
 
 # акты → настроение темы (вариации одной темы: разные дорожки одного синтезатора)
 AKTY = [("01", "mystery"), ("04", "calm"), ("10", "tense"), ("19", "mystery"), ("24", "tense"), ("30", "calm")]
@@ -76,7 +75,7 @@ def main():
         t1 = scenes[AKTY[i + 1][0]]["film_start"] if i + 1 < len(AKTY) else total
         bounds.append((t0, t1, mood))
     for t0, t1, mood in bounds:
-        path = os.path.join(MUS, mood + ".wav")
+        path = os.path.join(MUS, mood + ".mp3")
         if not os.path.exists(path):
             continue
         dur = t1 - t0
@@ -89,7 +88,7 @@ def main():
     # звуки на движении
     for sid in order:
         for when, snd in EVENTS.get(sid, []):
-            path = os.path.join(SFX, snd + ".wav")
+            path = os.path.join(SFX, snd + ".mp3")
             if not os.path.exists(path):
                 continue
             rel = when if isinstance(when, (int, float)) else C.cue(sid, when, None)

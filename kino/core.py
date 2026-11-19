@@ -420,10 +420,10 @@ class Vid:
         self.dur = None
         if self.ok:
             try:
-                out = subprocess.run([ffmpeg().replace("ffmpeg", "ffprobe"), "-v", "error", "-show_entries",
-                                      "format=duration", "-of", "csv=p=0", self.path],
-                                     capture_output=True, text=True).stdout.strip()
-                self.dur = float(out)
+                import re as _re
+                err = subprocess.run([ffmpeg(), "-nostdin", "-i", self.path], capture_output=True, text=True).stderr
+                m = _re.search(r"Duration: (\d+):(\d+):(\d+\.?\d*)", err)
+                self.dur = int(m.group(1)) * 3600 + int(m.group(2)) * 60 + float(m.group(3)) if m else None
             except Exception:
                 self.dur = None
 
