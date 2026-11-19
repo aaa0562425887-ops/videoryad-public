@@ -417,6 +417,15 @@ class Vid:
         self.t_open = None
         self.last = None
         self.label = os.path.splitext(name)[0]
+        self.dur = None
+        if self.ok:
+            try:
+                out = subprocess.run([ffmpeg().replace("ffmpeg", "ffprobe"), "-v", "error", "-show_entries",
+                                      "format=duration", "-of", "csv=p=0", self.path],
+                                     capture_output=True, text=True).stdout.strip()
+                self.dur = float(out)
+            except Exception:
+                self.dur = None
 
     def _open(self, t):
         if self.p is not None:
@@ -431,8 +440,11 @@ class Vid:
             vf = "scale=%d:%d:force_original_aspect_ratio=increase,crop=%d:%d,crop=%d:%d:%d:%d" % (zw, zh, zw, zh, w, h, ox, oy)
         else:
             vf = "scale=%d:%d:force_original_aspect_ratio=decrease,pad=%d:%d:(ow-iw)/2:(oh-ih)/2:color=black" % (w, h, w, h)
+        ss = self.src_start + t
+        if self.dur:
+            ss = min(ss, max(0.0, self.dur - 0.6))   # за концом записи — держим её последний кадр
         self.p = subprocess.Popen(
-            [ffmpeg(), "-nostdin", "-loglevel", "error", "-ss", "%.3f" % (self.src_start + t),
+            [ffmpeg(), "-nostdin", "-loglevel", "error", "-ss", "%.3f" % ss,
              "-i", self.path, "-vf", vf + ",fps=%d" % self.fps,
              "-f", "rawvideo", "-pix_fmt", "rgb24", "-"],
             stdout=subprocess.PIPE, stderr=subprocess.DEVNULL, bufsize=10 ** 7)
@@ -455,11 +467,6 @@ class Vid:
                 break
             self.last = Image.frombytes("RGB", (w, h), raw)
             self.i += 1
-        if self.last is None and getattr(self, "eof", False) and self.t_open and self.t_open > 0.5:
-            # открылись за концом файла — возьмём последний кадр записи
-            self._open(max(0.0, self.t_open - 2.0))
-            self.eof = False
-            return self.at(t)
         return self.last if self.last is not None else placeholder(self.label, self.size)
 
 
