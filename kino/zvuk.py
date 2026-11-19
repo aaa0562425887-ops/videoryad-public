@@ -28,7 +28,7 @@ SFX = os.path.join(HERE, "zvuk", "sfx")
 AKTY = [("01", "eyes"), ("10", "topass"), ("13", "inception"), ("19", "eyes"),
         ("24", "immortality"), ("26", "topass"), ("28", "inception"), ("30", "immortality")]
 # «если сейчас это 100%, то процентов 20» → −14 дБ от его исходника; треки сперва выравниваются к −17 дБ средней
-MUSIC_DB = -14.0
+MUSIC_DB = -22.0   # 19.11 п.62: «если сейчас 100%, делай 40%» — было −14
 MEAN = {"eyes": -17.7, "topass": -14.1, "inception": -15.5, "immortality": -22.7, "mystery": -17.0, "calm": -17.0, "tense": -17.0}
 SFX_DB = -20.0     # «шелест… чуть тише» (п.4): было −14
 
