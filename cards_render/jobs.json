@@ -1,0 +1,68 @@
+[
+ {
+  "scene": 23,
+  "view": "zal_g44",
+  "dur": 7.0,
+  "anim": 7.0,
+  "tail_zoom": 0.045,
+  "watermark": "ПЛАНЕТА",
+  "channel": "ПЛАНЕТА",
+  "kwargs": {
+   "channel": "ПЛАНЕТА",
+   "dur": 7.0,
+   "sheets": [],
+   "text": "Дроны вырастут втрое",
+   "value": "×3",
+   "value_sub": "2027",
+   "watermark": "ПЛАНЕТА"
+  }
+ },
+ {
+  "scene": 25,
+  "view": "charts.waterfall",
+  "dur": 11.5,
+  "anim": 11.5,
+  "tail_zoom": 0.045,
+  "watermark": "ПЛАНЕТА",
+  "channel": "ПЛАНЕТА",
+  "kwargs": {
+   "start": {
+    "label": "иностранная помощь",
+    "value": 10.0
+   },
+   "steps": [
+    {
+     "label": "на дроны",
+     "value": -6.0
+    },
+    {
+     "label": "остальное",
+     "value": -4.0
+    }
+   ],
+   "end": {
+    "label": "ИТОГ"
+   },
+   "watermark": "ПЛАНЕТА"
+  }
+ },
+ {
+  "scene": 49,
+  "view": "zal_g48",
+  "dur": 7.4,
+  "anim": 7.4,
+  "tail_zoom": 0.045,
+  "watermark": "ПЛАНЕТА",
+  "channel": "ПЛАНЕТА",
+  "kwargs": {
+   "channel": "ПЛАНЕТА",
+   "dur": 7.4,
+   "sheets": [
+    "пустые кресла",
+    "эхо в зале"
+   ],
+   "text": "Изоляция без слушателей",
+   "watermark": "ПЛАНЕТА"
+  }
+ }
+]
