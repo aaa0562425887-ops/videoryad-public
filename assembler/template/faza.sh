@@ -308,6 +308,12 @@ final)
     cd "$PROJ" || exit 1
     step "selfcheck"        python3 "$T/selfcheck.py" "$SCENES" images
     step "обязательные"     python3 "$T/obyazatelno.py" "$SCENES" --gate dashboard
+    # 20.11, п.135: `dossier_use.py` раньше гонялся ТОЛЬКО в `podgotovka`,
+    # ДО фетча и до большинства правок — поздние замены кадров/источников
+    # (его слово про фото Каллас) уходили из-под этой проверки насовсем,
+    # находилось только по его прямой жалобе на готовом дашборде. Второй
+    # прогон здесь, перед самим дашбордом, ловит то, что изменилось позже.
+    step "материал досье (повтор)" python3 "$T/dossier_use.py" "$SCENES"
     step "слои на карточках" python3 "$T/cards_queue.py" --gate "$SCENES" "$PROJ"
     step "дедуп"            python3 "$T/autodedup.py" "$SCENES" images
     step "повтор кадров"    python3 "$T/povtor_kadrov.py" "$PROJ"
@@ -540,6 +546,14 @@ print(1 if any(str(s.get('source','')) == 'local_donor' for s in sc) else 0)
     READY=""
     SBORKA_BYLA=0          # шла ли в этот заход настоящая сборка
     T_SBORKI=0             # секунда, с которой начался заход в облако
+    # ЗАБОР ПЕРВЫМ ДЕЛОМ, ДО ПРОВЕРКИ ГОТОВНОСТИ (20.11, п.127/144/146, ТРИ
+    # живых случая за один день — usuario-3f/usuario-cb/координатор). Если
+    # кто-то раньше позвал `get.sh <имя>` ОТДЕЛЬНО (не через `sdacha`), файл
+    # осел в `<имя>-cloud`, а не в папке проекта — ниже `gotovyy_mp4` смотрит
+    # ТОЛЬКО папку проекта, видит пусто и уходит в ПОЛНУЮ ПЕРЕСБОРКУ поверх
+    # уже готового файла (15-30 минут впустую, иногда с зависшим git push).
+    # `zabrat_iz_zabora` уже умеет переносить — просто звать его раньше.
+    zabrat_iz_zabora "$QNAME" "$PROJ"
     if [ "${VIDEORYAD_SDACHA_REBUILD:-0}" != "1" ]; then
         READY="$(gotovyy_mp4 "$PROJ" || true)"
     fi
