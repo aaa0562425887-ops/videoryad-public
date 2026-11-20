@@ -1,0 +1,540 @@
+{
+ "channel": "ПЛАНЕТА",
+ "scenes": [
+  {
+   "id": 1,
+   "start_sec": 0.0,
+   "duration_sec": 9.1,
+   "text": "",
+   "source": "press_photo",
+   "source_query": "Кремль переговоры о мире стол флаги Россия Украина 2026"
+  },
+  {
+   "id": 2,
+   "start_sec": 9.1,
+   "duration_sec": 9.1,
+   "text": "",
+   "source": "direct_url",
+   "source_query": "https://cdn4.telesco.pe/file/5934d83948.mp4?token=OUSxhlm3gcT6HrYoa_rjjT8-iCdoTl0wWSrSwhsULWYoiR8iz4uab4IpdIM5cYiDYDIXso1726KjVTXXASkA03KuojmV7TxWEoS_qtw09xf8fhtzkVhuXD7N2WrB0kzPvua3UmtaU6ZTzNwbKNhufRU9Jb7cHyz_gXnlf5sHompgethagEH2vENBCBZsnMcIRp7yHrSzpglzZkpe0vmpwL4KqcYXGH0E8_LUYcC-hveLzHgtdgFVJ1ktmVZewb1MuAh-gGf3xw5RRSpRUg0nzhSvZMOYt3R_hwwdQWRgWP7iCx7IkKuT_V4lwdZePrqwC3_apNAB40W2AkFO0kvY5moJ_ZiJoUsod7VjBFkvMiLlOqg_jgoWxyorHRB4ufuUY0D3udXKTxbiqOYoYUtUMWtCP5cnTwYQtVZ-v4EjNC235wXNyjR4SHvHJNe9OV1uI8rvsQWkaUxXYn6vJv03SjshKI8877M6qht8tX8naWCI12WRlVXWNEatEBnhtLdxcGK0fQUN05j1VHxxYHtIccdPjMLTGq7UW1GLElJ0mWps2hmTw2sbxN7GSZAyYlUmnySAaUjk9fyXgTfRT_ez-EKRQyhCiOi6nS6P77N_ylioPiUFUtS80dkU0pjIMd8eiAXj2XF_oEGlyrohRY2m4Op_vj7gtd2-9czYoiHazz0",
+   "fx": "flash"
+  },
+  {
+   "id": 3,
+   "start_sec": 18.2,
+   "duration_sec": 8.8,
+   "text": "",
+   "source": "press_photo",
+   "source_query": "здание Министерства иностранных дел России Смоленская площадь"
+  },
+  {
+   "id": 4,
+   "start_sec": 27.0,
+   "duration_sec": 8.7,
+   "text": "",
+   "source": "direct_url",
+   "source_query": "https://cdn4.telesco.pe/file/d46ac3a849.mp4?token=tDhWo-I9XHVcybwVL9YwDjRLlPDS8mzQZbjhEpRb4XxrmiRd3sHrmVhflyfRzwc7ergQOj7KCLLDB5qXmzGqz83YHHNbFRotJltVJBhl3AXDzEh6aVMLglpWNsAvyuDf6VT-6YWO-9WV2eiIf7Y6kQotcs21wfrAn_B0NKfo7CdSUSZC7OfEE7CfLaIjrxmH9iAJ_LR_IMdmFjQpEofB-HJRvghx4egUyNycNjRFSiqglSnypjoauPfYUJxgua4ajayAeLSKdDpwet3NLsx9S9swRQOArPR9eHv5wSWlfEgEoaxTlfeMruTlQmSo-U0SHHaki5r2ujDMyHVyzWpAnA",
+   "fx": "depth"
+  },
+  {
+   "id": 5,
+   "start_sec": 35.7,
+   "duration_sec": 10.4,
+   "text": "",
+   "source": "press_photo",
+   "source_query": "Путин саммит Анкоридж встреча 2026"
+  },
+  {
+   "id": 6,
+   "start_sec": 46.1,
+   "duration_sec": 10.7,
+   "text": "",
+   "source": "direct_url",
+   "source_query": "https://cdn4.telesco.pe/file/432aca5648.mp4?token=HzcHBsZVnbDA6Nd3_SFo5kPCFxSozbvHoIZVQPKp0A3r3rFTeWPH4SF1cSRoCKvi2FX8KxMRNggVgfhrxPZyxfMMYL8CSUixmbqKNycQa3xmG0PExq17MLIGDVRnzqICgBgUy5vtV6km_Nrc2Uwb9SPsONUVsgB6g0R9j9-Iz_1r8rHcFfossRg879-pnSLz2uhra32j-NOnxG4c2YFscvg9lBZuW6INwQF7phP1T5h9-XnSK8DhAa17OzQjhXaAw9QgDv5fFpbpgkDkDYGxJGH1ewyn_D-XL-7Ke4JlLVPmfdV-QINX9cDVassI8CQgoD4Jo330sQrMwZCXVUTR7g",
+   "fx": "inset"
+  },
+  {
+   "id": 7,
+   "start_sec": 56.8,
+   "duration_sec": 9.1,
+   "text": "",
+   "source": "press_photo",
+   "source_query": "Крымский мост повреждения после удара 2026"
+  },
+  {
+   "id": 8,
+   "start_sec": 65.9,
+   "duration_sec": 10.1,
+   "text": "",
+   "source": "press_photo",
+   "source_query": "Кремль здание дипломатия переговоры 2026",
+   "fx": "mosaic"
+  },
+  {
+   "id": 9,
+   "start_sec": 76.0,
+   "duration_sec": 8.1,
+   "text": "",
+   "source": "press_photo",
+   "source_query": "Путин заявление соглашение компромисс пресс-конференция 2026"
+  },
+  {
+   "id": 10,
+   "start_sec": 84.1,
+   "duration_sec": 7.5,
+   "text": "",
+   "source": "press_photo",
+   "source_query": "Москва дипломаты встреча здание МИД России 2026",
+   "fx": "panels"
+  },
+  {
+   "id": 11,
+   "start_sec": 91.6,
+   "duration_sec": 11.2,
+   "text": "",
+   "source": "press_photo",
+   "source_query": "Кремль зал переговоров стол флаги 2026"
+  },
+  {
+   "id": 12,
+   "start_sec": 102.8,
+   "duration_sec": 11.3,
+   "text": "",
+   "source": "local_library",
+   "source_query": "БАЗА/ВЕДОМСТВА/МИНОБОРОНЫ-РОССИИ",
+   "fx": "tear"
+  },
+  {
+   "id": 13,
+   "start_sec": 114.1,
+   "duration_sec": 9.6,
+   "text": "",
+   "source": "press_photo",
+   "source_query": "Кремль пресс-конференция заявление прекращение огня 2026"
+  },
+  {
+   "id": 14,
+   "start_sec": 123.7,
+   "duration_sec": 8.8,
+   "text": "",
+   "source": "local_library",
+   "source_query": "ПОЛИТИКА/SVO",
+   "fx": "wipe"
+  },
+  {
+   "id": 15,
+   "start_sec": 132.5,
+   "duration_sec": 8.0,
+   "text": "",
+   "source": "direct_url",
+   "source_query": "https://cdn4.telesco.pe/file/ZzBoq9_qCTiPlpHgqKwUmYV0Htz77Wi72vXUDSxNL0RTrPKp52eNJCLx_RrQ2EuvI0ge9Dv3ldPoAWWcr1gdKr6dp3be_2l4zDSiz8j_JQClFUieZL1AoHB7AeQYOX2sHzDsPPLvVLHar-PbfqBQchcwR3wRl7Tk1tioM1rEYkjw1btolseCPn6WHJ7k-lTtLCJdWBBrAX006ACr0D2dzhpF--1ubDhBnx-g6N9Fq5aFQQYjTwUwbT51fcHach8EFjUtnbnC2AYT3agVqivfRBqoXH3qrJX8mcCzTV2jd_RQSoM0HHIShlqGm6TYBdHQ45ty3AHJac95FbmM0SoAYA.jpg"
+  },
+  {
+   "id": 16,
+   "start_sec": 140.5,
+   "duration_sec": 10.9,
+   "text": "",
+   "source": "local_library",
+   "source_query": "ПОЛИТИКА/ЗЕЛЕНСКИЙ"
+  },
+  {
+   "id": 17,
+   "start_sec": 151.4,
+   "duration_sec": 9.9,
+   "text": "",
+   "source": "local_library",
+   "source_query": "ПОЛИТИКА/ЕС-форумы-Украина"
+  },
+  {
+   "id": 18,
+   "start_sec": 161.3,
+   "duration_sec": 10.4,
+   "text": "",
+   "source": "press_photo",
+   "source_query": "Киев последствия ракетного удара ноябрь 2026"
+  },
+  {
+   "id": 19,
+   "start_sec": 171.7,
+   "duration_sec": 8.6,
+   "text": "",
+   "source": "direct_url",
+   "source_query": "https://cdn4.telesco.pe/file/BB3AmrCUklP2Vm9VXyARliBpOL7MuG8A4YAlj1hZO3TKEQer-XkdkFXn8tHO_QvJQy56-p_853jQGtpsCTW-oLRNAOpUCjZJHs6dBH4o6lvMPs4N0h5cWkTN6e4kM57mkR71A05_mgwNDtH_mZS6Jm8yqyOCkXU9JVU1xMkBEkbMJrAyjWYCscW6HgM9RUTHTdXO4Jdm6XJoM0BNtKwOdM72wmoWaH5kDlvwwd8-E6dtLHVtuIhbb-7RP3hkyJsTIo-ZktOPeZaVXHTcqh0pGMJFK84deXp5ZSNGW0PlRGDBxF73sinosEmUavnUKVnYzMnTCftlYBLf6T0wR5o-EA.jpg"
+  },
+  {
+   "id": 20,
+   "start_sec": 180.3,
+   "duration_sec": 7.2,
+   "text": "",
+   "source": "press_photo",
+   "source_query": "здание Министерства обороны России фасад флаг 2026"
+  },
+  {
+   "id": 21,
+   "start_sec": 187.5,
+   "duration_sec": 7.3,
+   "text": "",
+   "source": "press_photo",
+   "source_query": "Киев оценка последствий ночного удара ноябрь 2026"
+  },
+  {
+   "id": 22,
+   "start_sec": 194.8,
+   "duration_sec": 10.7,
+   "text": "",
+   "source": "card:globus_map",
+   "source_query": "карточка «globus_map» — кадр рисуется в облаке, фетч не нужен"
+  },
+  {
+   "id": 23,
+   "start_sec": 205.5,
+   "duration_sec": 7.0,
+   "text": "",
+   "source": "direct_url",
+   "source_query": "https://cdn4.telesco.pe/file/T7YPqg4-H3EytQ2TRt3r71F9no0zQ_REKEcNKXksmhElvmi1Xw4-TyfV5mE2-V4Y7cZ5lV5KQ6eRy4SR-87Lz4bUSYZcK9cHGyVO45eFBYynWCUEOc3CKveMQJ2C-H7ujxPM6JDzmk5feuj2a9sqcQ6qKYZ774Pd7oy6-Hd_1wB_bfizao_qmfDnO7BVn0vHGhu1ioBCrZ3eARAP83yv15X1ZMKZcoviuYgXOm0WIyXPO-e4-KfmhJh0qpLka0dpmdX8ygAVgfD6PIkILP69bYp85BRhBmxD9LeGSo_MGANJTVnTrLuSCWtL5w5pB9VTZiSJakibCA4cYXfMJVn5BA.jpg"
+  },
+  {
+   "id": 24,
+   "start_sec": 212.5,
+   "duration_sec": 13.0,
+   "text": "",
+   "source": "press_photo",
+   "source_query": "беспилотники ВСУ производство испытания 2026"
+  },
+  {
+   "id": 25,
+   "start_sec": 225.5,
+   "duration_sec": 11.5,
+   "text": "",
+   "source": "press_photo",
+   "source_query": "беспилотник дрон типы фронт Украина 2026"
+  },
+  {
+   "id": 26,
+   "start_sec": 237.0,
+   "duration_sec": 6.9,
+   "text": "",
+   "source": "press_photo",
+   "source_query": "военное предприятие Украина удар последствия 2026"
+  },
+  {
+   "id": 27,
+   "start_sec": 243.9,
+   "duration_sec": 11.5,
+   "text": "",
+   "source": "press_photo",
+   "source_query": "военный завод Украины сборочный цех 2026"
+  },
+  {
+   "id": 28,
+   "start_sec": 255.4,
+   "duration_sec": 7.3,
+   "text": "",
+   "source": "press_photo",
+   "source_query": "переговоры мирный процесс стол флаги Украина Россия 2026"
+  },
+  {
+   "id": 29,
+   "start_sec": 262.7,
+   "duration_sec": 6.5,
+   "text": "",
+   "source": "press_photo",
+   "source_query": "авиационный двигатель завод производство беспилотник Украина 2026"
+  },
+  {
+   "id": 30,
+   "start_sec": 269.2,
+   "duration_sec": 14.4,
+   "text": "",
+   "source": "press_photo",
+   "source_query": "здание Министерства финансов Украины фасад вход 2026"
+  },
+  {
+   "id": 31,
+   "start_sec": 283.6,
+   "duration_sec": 8.7,
+   "text": "",
+   "source": "card:split",
+   "source_query": "карточка «split» — кадр рисуется в облаке, фетч не нужен"
+  },
+  {
+   "id": 32,
+   "start_sec": 292.3,
+   "duration_sec": 12.2,
+   "text": "",
+   "source": "press_photo",
+   "source_query": "Эммануэль Макрон заявление НАТО Украина 2026"
+  },
+  {
+   "id": 33,
+   "start_sec": 304.5,
+   "duration_sec": 7.0,
+   "text": "",
+   "source": "press_photo",
+   "source_query": "Кремль МИД России реакция заявление НАТО 2026"
+  },
+  {
+   "id": 34,
+   "start_sec": 311.5,
+   "duration_sec": 9.5,
+   "text": "",
+   "source": "card:vyrezka_kontur",
+   "source_query": "карточка «vyrezka_kontur» — кадр рисуется в облаке, фетч не нужен"
+  },
+  {
+   "id": 35,
+   "start_sec": 321.0,
+   "duration_sec": 9.9,
+   "text": "",
+   "source": "press_photo",
+   "source_query": "пресс-служба Кремля заявление НАТО Украина 2026"
+  },
+  {
+   "id": 36,
+   "start_sec": 330.9,
+   "duration_sec": 6.6,
+   "text": "",
+   "source": "press_photo",
+   "source_query": "переговоры раунд встреча дипломаты Россия Украина 2026"
+  },
+  {
+   "id": 37,
+   "start_sec": 337.5,
+   "duration_sec": 9.1,
+   "text": "",
+   "source": "press_photo",
+   "source_query": "Елисейский дворец Макрон заявление курс НАТО 2026"
+  },
+  {
+   "id": 38,
+   "start_sec": 346.6,
+   "duration_sec": 7.6,
+   "text": "",
+   "source": "press_photo",
+   "source_query": "Эммануэль Макрон Киев НАТО заявление 2026"
+  },
+  {
+   "id": 39,
+   "start_sec": 354.2,
+   "duration_sec": 13.1,
+   "text": "",
+   "source": "press_photo",
+   "source_query": "здание Европейского совета Брюссель заседание НАТО 2026"
+  },
+  {
+   "id": 40,
+   "start_sec": 367.3,
+   "duration_sec": 9.5,
+   "text": "",
+   "source": "press_photo",
+   "source_query": "саммит НАТО Брюссель зал заседаний 2026"
+  },
+  {
+   "id": 41,
+   "start_sec": 376.8,
+   "duration_sec": 9.0,
+   "text": "",
+   "source": "press_photo",
+   "source_query": "военные НАТО патруль граница Европа 2026"
+  },
+  {
+   "id": 42,
+   "start_sec": 385.8,
+   "duration_sec": 8.0,
+   "text": "",
+   "source": "press_photo",
+   "source_query": "дипломаты переговоры стол Брюссель 2026"
+  },
+  {
+   "id": 43,
+   "start_sec": 393.8,
+   "duration_sec": 6.6,
+   "text": "",
+   "source": "press_photo",
+   "source_query": "совет Евросоюза заседание зал Брюссель 2026"
+  },
+  {
+   "id": 44,
+   "start_sec": 400.4,
+   "duration_sec": 12.1,
+   "text": "",
+   "source": "card:tape",
+   "source_query": "карточка «tape» — кадр рисуется в облаке, фетч не нужен"
+  },
+  {
+   "id": 45,
+   "start_sec": 412.5,
+   "duration_sec": 9.5,
+   "text": "",
+   "source": "press_photo",
+   "source_query": "Украина дальнобойные ракеты производство 2026"
+  },
+  {
+   "id": 46,
+   "start_sec": 422.0,
+   "duration_sec": 11.3,
+   "text": "",
+   "source": "press_photo",
+   "source_query": "Эммануэль Макрон Елисейский дворец заявление 2026"
+  },
+  {
+   "id": 47,
+   "start_sec": 433.3,
+   "duration_sec": 13.3,
+   "text": "",
+   "source": "press_photo",
+   "source_query": "Кая Каллас выступление Евросоюз 2026"
+  },
+  {
+   "id": 48,
+   "start_sec": 446.6,
+   "duration_sec": 9.8,
+   "text": "",
+   "source": "press_photo",
+   "source_query": "пустой зал заседания Евросоюз конференция 2026"
+  },
+  {
+   "id": 49,
+   "start_sec": 456.4,
+   "duration_sec": 7.4,
+   "text": "",
+   "source": "press_photo",
+   "source_query": "пустые кресла зал заседаний Брюссель 2026"
+  },
+  {
+   "id": 50,
+   "start_sec": 463.8,
+   "duration_sec": 9.0,
+   "text": "",
+   "source": "card:pull",
+   "source_query": "карточка «pull» — кадр рисуется в облаке, фетч не нужен"
+  },
+  {
+   "id": 51,
+   "start_sec": 472.8,
+   "duration_sec": 10.2,
+   "text": "",
+   "source": "card:marker_serif",
+   "source_query": "карточка «marker_serif» — кадр рисуется в облаке, фетч не нужен"
+  },
+  {
+   "id": 52,
+   "start_sec": 483.0,
+   "duration_sec": 14.8,
+   "text": "",
+   "source": "press_photo",
+   "source_query": "логистический узел Украина удар последствия 2026"
+  },
+  {
+   "id": 53,
+   "start_sec": 497.8,
+   "duration_sec": 10.2,
+   "text": "",
+   "source": "press_photo",
+   "source_query": "саммит НАТО Украина членство обсуждение 2026"
+  },
+  {
+   "id": 54,
+   "start_sec": 508.0,
+   "duration_sec": 10.4,
+   "text": "",
+   "source": "card:pechat",
+   "source_query": "карточка «pechat» — кадр рисуется в облаке, фетч не нужен"
+  },
+  {
+   "id": 55,
+   "start_sec": 518.4,
+   "duration_sec": 11.8,
+   "text": "",
+   "source": "press_photo",
+   "source_query": "передовая линия фронта Украина позиции военных 2026"
+  },
+  {
+   "id": 56,
+   "start_sec": 530.2,
+   "duration_sec": 5.8,
+   "text": "",
+   "source": "press_photo",
+   "source_query": "переговоры дипломаты встреча стол Россия Украина 2026"
+  },
+  {
+   "id": 57,
+   "start_sec": 536.0,
+   "duration_sec": 5.6,
+   "text": "",
+   "source": "card:film",
+   "source_query": "карточка «film» — кадр рисуется в облаке, фетч не нужен"
+  },
+  {
+   "id": 58,
+   "start_sec": 541.6,
+   "duration_sec": 11.9,
+   "text": "",
+   "source": "press_photo",
+   "source_query": "пресс-конференция обвинение дипломат заявление 2026"
+  },
+  {
+   "id": 59,
+   "start_sec": 553.5,
+   "duration_sec": 4.5,
+   "text": "",
+   "source": "press_photo",
+   "source_query": "колонна бронетехники ВСУ на полигоне 2026"
+  },
+  {
+   "id": 60,
+   "start_sec": 558.0,
+   "duration_sec": 10.4,
+   "text": "",
+   "source": "press_photo",
+   "source_query": "военный завод Украины испытательный полигон 2026"
+  },
+  {
+   "id": 61,
+   "start_sec": 568.4,
+   "duration_sec": 5.7,
+   "text": "",
+   "source": "press_photo",
+   "source_query": "пресс-центр МИД брифинг заявление дипломат 2026"
+  },
+  {
+   "id": 62,
+   "start_sec": 574.1,
+   "duration_sec": 5.0,
+   "text": "",
+   "source": "press_photo",
+   "source_query": "трансформаторная подстанция инфраструктура Украина повреждения 2026"
+  },
+  {
+   "id": 63,
+   "start_sec": 579.1,
+   "duration_sec": 10.9,
+   "text": "",
+   "source": "press_photo",
+   "source_query": "саммит дипломаты рукопожатие Россия Украина 2026"
+  },
+  {
+   "id": 64,
+   "start_sec": 590.0,
+   "duration_sec": 11.2,
+   "text": "",
+   "source": "press_photo",
+   "source_query": "пресс-конференция МИД России заявление 2026"
+  },
+  {
+   "id": 65,
+   "start_sec": 601.2,
+   "duration_sec": 7.2,
+   "text": "",
+   "source": "press_photo",
+   "source_query": "колонна грузовиков с вооружением ВСУ на территории части 2026"
+  },
+  {
+   "id": 66,
+   "start_sec": 608.4,
+   "duration_sec": 12.32,
+   "text": "",
+   "source": "press_photo",
+   "source_query": "военный завод цех производство Украина 2026"
+  }
+ ]
+}
