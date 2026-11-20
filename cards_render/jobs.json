@@ -1,156 +1,155 @@
 [
  {
-  "scene": 52,
-  "view": "sceny.prohod",
+  "scene": 22,
+  "view": "sceny.globus_map",
   "mode": "cli",
   "script": "sceny_cli.py",
-  "dur": 9.8,
+  "dur": 10.7,
   "channel": "ПЛАНЕТА",
   "watermark": "ПЛАНЕТА",
   "cfg": {
-   "view": "prohod",
-   "seconds": 9.8,
+   "view": "globus",
+   "seconds": 10.7,
    "fps": 30,
    "t0": 0.0,
    "kwargs": {
-    "text": "Описание плана кинематографично",
+    "text": "Украинский министр обороны объявил",
     "channel": "ПЛАНЕТА",
     "watermark": "ПЛАНЕТА",
-    "dur": 9.8,
-    "tezisy": [
-     "Цель",
-     "Направление",
-     "Роли мнимых диверсантов",
-     "Результат"
-    ]
+    "dur": 10.7,
+    "region": "Украина"
    }
   },
   "kwargs": {
-   "text": "Описание плана кинематографично",
+   "text": "Украинский министр обороны объявил",
    "channel": "ПЛАНЕТА",
    "watermark": "ПЛАНЕТА",
-   "dur": 9.8,
-   "tezisy": [
-    "Цель",
-    "Направление",
-    "Роли мнимых диверсантов",
-    "Результат"
-   ]
+   "dur": 10.7,
+   "region": "Украина"
   }
  },
  {
-  "scene": 53,
-  "view": "photo",
-  "dur": 13.1,
-  "anim": 13.1,
-  "tail_zoom": 0.0,
+  "scene": 31,
+  "view": "split",
+  "dur": 8.7,
+  "anim": 2.6,
+  "tail_zoom": 0.045,
   "watermark": "ПЛАНЕТА",
   "channel": "ПЛАНЕТА",
   "kwargs": {
-   "kick": "Польша · операция",
-   "watermark": "ПЛАНЕТА",
-   "photo": "cards/photo/card_053.jpg",
-   "lines": [
-    "Кто готовил нападение — не уточняется",
-    "Где задержаны исполнители — не уточняется",
-    "Каким способом остановили — не уточняется"
-   ]
+   "text": "На этом фоне Макрон предлагает вернуться к вопросу о вступлении Украины в НАТО",
+   "photo": "cards/photo/card_031.jpg",
+   "watermark": "ПЛАНЕТА"
+  }
+ },
+ {
+  "scene": 34,
+  "view": "vyrezka.figura",
+  "dur": 9.5,
+  "anim": 2.6,
+  "tail_zoom": 0.045,
+  "watermark": "ПЛАНЕТА",
+  "channel": "ПЛАНЕТА",
+  "kwargs": {
+   "photo": "cards/photo/card_034.jpg",
+   "author": "Макрон",
+   "title": "Вдруг слово нет за ночь поменяло",
+   "watermark": "ПЛАНЕТА"
+  }
+ },
+ {
+  "scene": 44,
+  "view": "tape",
+  "dur": 12.1,
+  "anim": 2.4,
+  "tail_zoom": 0.04,
+  "watermark": "ПЛАНЕТА",
+  "channel": "ПЛАНЕТА",
+  "kwargs": {
+   "text": "Все используют одно слово, но вкладывают в него разные результаты",
+   "accent": "результаты",
+   "watermark": "ПЛАНЕТА"
+  }
+ },
+ {
+  "scene": 50,
+  "view": "pull",
+  "dur": 9.0,
+  "anim": 2.6,
+  "tail_zoom": 0.05,
+  "watermark": "ПЛАНЕТА",
+  "channel": "ПЛАНЕТА",
+  "kwargs": {
+   "text": "Ещё немного, и эхо тоже попросят подтвердить присутствие",
+   "accent": "присутствие",
+   "watermark": "ПЛАНЕТА"
+  }
+ },
+ {
+  "scene": 51,
+  "view": "marker_serif",
+  "dur": 10.2,
+  "anim": 2.6,
+  "tail_zoom": 0.045,
+  "watermark": "ПЛАНЕТА",
+  "channel": "ПЛАНЕТА",
+  "kwargs": {
+   "text": "Этот разрыв всё точнее описывает происходящее",
+   "accent": "происходящее",
+   "watermark": "ПЛАНЕТА"
   }
  },
  {
   "scene": 54,
-  "view": "charts.slope",
-  "dur": 8.4,
-  "anim": 8.4,
-  "tail_zoom": 0.045,
-  "watermark": "ПЛАНЕТА",
-  "channel": "ПЛАНЕТА",
-  "kwargs": {
-   "items": [
-    {
-     "label": "Сценарий",
-     "from": 1.0,
-     "to": 1.0,
-     "to_label": "Развязка"
-    },
-    {
-     "label": "Угроза",
-     "from": 1.0,
-     "to": 1.0,
-     "to_label": "Молчание"
-    }
-   ],
-   "left_label": "Показано",
-   "right_label": "Скрыто",
-   "title": "Польское усиление остаётся",
-   "source": "СМИ",
-   "sobytiya": true,
-   "watermark": "ПЛАНЕТА"
-  }
- },
- {
-  "scene": 65,
-  "view": "sceny.kreslo",
+  "view": "sceny.pechat",
   "mode": "cli",
   "script": "sceny_cli.py",
-  "dur": 13.4,
+  "dur": 10.4,
   "channel": "ПЛАНЕТА",
   "watermark": "ПЛАНЕТА",
   "cfg": {
-   "view": "kreslo",
-   "seconds": 13.4,
+   "view": "pechat",
+   "seconds": 10.4,
    "fps": 30,
    "t0": 0.0,
    "kwargs": {
-    "text": "Планы допускают потерю территории",
+    "text": "Никакого логического чуда здесь нет",
     "channel": "ПЛАНЕТА",
     "watermark": "ПЛАНЕТА",
-    "dur": 13.4,
-    "role": "правительство в изгнании"
+    "dur": 10.4,
+    "stamp": "утверждено"
    }
   },
   "kwargs": {
-   "text": "Планы допускают потерю территории",
+   "text": "Никакого логического чуда здесь нет",
    "channel": "ПЛАНЕТА",
    "watermark": "ПЛАНЕТА",
-   "dur": 13.4,
-   "role": "правительство в изгнании"
+   "dur": 10.4,
+   "stamp": "утверждено"
   }
  },
  {
-  "scene": 66,
-  "view": "duel",
-  "dur": 11.7,
-  "anim": 11.7,
-  "tail_zoom": 0.035,
-  "watermark": "ПЛАНЕТА",
-  "channel": "ПЛАНЕТА",
-  "kwargs": {
-   "top": {
-    "who": "",
-    "text": "Большая европейская война не включается одной кнопкой",
-    "accent": null,
-    "source": ""
-   },
-   "bottom": {
-    "who": "",
-    "text": "Её не запускает один поджог, переход или публикация",
-    "accent": null,
-    "source": ""
-   },
-   "watermark": "ПЛАНЕТА"
-  }
- },
- {
-  "scene": 69,
-  "view": "marker_serif",
-  "dur": 11.3,
-  "anim": 11.3,
+  "scene": 57,
+  "view": "film.film_strip",
+  "dur": 5.6,
+  "anim": 5.6,
   "tail_zoom": 0.045,
   "watermark": "ПЛАНЕТА",
   "channel": "ПЛАНЕТА",
   "kwargs": {
-   "text": "Каждый шаг выглядит небольшим, пока лестница не ведёт на крышу",
+   "shots": [
+    "cards/photo/card_057.jpg",
+    "cards/photo/card_057_2.jpg",
+    "cards/photo/card_057_3.jpg",
+    "cards/photo/card_057_4.jpg"
+   ],
+   "title": "КАКИЕ",
+   "captions": [
+    "Зеленский-Турция-3",
+    "Зеленский-Турция-3",
+    "Зеленский-Турция-3",
+    "Зеленский-Турция-3"
+   ],
    "watermark": "ПЛАНЕТА"
   }
  }
