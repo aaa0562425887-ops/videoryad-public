@@ -1,0 +1,449 @@
+[
+ {
+  "scene": 2,
+  "view": "zal_g44",
+  "dur": 9.8,
+  "anim": 9.8,
+  "tail_zoom": 0.045,
+  "watermark": "ПЛАНЕТА",
+  "channel": "ПЛАНЕТА",
+  "kwargs": {
+   "channel": "ПЛАНЕТА",
+   "dur": 9.8,
+   "sheets": [],
+   "text": "Без них не решается",
+   "value": "2",
+   "value_sub": "СОПЕРНИКА",
+   "watermark": "ПЛАНЕТА"
+  }
+ },
+ {
+  "scene": 3,
+  "view": "paper_typed",
+  "dur": 10.0,
+  "anim": 2.8,
+  "tail_zoom": 0.04,
+  "watermark": "ПЛАНЕТА",
+  "channel": "ПЛАНЕТА",
+  "kwargs": {
+   "text": "Кого ещё недавно требовал изолировать и сдерживать",
+   "watermark": "ПЛАНЕТА"
+  }
+ },
+ {
+  "scene": 4,
+  "view": "sceny.prolog",
+  "mode": "cli",
+  "script": "sceny_cli.py",
+  "dur": 9.6,
+  "channel": "ПЛАНЕТА",
+  "watermark": "ПЛАНЕТА",
+  "cfg": {
+   "view": "prolog",
+   "seconds": 9.6,
+   "fps": 30,
+   "t0": 0.0,
+   "kwargs": {
+    "text": "АМЕРИКА — КОЛОССАЛЬНАЯ СИЛА",
+    "channel": "ПЛАНЕТА",
+    "watermark": "ПЛАНЕТА",
+    "dur": 9.6
+   }
+  },
+  "kwargs": {
+   "text": "АМЕРИКА — КОЛОССАЛЬНАЯ СИЛА",
+   "channel": "ПЛАНЕТА",
+   "watermark": "ПЛАНЕТА",
+   "dur": 9.6
+  }
+ },
+ {
+  "scene": 6,
+  "view": "cinematic.depth_of_field",
+  "dur": 10.0,
+  "anim": 10.0,
+  "tail_zoom": 0.0,
+  "watermark": "ПЛАНЕТА",
+  "channel": "ПЛАНЕТА",
+  "kwargs": {
+   "photo": "cards/photo/card_006.jpg",
+   "title": "Трамп выступает",
+   "watermark": "ПЛАНЕТА"
+  },
+  "mode": "frame"
+ },
+ {
+  "scene": 7,
+  "view": "film.film_strip",
+  "dur": 9.6,
+  "anim": 9.6,
+  "tail_zoom": 0.045,
+  "watermark": "ПЛАНЕТА",
+  "channel": "ПЛАНЕТА",
+  "kwargs": {
+   "shots": [
+    "cards/photo/card_007.jpg",
+    "cards/photo/card_007_2.jpg",
+    "cards/photo/card_007_3.jpg"
+   ],
+   "title": "ТРИ СИЛЬНЕЙШИЕ ДЕРЖАВЫ",
+   "captions": [
+    "Москва",
+    "Пекин",
+    "Вашингтон"
+   ],
+   "watermark": "ПЛАНЕТА"
+  }
+ },
+ {
+  "scene": 8,
+  "view": "photo",
+  "dur": 9.8,
+  "anim": 9.8,
+  "tail_zoom": 0.0,
+  "watermark": "ПЛАНЕТА",
+  "channel": "ПЛАНЕТА",
+  "kwargs": {
+   "watermark": "ПЛАНЕТА",
+   "photo": "cards/photo/card_008.jpg",
+   "title": "Кресло арбитра",
+   "lines": [
+    "Вашингтон держал роль арбитра",
+    "Теперь садится рядом с обоими"
+   ]
+  }
+ },
+ {
+  "scene": 9,
+  "view": "film.film_single",
+  "dur": 10.0,
+  "anim": 2.6,
+  "tail_zoom": 0.045,
+  "watermark": "ПЛАНЕТА",
+  "channel": "ПЛАНЕТА",
+  "kwargs": {
+   "photo": "cards/photo/card_009.jpg",
+   "title": "СТАРЫЙ МИРОВОЙ ПОРЯДОК",
+   "watermark": "ПЛАНЕТА"
+  }
+ },
+ {
+  "scene": 10,
+  "view": "charts.slope",
+  "dur": 9.6,
+  "anim": 2.6,
+  "tail_zoom": 0.045,
+  "watermark": "ПЛАНЕТА",
+  "channel": "ПЛАНЕТА",
+  "kwargs": {
+   "items": [
+    {
+     "label": "Один распорядитель",
+     "from": 1.0,
+     "to": 1.0,
+     "to_label": "Три распорядителя"
+    },
+    {
+     "label": "Старые правила",
+     "from": 1.0,
+     "to": 1.0,
+     "to_label": "Новые правила"
+    }
+   ],
+   "left_label": "БЫЛО",
+   "right_label": "СТАЛО",
+   "source": "по итогам встречи",
+   "sobytiya": true,
+   "watermark": "ПЛАНЕТА"
+  }
+ },
+ {
+  "scene": 11,
+  "view": "charts.map_dist",
+  "dur": 9.8,
+  "anim": 2.6,
+  "tail_zoom": 0.045,
+  "watermark": "ПЛАНЕТА",
+  "channel": "ПЛАНЕТА",
+  "kwargs": {
+   "points": [
+    {
+     "label": "Париж",
+     "lat": 48.8566,
+     "lon": 2.3522,
+     "accent": true
+    },
+    {
+     "label": "Лондон",
+     "lat": 51.5074,
+     "lon": -0.1278,
+     "accent": true
+    }
+   ],
+   "admin": "Франция",
+   "place": "Франция",
+   "watermark": "ПЛАНЕТА"
+  }
+ },
+ {
+  "scene": 12,
+  "view": "cinematic.evidence_wall",
+  "dur": 10.0,
+  "anim": 10.0,
+  "tail_zoom": 0.0,
+  "watermark": "ПЛАНЕТА",
+  "channel": "ПЛАНЕТА",
+  "kwargs": {
+   "shots": [
+    [
+     "cards/photo/card_012.jpg",
+     240,
+     380,
+     -4,
+     "Лига Наций"
+    ],
+    [
+     "cards/photo/card_012_2.jpg",
+     800,
+     380,
+     3,
+     "Устав ООН"
+    ]
+   ],
+   "title": "Правила меняются",
+   "watermark": "ПЛАНЕТА"
+  },
+  "mode": "frame"
+ },
+ {
+  "scene": 13,
+  "view": "torn_split.torn_split",
+  "dur": 9.6,
+  "anim": 2.6,
+  "tail_zoom": 0.045,
+  "watermark": "ПЛАНЕТА",
+  "channel": "ПЛАНЕТА",
+  "kwargs": {
+   "a_path": "cards/photo/card_013.jpg",
+   "b_path": "cards/photo/card_013_2.jpg",
+   "watermark": "ПЛАНЕТА"
+  }
+ },
+ {
+  "scene": 14,
+  "view": "sceny.repliki",
+  "mode": "cli",
+  "script": "sceny_cli.py",
+  "dur": 9.8,
+  "channel": "ПЛАНЕТА",
+  "watermark": "ПЛАНЕТА",
+  "cfg": {
+   "view": "repliki",
+   "seconds": 9.8,
+   "fps": 30,
+   "t0": 0.0,
+   "kwargs": {
+    "text": "НАЧАЛО ПОСТОЯННОГО ФОРМАТА",
+    "channel": "ПЛАНЕТА",
+    "watermark": "ПЛАНЕТА",
+    "dur": 9.8,
+    "repliki_": [
+     "Трамп|Путин настроен на соглашение",
+     "Дональд Туск|Бог уберёг бы Польшу от таких друзей",
+     "Джаред Кушнер|Трамп прекратил бы поставки оружия",
+     "западные специалисты|Москва проверяла реакцию НАТО"
+    ]
+   }
+  },
+  "kwargs": {
+   "text": "НАЧАЛО ПОСТОЯННОГО ФОРМАТА",
+   "channel": "ПЛАНЕТА",
+   "watermark": "ПЛАНЕТА",
+   "dur": 9.8,
+   "repliki_": [
+    "Трамп|Путин настроен на соглашение",
+    "Дональд Туск|Бог уберёг бы Польшу от таких друзей",
+    "Джаред Кушнер|Трамп прекратил бы поставки оружия",
+    "западные специалисты|Москва проверяла реакцию НАТО"
+   ]
+  }
+ },
+ {
+  "scene": 15,
+  "view": "cinematic.dossier",
+  "dur": 10.0,
+  "anim": 10.0,
+  "tail_zoom": 0.045,
+  "watermark": "ПЛАНЕТА",
+  "channel": "ПЛАНЕТА",
+  "kwargs": {
+   "rows": [
+    "учреждение — Европарламент",
+    "место — Страсбург",
+    "статус — институт ЕС",
+    "роль в теме — не упомянут в декларации трёх"
+   ],
+   "kick": "Европарламент",
+   "title": "Европарламент",
+   "photo": "cards/photo/card_015.jpg",
+   "stamp": "ПЕРВОИСТОЧНИК",
+   "watermark": "ПЛАНЕТА"
+  }
+ },
+ {
+  "scene": 16,
+  "view": "bars",
+  "dur": 9.8,
+  "anim": 9.8,
+  "tail_zoom": 0.0,
+  "watermark": "ПЛАНЕТА",
+  "channel": "ПЛАНЕТА",
+  "kwargs": {},
+  "mode": "cli",
+  "script": "build_chart_bars.py",
+  "cfg": {
+   "title": "Кто за реформу ООН",
+   "caption": "",
+   "seconds": 9.8,
+   "bars": [
+    {
+     "label": "РОССИЯ",
+     "value": 0.9,
+     "color": "4A90E2"
+    },
+    {
+     "label": "КИТАЙ",
+     "value": 0.85,
+     "color": "48BB78"
+    },
+    {
+     "label": "США",
+     "value": 0.8,
+     "color": "84848A"
+    },
+    {
+     "label": "ФРАНЦИЯ",
+     "value": 0.3,
+     "color": "E8E8E8"
+    },
+    {
+     "label": "ВЕЛИКОБРИТАНИЯ",
+     "value": 0.3,
+     "color": "4A90E2"
+    }
+   ]
+  }
+ },
+ {
+  "scene": 34,
+  "view": "zal_kub",
+  "dur": 11.4,
+  "anim": 2.6,
+  "tail_zoom": 0.045,
+  "watermark": "ПЛАНЕТА",
+  "channel": "ПЛАНЕТА",
+  "kwargs": {
+   "channel": "ПЛАНЕТА",
+   "dur": 11.4,
+   "sheets": [],
+   "text": "Китай предложил полный запрет",
+   "accent": "запрет",
+   "kick": "ядерное оружие",
+   "watermark": "ПЛАНЕТА"
+  }
+ },
+ {
+  "scene": 43,
+  "view": "vyrezka.figura",
+  "dur": 12.6,
+  "anim": 2.6,
+  "tail_zoom": 0.045,
+  "watermark": "ПЛАНЕТА",
+  "channel": "ПЛАНЕТА",
+  "kwargs": {
+   "photo": "cards/photo/card_043.jpg",
+   "author": "Дональд Туск",
+   "role": "премьер-министр Польши",
+   "watermark": "ПЛАНЕТА"
+  }
+ },
+ {
+  "scene": 46,
+  "view": "paper_hand",
+  "dur": 12.0,
+  "anim": 2.8,
+  "tail_zoom": 0.04,
+  "watermark": "ПЛАНЕТА",
+  "channel": "ПЛАНЕТА",
+  "kwargs": {
+   "text": "Вашингтон хочет завершения конфликта, но американское оружие всё ещё уходит покупателю",
+   "watermark": "ПЛАНЕТА"
+  }
+ },
+ {
+  "scene": 62,
+  "view": "poster.poster",
+  "dur": 12.3,
+  "anim": 12.3,
+  "tail_zoom": 0.0,
+  "watermark": "ПЛАНЕТА",
+  "channel": "ПЛАНЕТА",
+  "kwargs": {
+   "title": "Звонок из самолёта",
+   "hero_photo": "cards/photo/card_062.jpg",
+   "bottom": "Деньги не главная тема разговора",
+   "facts": [
+    {
+     "label": "кто",
+     "value": "Трамп"
+    },
+    {
+     "label": "кому",
+     "value": "Джаред Кушнер"
+    },
+    {
+     "label": "где",
+     "value": "Берлин, совещание"
+    },
+    {
+     "label": "о чём",
+     "value": "70 млрд евро"
+    }
+   ],
+   "watermark": "ПЛАНЕТА"
+  },
+  "mode": "frame"
+ },
+ {
+  "scene": 64,
+  "view": "vyrezka.gazeta",
+  "dur": 11.4,
+  "anim": 2.6,
+  "tail_zoom": 0.045,
+  "watermark": "ПЛАНЕТА",
+  "channel": "ПЛАНЕТА",
+  "kwargs": {
+   "photo": "cards/photo/card_064.jpg",
+   "author": "Дональд Трамп",
+   "role": "президент США",
+   "watermark": "ПЛАНЕТА"
+  }
+ },
+ {
+  "scene": 72,
+  "view": "devices.device_scene",
+  "dur": 12.3,
+  "anim": 2.6,
+  "tail_zoom": 0.045,
+  "watermark": "ПЛАНЕТА",
+  "channel": "ПЛАНЕТА",
+  "kwargs": {
+   "content_path": "cards/photo/card_072.jpg",
+   "items": [
+    "Платёж — экономия",
+    "Терминал — украинский вопрос"
+   ],
+   "watermark": "ПЛАНЕТА"
+  }
+ }
+]
