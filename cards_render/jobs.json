@@ -1,0 +1,19 @@
+[
+ {
+  "scene": 72,
+  "view": "devices.device_scene",
+  "dur": 12.3,
+  "anim": 2.6,
+  "tail_zoom": 0.045,
+  "watermark": "ПЛАНЕТА",
+  "channel": "ПЛАНЕТА",
+  "kwargs": {
+   "content_path": "cards/photo/card_072.jpg",
+   "items": [
+    "Платёж — экономия",
+    "Терминал — украинский вопрос"
+   ],
+   "watermark": "ПЛАНЕТА"
+  }
+ }
+]
