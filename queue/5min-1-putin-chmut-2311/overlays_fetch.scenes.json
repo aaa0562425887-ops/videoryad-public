@@ -1,0 +1,25 @@
+{
+ "scenes": [
+  {
+   "id": 2,
+   "source": "press_photo",
+   "source_query": "Тарас Чмут интервью"
+  },
+  {
+   "id": 17,
+   "source": "press_photo",
+   "source_query": "обычные люди на улице Украина Россия"
+  },
+  {
+   "id": 21,
+   "source": "press_photo",
+   "source_query": "старое чёрно-белое семейное фото архив",
+   "visual_prompt": "старое чёрно-белое семейное фото архив"
+  },
+  {
+   "id": 66,
+   "source": "press_photo",
+   "source_query": "флаги России и Украины"
+  }
+ ]
+}
