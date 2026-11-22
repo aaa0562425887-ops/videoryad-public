@@ -1,0 +1,67 @@
+{
+ "scenes": [
+  {
+   "id": 2,
+   "source": "press_photo",
+   "source_query": "Тарас Чмут интервью"
+  },
+  {
+   "id": 7,
+   "source": "local_library",
+   "source_query": "карта раздела территории Украины схема",
+   "visual_prompt": "карта раздела территории Украины схема"
+  },
+  {
+   "id": 14,
+   "source": "local_library",
+   "source_query": "БАЗА/ПЕРСОНЫ/ЛАВРОВ"
+  },
+  {
+   "id": 17,
+   "source": "press_photo",
+   "source_query": "обычные люди на улице Украина Россия"
+  },
+  {
+   "id": 21,
+   "source": "press_photo",
+   "source_query": "старое чёрно-белое семейное фото архив",
+   "visual_prompt": "старое чёрно-белое семейное фото архив"
+  },
+  {
+   "id": 25,
+   "source": "press_photo",
+   "source_query": "смена поколений молодёжь Россия"
+  },
+  {
+   "id": 29,
+   "source": "local_library",
+   "source_query": "БАЗА/ПЕРСОНЫ/ПУТИН"
+  },
+  {
+   "id": 37,
+   "source": "local_library",
+   "source_query": "БАЗА/ПЕРСОНЫ/ПУТИН"
+  },
+  {
+   "id": 42,
+   "source": "local_library",
+   "source_query": "Владимир Зеленский выступление",
+   "visual_prompt": "Владимир Зеленский выступление"
+  },
+  {
+   "id": 49,
+   "source": "press_photo",
+   "source_query": "Дональд Трамп Владимир Путин телефонный разговор"
+  },
+  {
+   "id": 54,
+   "source": "press_photo",
+   "source_query": "военнослужащие возвращаются домой с фронта"
+  },
+  {
+   "id": 66,
+   "source": "press_photo",
+   "source_query": "флаги России и Украины"
+  }
+ ]
+}

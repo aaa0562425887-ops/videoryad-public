@@ -1,0 +1,169 @@
+{
+ "anchor": "top",
+ "2": {
+  "photo": "overlays/scene_002.jpg",
+  "sound": "pop",
+  "at": 2.2,
+  "shape": "rect",
+  "scale": 1.0,
+  "style": "left"
+ },
+ "7": {
+  "photo": "overlays/scene_007.mp4",
+  "sound": "whoosh",
+  "at": 2.4,
+  "shape": "rect",
+  "scale": 1.2,
+  "style": "right"
+ },
+ "14": {
+  "photo": "overlays/scene_014.jpg",
+  "sound": "ding",
+  "at": 2.6,
+  "shape": "circle",
+  "scale": 1.0,
+  "style": "right"
+ },
+ "17": {
+  "photo": "overlays/scene_017.jpg",
+  "sound": "pop",
+  "at": 2.8,
+  "shape": "rect",
+  "scale": 1.0,
+  "style": "left"
+ },
+ "21": {
+  "photo": "overlays/scene_021.jpg",
+  "sound": "whoosh",
+  "at": 3.0,
+  "shape": "rect",
+  "scale": 1.0,
+  "style": "right"
+ },
+ "25": {
+  "photo": "overlays/scene_025.jpg",
+  "sound": "ding",
+  "at": 3.2,
+  "shape": "circle",
+  "scale": 1.2,
+  "style": "up-center"
+ },
+ "29": {
+  "photo": "overlays/scene_029.mp4",
+  "sound": "pop",
+  "at": 3.4,
+  "shape": "rect",
+  "scale": 1.0,
+  "style": "right"
+ },
+ "37": {
+  "photo": "overlays/scene_037.mp4",
+  "sound": "whoosh",
+  "at": 3.6,
+  "shape": "rect",
+  "scale": 1.0,
+  "style": "left"
+ },
+ "42": {
+  "photo": "overlays/scene_042.mp4",
+  "sound": "ding",
+  "at": 3.8,
+  "shape": "circle",
+  "scale": 1.0,
+  "style": "right"
+ },
+ "49": {
+  "photo": "overlays/scene_049.jpg",
+  "sound": "pop",
+  "at": 4.0,
+  "shape": "rect",
+  "scale": 1.2,
+  "style": "right"
+ },
+ "54": {
+  "photo": "overlays/scene_054.jpg",
+  "sound": "whoosh",
+  "at": 4.2,
+  "shape": "rect",
+  "scale": 1.0,
+  "style": "up-right"
+ },
+ "66": {
+  "photo": "overlays/scene_066.jpg",
+  "sound": "ding",
+  "at": 4.24,
+  "shape": "circle",
+  "scale": 1.0,
+  "style": "left"
+ },
+ "6": {
+  "text": {
+   "words": "ИНТЕРЕСЫ",
+   "pos": "tl",
+   "at": 2.0
+  }
+ },
+ "10": {
+  "text": {
+   "words": "УСТУПКИ",
+   "pos": "tr",
+   "at": 2.5
+  }
+ },
+ "15": {
+  "text": {
+   "words": "МОЛЧАТ",
+   "pos": "tc",
+   "at": 3.0
+  }
+ },
+ "19": {
+  "text": {
+   "words": "НИКОГДА",
+   "pos": "ml",
+   "at": 2.0
+  }
+ },
+ "22": {
+  "text": {
+   "words": "УГРОЗА",
+   "pos": "tr",
+   "at": 3.5
+  }
+ },
+ "27": {
+  "text": {
+   "words": "ПАТРИОТИЗМ",
+   "pos": "tl",
+   "at": 3.5
+  }
+ },
+ "36": {
+  "text": {
+   "words": "ОТНОШЕНИЯ",
+   "pos": "tc",
+   "at": 3.0
+  }
+ },
+ "45": {
+  "text": {
+   "words": "ПРАВИЛА",
+   "pos": "mr",
+   "at": 3.5
+  }
+ },
+ "52": {
+  "text": {
+   "words": "СЕМИНАР",
+   "pos": "tl",
+   "at": 4.0
+  }
+ },
+ "59": {
+  "text": {
+   "words": "СТРАШНО",
+   "pos": "tc",
+   "at": 1.5
+  }
+ }
+}
