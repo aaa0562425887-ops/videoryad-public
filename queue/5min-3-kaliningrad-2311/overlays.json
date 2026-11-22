@@ -1,0 +1,281 @@
+{
+ "anchor": "top",
+ "4": {
+  "text": {
+   "words": "ГРАНИЦА",
+   "color": "red",
+   "pos": "mc",
+   "font": "default",
+   "sound": "ding",
+   "at": 2.0,
+   "scale": 1.0,
+   "approved": true
+  }
+ },
+ "12": {
+  "text": {
+   "words": "ОТПОР",
+   "color": "green",
+   "pos": "ml",
+   "font": "default",
+   "sound": "whoosh",
+   "at": 2.0,
+   "scale": 1.0,
+   "approved": true
+  }
+ },
+ "15": {
+  "text": {
+   "words": "ОТСТРЕЛ",
+   "color": "white",
+   "pos": "tc",
+   "font": "default",
+   "sound": "pop",
+   "at": 2.0,
+   "scale": 1.0,
+   "approved": true
+  }
+ },
+ "16": {
+  "text": {
+   "words": "АТАКА",
+   "color": "red",
+   "pos": "tl",
+   "font": "default",
+   "sound": "whoosh",
+   "at": 2.0,
+   "scale": 1.0,
+   "approved": true
+  },
+  "photo": "overlays/scene_016.jpg",
+  "sound": "whoosh",
+  "at": 2.0,
+  "approved": true,
+  "dash_ok": true,
+  "shape": "rect",
+  "scale": 1.0
+ },
+ "38": {
+  "text": {
+   "words": "КИБЕР",
+   "color": "white",
+   "pos": "tc",
+   "font": "default",
+   "sound": "pop",
+   "at": 2.0,
+   "scale": 1.0,
+   "approved": true
+  }
+ },
+ "40": {
+  "text": {
+   "words": "СКРЫТО",
+   "color": "red",
+   "pos": "tl",
+   "font": "default",
+   "sound": "whoosh",
+   "at": 2.0,
+   "scale": 1.0,
+   "approved": true
+  }
+ },
+ "42": {
+  "text": {
+   "words": "ЭПИЗОД",
+   "color": "orange",
+   "pos": "mc",
+   "font": "default",
+   "sound": "ding",
+   "at": 2.0,
+   "scale": 1.0,
+   "approved": true
+  }
+ },
+ "46": {
+  "text": {
+   "words": "СЕРЫЕ ЗОНЫ",
+   "color": "yellow",
+   "pos": "ml",
+   "font": "default",
+   "sound": "whoosh",
+   "at": 2.0,
+   "scale": 1.0,
+   "approved": true
+  },
+  "photo": "overlays/scene_046.jpg",
+  "sound": "pop",
+  "at": 2.0,
+  "shape": "rect",
+  "scale": 1.0,
+  "approved": true,
+  "dash_ok": true
+ },
+ "47": {
+  "text": {
+   "words": "РЮТТЕ",
+   "color": "yellow",
+   "pos": "mr",
+   "font": "default",
+   "sound": "ding",
+   "at": 2.0,
+   "scale": 1.0,
+   "approved": true
+  }
+ },
+ "48": {
+  "text": {
+   "words": "ГОТОВНОСТЬ",
+   "color": "white",
+   "pos": "tc",
+   "font": "default",
+   "sound": "pop",
+   "at": 2.0,
+   "scale": 1.0,
+   "approved": true
+  }
+ },
+ "49": {
+  "text": {
+   "words": "ПАВЕЛ",
+   "color": "red",
+   "pos": "tl",
+   "font": "default",
+   "sound": "whoosh",
+   "at": 2.0,
+   "scale": 1.0,
+   "approved": true
+  }
+ },
+ "50": {
+  "text": {
+   "words": "НЕБО",
+   "color": "orange",
+   "pos": "mc",
+   "font": "default",
+   "sound": "ding",
+   "at": 2.0,
+   "scale": 1.0,
+   "approved": true
+  }
+ },
+ "51": {
+  "text": {
+   "words": "РЫБИЦКИЙ",
+   "color": "green",
+   "pos": "tr",
+   "font": "default",
+   "sound": "pop",
+   "at": 2.0,
+   "scale": 1.0,
+   "approved": true
+  }
+ },
+ "52": {
+  "text": {
+   "words": "ПОВОРОТ",
+   "color": "yellow",
+   "pos": "ml",
+   "font": "default",
+   "sound": "whoosh",
+   "at": 2.0,
+   "scale": 1.0,
+   "approved": true
+  }
+ },
+ "54": {
+  "text": {
+   "words": "ИГРА",
+   "color": "yellow",
+   "pos": "mr",
+   "sound": "ding",
+   "at": 2.0,
+   "scale": 1.0
+  },
+  "photo": "overlays/scene_054.jpg",
+  "sound": "whoosh",
+  "at": 2.0,
+  "approved": true,
+  "dash_ok": true,
+  "shape": "rect",
+  "scale": 1.0
+ },
+ "55": {
+  "text": {
+   "words": "КОМПАНИЯ",
+   "color": "white",
+   "pos": "tc",
+   "font": "default",
+   "sound": "pop",
+   "at": 2.0,
+   "scale": 1.0,
+   "approved": true
+  }
+ },
+ "57": {
+  "text": {
+   "words": "ВИНОВНИК",
+   "color": "red",
+   "pos": "tl",
+   "font": "default",
+   "sound": "whoosh",
+   "at": 2.0,
+   "scale": 1.0,
+   "approved": true
+  }
+ },
+ "63": {
+  "text": {
+   "words": "ПРИНЦИП",
+   "color": "orange",
+   "pos": "mc",
+   "font": "default",
+   "sound": "ding",
+   "at": 2.0,
+   "scale": 1.0,
+   "approved": true
+  },
+  "photo": "overlays/scene_063.jpg",
+  "sound": "ding",
+  "at": 2.0,
+  "approved": true,
+  "dash_ok": true,
+  "shape": "rect",
+  "scale": 1.0
+ },
+ "68": {
+  "text": {
+   "words": "ПАРТИЯ",
+   "color": "yellow",
+   "pos": "ml",
+   "font": "default",
+   "sound": "whoosh",
+   "at": 2.0,
+   "scale": 1.0,
+   "approved": true
+  }
+ },
+ "69": {
+  "text": {
+   "words": "ВОПРОС",
+   "color": "yellow",
+   "pos": "mr",
+   "font": "default",
+   "sound": "ding",
+   "at": 2.0,
+   "scale": 1.0,
+   "approved": true
+  }
+ },
+ "7": {
+  "text": {
+   "words": "БЛОКАДА",
+   "color": "orange",
+   "pos": "tr",
+   "font": "default",
+   "sound": "pop",
+   "at": 2.0,
+   "scale": 1.0,
+   "approved": true
+  }
+ }
+}
