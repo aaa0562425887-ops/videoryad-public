@@ -943,7 +943,8 @@ def shkala_programmy(k_fill, k_mark, tt):
     d.rectangle([x0 * s, (y - 26) * s, x1 * s, (y + 26) * s], fill=(34, 34, 38, 255), outline=(90, 90, 96, 255), width=2 * s)
     now = (2026 - 2019 + 0.9) / n
     xf = x0 + (x1 - x0) * now * C.out_cubic(k_fill)
-    d.rectangle([(x0 + 4) * s, (y - 22) * s, xf * s, (y + 22) * s], fill=(170, 166, 158, 255))
+    if xf > x0 + 6:
+        d.rectangle([(x0 + 4) * s, (y - 22) * s, xf * s, (y + 22) * s], fill=(170, 166, 158, 255))
     f = C.font("head_r", 34 * s)
     for i, yr in enumerate(years):
         x = x0 + (x1 - x0) * i / n
