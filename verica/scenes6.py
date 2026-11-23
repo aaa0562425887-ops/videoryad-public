@@ -319,7 +319,7 @@ def s95(t, dur):
     c_tot = rel("95", 535.6)
 
     def a(tt, d):
-        img = chertezh(C.seg(tt, 0.1, 2.6), tt)
+        img = chertezh(C.seg(tt, 0.0, 2.4), tt)
         return C.over(img, label("НАПРАВЛЕНИЕ ЗНАЕТ ТОТ", C.seg(tt, 0.05, 0.4), 130, 40, C.GREY),
                       word("КТО ЗНАКОМ С ПЛАНАМИ", C.seg(tt, c_tot, c_tot + 0.45), H - 150, 80, "head", C.WHITE, 0.12, rise=26),
                       C.caption(*CAP_SHEMA, k=1.0)).convert("RGB")
@@ -896,13 +896,13 @@ _chert = {}
 def chertezh(k, tt):
     """чертёж: тёмное поле с сеткой, пунктирный маршрут по точкам с подписями «план», стрелка"""
     if "bg" not in _chert:
-        im = Image.new("RGB", (W, H), (12, 16, 22))
+        im = Image.new("RGB", (W, H), (24, 31, 42))
         d = ImageDraw.Draw(im)
         for x in range(0, W, 60):
-            d.line([(x, 0), (x, H)], fill=(22, 28, 36), width=1)
+            d.line([(x, 0), (x, H)], fill=(44, 54, 70), width=1)
         for y in range(0, H, 60):
-            d.line([(0, y), (W, y)], fill=(22, 28, 36), width=1)
-        _chert["bg"] = C.vignette(im, 0.45)
+            d.line([(0, y), (W, y)], fill=(44, 54, 70), width=1)
+        _chert["bg"] = C.vignette(im, 0.3)
     img = _chert["bg"].copy()
     lay = C.layer()
     d = ImageDraw.Draw(lay)
