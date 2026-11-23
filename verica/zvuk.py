@@ -24,9 +24,9 @@ MUS = os.path.join(HERE, "zvuk", "music")
 SFX = os.path.join(HERE, "zvuk", "sfx")
 
 # «Верица»: один трек на хук — «Missing Persons» (Jeremy Blake, его медиатека), тихо
-AKTY = [("01", "missing"), ("09", "final"), ("21", "missing")]
+AKTY = [("01", "missing"), ("09", "final"), ("21", "missing"), ("27", "topass"), ("37", "missing")]   # Дрезден — «To Pass Time» (Godmode)
 MUSIC_DB = -22.0   # как у Киссинджера после п.62 («музыка еле слышно»)
-MEAN = {"missing": -12.4, "final": -12.9}
+MEAN = {"missing": -12.4, "final": -12.9, "topass": -13.9}
 SFX_DB = -20.0
 
 # события звука: сцена → [(секунда сцены, звук)] — секунды сцены, с учётом вставки
@@ -59,6 +59,20 @@ EVENTS = {
     "24": [(0.2, "swoosh"), (0.6, "swoosh"), (1.0, "swoosh"), (3.1, "impact")],
     "25": [(1.7, "click"), (3.35, "rise"), (6.5, "thud")],
     "26": [(3.2, "whoosh"), (3.4, "tick"), (3.8, "tick"), (4.2, "tick"), (4.6, "tick"), (5.0, "tick"), (5.7, "pop")],
+    # третий кусок (scenes3.py)
+    "27": [(0.3, "rise"), (1.2, "scribble"), (2.2, "impact"), (3.1, "click"), (4.5, "thud"), (4.7, "shutter")],
+    "28": [(0.2, "typewriter"), (3.45, "swoosh"), (3.7, "impact")],
+    "29": [(0.1, "shutter"), (2.3, "impact"), (3.05, "click"), (3.25, "click"), (3.45, "click"), (3.65, "click"), (3.85, "click"), (4.05, "click"), (4.2, "thud"), (6.2, "shutter")],
+    "30": [(0.2, "door"), (0.9, "scribble"), (2.75, "swoosh"), (3.1, "thud"), (4.4, "tick")],
+    "31": [(0.3, "typewriter"), (3.0, "typewriter"), (6.75, "click"), (7.2, "typewriter"), (9.95, "scribble"), (11.5, "scribble"), (11.9, "impact")],
+    "32": [(2.2, "tick"), (5.4, "buzz"), (6.65, "rise")],
+    "33": [(0.3, "click"), (1.0, "thud"), (4.2, "click"), (6.65, "click"), (6.8, "impact"), (9.2, "swoosh"), (10.1, "swoosh"), (11.35, "door"), (12.0, "pop"), (12.5, "pop"), (12.8, "thud")],
+    "34": [(0.2, "clock"), (1.1, "click"), (3.6, "whoosh")],
+    "35": [(0.1, "click"), (24.3, "thud"), (25.6, "impact"), (27.3, "thud"), (28.4, "door")],
+    "36": [(1.3, "rise"), (1.5, "tick"), (2.3, "tick"), (3.1, "tick"), (3.4, "click"), (5.85, "impact")],
+    "37": [(0.3, "click"), (4.85, "thud"), (5.3, "scribble"), (5.9, "pop"), (6.3, "swoosh")],
+    "38": [(0.7, "rise"), (1.75, "tick"), (3.5, "tick"), (5.0, "tick"), (5.95, "impact"), (7.0, "whoosh")],
+    "39": [(0.3, "click"), (1.6, "tick"), (2.45, "scribble"), (3.4, "thud")],
 }
 
 

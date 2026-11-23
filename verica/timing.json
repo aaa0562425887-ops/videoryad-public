@@ -234,6 +234,123 @@
    "dur": 8.72,
    "film_start": 228.1,
    "film_end": 236.82
+  },
+  {
+   "id": "27",
+   "voice_start": 197.82,
+   "voice_end": 202.37,
+   "insert": 2.0,
+   "dur": 6.55,
+   "film_start": 236.82,
+   "film_end": 243.37
+  },
+  {
+   "id": "28",
+   "voice_start": 202.37,
+   "voice_end": 207.41,
+   "insert": 0.0,
+   "dur": 5.04,
+   "film_start": 243.37,
+   "film_end": 248.41
+  },
+  {
+   "id": "29",
+   "voice_start": 207.41,
+   "voice_end": 215.03,
+   "insert": 0.0,
+   "dur": 7.62,
+   "film_start": 248.41,
+   "film_end": 256.03
+  },
+  {
+   "id": "30",
+   "voice_start": 215.03,
+   "voice_end": 220.94,
+   "insert": 0.0,
+   "dur": 5.91,
+   "film_start": 256.03,
+   "film_end": 261.94
+  },
+  {
+   "id": "31",
+   "voice_start": 220.94,
+   "voice_end": 233.4,
+   "insert": 0.0,
+   "dur": 12.46,
+   "film_start": 261.94,
+   "film_end": 274.4
+  },
+  {
+   "id": "32",
+   "voice_start": 233.4,
+   "voice_end": 240.99,
+   "insert": 0.0,
+   "dur": 7.59,
+   "film_start": 274.4,
+   "film_end": 281.99
+  },
+  {
+   "id": "33",
+   "voice_start": 240.99,
+   "voice_end": 253.61,
+   "insert": 1.0,
+   "dur": 13.62,
+   "film_start": 281.99,
+   "film_end": 295.61
+  },
+  {
+   "id": "34",
+   "voice_start": 253.61,
+   "voice_end": 256.55,
+   "insert": 1.0,
+   "dur": 3.94,
+   "film_start": 295.61,
+   "film_end": 299.55
+  },
+  {
+   "id": "35",
+   "voice_start": 256.55,
+   "voice_end": 262.23,
+   "insert": 24.2,
+   "dur": 29.88,
+   "film_start": 299.55,
+   "film_end": 329.43
+  },
+  {
+   "id": "36",
+   "voice_start": 262.23,
+   "voice_end": 269.24,
+   "insert": 0.0,
+   "dur": 7.01,
+   "film_start": 329.43,
+   "film_end": 336.44
+  },
+  {
+   "id": "37",
+   "voice_start": 269.24,
+   "voice_end": 277.14,
+   "insert": 2.5,
+   "dur": 10.4,
+   "film_start": 336.44,
+   "film_end": 346.84
+  },
+  {
+   "id": "38",
+   "voice_start": 277.14,
+   "voice_end": 284.99,
+   "insert": 0.0,
+   "dur": 7.85,
+   "film_start": 346.84,
+   "film_end": 354.69
+  },
+  {
+   "id": "39",
+   "voice_start": 284.99,
+   "voice_end": 287.46,
+   "insert": 1.5,
+   "dur": 3.97,
+   "film_start": 354.69,
+   "film_end": 358.66
   }
  ]
 }

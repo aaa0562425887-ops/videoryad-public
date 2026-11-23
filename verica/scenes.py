@@ -715,3 +715,5 @@ def s08(t, dur):
     img = flash(img, tt, 0.1, 0.5)
     return C.finish(img, t, dur, fi=0.0, fo=0.7, grain_k=0.04, vig=0.35)
 import scenes2  # noqa: E402,F401  — сцены второго куска (09-26) регистрируются в SCENES
+
+import scenes3  # noqa: E402,F401  — сцены третьего куска (27-39)
