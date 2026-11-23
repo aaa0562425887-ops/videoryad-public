@@ -251,7 +251,7 @@ def s63(t, dur):
 # ═════════════════════════ 64 · Верица без слов 3 с ═════════════════════════
 @scene("64")
 def s64(t, dur):
-    img = verica("v14c", "v14_krupno_2640.mp4", t, push=0.10, hand=2.5)
+    img = verica("v06c", "v06_krupno_2400.mp4", t, push=0.10, hand=2.5)
     return C.finish(C.over(img, C.caption(*CAP_V, k=C.seg(t, 0.2, 0.7))).convert("RGB"), t, dur, fi=0.0, fo=0.0, grain_k=0.03, vig=0.3)
 
 
