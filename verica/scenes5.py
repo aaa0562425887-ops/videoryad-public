@@ -400,7 +400,7 @@ def s70b(t, dur):
             label("КИТАЙ ВСТАНЕТ РЯДОМ", 1.0, H * 0.5 - 40, 56, C.GREY2, x=W * 0.5),
             roscherk(1.0, 5),
             word("НЕ СЛУЧИЛОСЬ", 1.0, H * 0.5 + 200, 130, "head", C.RED, 0.1, rise=30),
-            rukopis_layer("пока", kp, W * 0.5 - 560, H * 0.5 + 215, 110)]
+            rukopis_layer("пока", kp, 130, H * 0.5 + 205, 110)]
     return C.finish(C.grain(C.over(img, *lays).convert("RGB"), t, 0.04), t, dur, fi=0.0, fo=0.0, grain_k=0.0, vig=0.3)
 
 
