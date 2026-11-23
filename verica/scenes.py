@@ -717,3 +717,4 @@ def s08(t, dur):
 import scenes2  # noqa: E402,F401  — сцены второго куска (09-26) регистрируются в SCENES
 
 import scenes3  # noqa: E402,F401  — сцены третьего куска (27-39)
+import scenes4  # noqa: E402,F401  — сцены четвёртого куска (40-56)
