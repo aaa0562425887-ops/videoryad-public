@@ -25,7 +25,8 @@ SFX = os.path.join(HERE, "zvuk", "sfx")
 
 # «Верица»: один трек на хук — «Missing Persons» (Jeremy Blake, его медиатека), тихо
 AKTY = [("01", "missing"), ("09", "final"), ("21", "missing"), ("27", "topass"), ("37", "missing"), ("40", "incoming"), ("54", "final"),
-        ("57", "topass"), ("66", "tishina"), ("67", "missing")]   # Дрезден — «To Pass Time» (Godmode); «tishina» — файла нет, музыка уходит ([ПАУЗА 3 с. Тишина] блока 4)
+        ("57", "topass"), ("66", "tishina"), ("67", "missing"),
+        ("82", "incoming"), ("96", "topass"), ("111", "missing"), ("116", "tishina"), ("117", "missing")]   # Дрезден — «To Pass Time» (Godmode); «tishina» — файла нет, музыка уходит ([ПАУЗА 3 с. Тишина] блока 4)
 MUSIC_DB = -22.0   # как у Киссинджера после п.62 («музыка еле слышно»)
 MEAN = {"missing": -12.4, "final": -12.9, "topass": -13.9, "incoming": -17.2}
 SFX_DB = -20.0
@@ -119,6 +120,44 @@ EVENTS = {
     "79": [(0.3, "thud"), (0.6, "click"), (1.2, "scribble"), (1.7, "pop"), (2.0, "thud")],
     "80": [(0.2, "click"), (0.5, "rise"), (2.5, "swoosh"), (2.7, "scribble"), (4.5, "click"), (5.0, "whoosh"), (6.5, "thud"), (7.4, "pop"), (8.2, "pop"), (9.0, "pop")],
     "81": [(0.1, "typewriter"), (0.4, "typewriter"), (0.7, "typewriter"), (1.0, "typewriter"), (1.4, "buzz"), (1.5, "impact")],
+    # шестой кусок (scenes6.py)
+    "82": [(0.05, "impact"), (0.5, "click"), (1.2, "swoosh"), (1.5, "thud")],
+    "83": [(0.2, "click"), (0.5, "thud"), (2.6, "tick"), (3.4, "tick"), (4.8, "impact"), (4.95, "thud")],
+    "84": [(0.2, "click"), (0.5, "thud"), (1.7, "scribble"), (3.35, "impact"), (3.5, "thud")],
+    "85": [(0.2, "click"), (0.5, "thud"), (1.5, "impact"), (1.65, "thud"), (2.4, "impact"), (2.55, "thud")],
+    "86": [(0.3, "rise"), (1.6, "impact"), (2.4, "click"), (3.2, "typewriter")],
+    "87": [(0.2, "thud"), (0.3, "tick"), (2.2, "thud"), (2.3, "tick"), (4.4, "thud"), (4.5, "tick"), (6.4, "thud"), (6.5, "tick"), (8.2, "thud"), (8.3, "tick")],
+    "88": [(0.2, "click"), (0.6, "rise"), (1.3, "pop"), (2.5, "thud"), (2.6, "tick")],
+    "89": [(0.05, "impact"), (0.2, "impact"), (0.35, "impact"), (0.5, "impact"), (0.65, "impact"), (0.8, "impact"), (1.0, "thud"), (1.2, "buzz")],
+    "90": [(0.3, "click"), (1.0, "door"), (2.1, "rise"), (2.6, "whoosh")],
+    "91": [(0.2, "swoosh"), (0.5, "swoosh"), (0.8, "swoosh"), (1.1, "swoosh"), (1.4, "swoosh"), (1.9, "scribble"), (2.3, "scribble"), (2.7, "thud")],
+    "92": [(0.3, "pop"), (0.9, "pop"), (1.5, "pop"), (2.0, "sparkle")],
+    "93": [(0.2, "rise"), (0.6, "tick"), (0.9, "tick"), (1.2, "tick"), (1.6, "click"), (2.4, "impact")],
+    "94": [(0.3, "clock"), (1.0, "clock2"), (1.5, "clock"), (2.4, "thud")],
+    "95": [(0.2, "scribble"), (0.8, "scribble"), (1.5, "tick"), (2.2, "tick"), (2.9, "impact")],
+    "96": [(0.5, "door"), (2.0, "click")],
+    "97": [(0.2, "rise"), (0.6, "thud"), (1.8, "scribble"), (3.5, "click"), (4.6, "whoosh")],
+    "98": [(0.2, "thud"), (0.5, "pop"), (0.9, "impact")],
+    "99": [(0.3, "door"), (0.9, "typewriter"), (2.4, "tick"), (3.3, "tick")],
+    "100": [(0.2, "cash"), (0.7, "typewriter")],
+    "101": [(0.2, "typewriter"), (1.6, "scribble")],
+    "102": [(0.2, "typewriter"), (0.8, "swoosh"), (1.1, "swoosh")],
+    "103": [(0.3, "thud"), (0.6, "thud"), (1.4, "scribble"), (2.9, "rise"), (3.8, "impact")],
+    "104": [(0.3, "click"), (1.2, "buzz"), (1.4, "thud")],
+    "105": [(0.4, "tick"), (1.1, "tick"), (1.8, "tick"), (2.1, "rise"), (2.8, "impact")],
+    "106": [(0.2, "glitch2"), (0.6, "scribble"), (1.1, "typewriter"), (1.9, "impact")],
+    "107": [(0.2, "thud"), (0.9, "buzz"), (1.6, "swoosh"), (2.4, "swoosh"), (3.0, "pop")],
+    "108": [(0.1, "rise"), (0.8, "ding"), (1.4, "ding"), (1.9, "thud")],
+    "109": [(0.3, "door"), (0.9, "typewriter"), (1.6, "scribble"), (2.1, "thud")],
+    "110": [(0.3, "click"), (1.7, "thud"), (1.8, "tick"), (3.4, "thud"), (3.5, "tick"), (4.7, "thud"), (4.8, "tick")],
+    "111": [(0.5, "click"), (1.0, "typewriter"), (2.1, "tick"), (3.4, "scribble")],
+    "112": [(0.2, "scribble"), (0.5, "rise"), (1.3, "thud")],
+    "113": [(0.2, "scribble"), (1.5, "tick"), (2.1, "tick"), (2.6, "tick")],
+    "114": [(0.3, "click"), (1.9, "thud"), (2.6, "whoosh"), (2.9, "impact")],
+    "115": [(0.2, "click"), (1.6, "thud"), (3.0, "rise"), (3.75, "impact"), (4.5, "impact"), (6.0, "tick")],
+    "116": [],
+    "117": [(0.2, "click"), (2.3, "typewriter"), (3.0, "typewriter"), (4.1, "tick"), (4.3, "tick"), (4.5, "tick")],
+    "118": [(0.3, "click")],
 }
 
 

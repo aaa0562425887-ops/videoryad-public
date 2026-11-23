@@ -726,6 +726,339 @@
    "dur": 2.02,
    "film_start": 586.36,
    "film_end": 588.38
+  },
+  {
+   "id": "82",
+   "voice_start": 487.82,
+   "voice_end": 489.79,
+   "insert": 1.0,
+   "dur": 2.97,
+   "film_start": 588.38,
+   "film_end": 591.35
+  },
+  {
+   "id": "83",
+   "voice_start": 489.79,
+   "voice_end": 495.45,
+   "insert": 0.0,
+   "dur": 5.66,
+   "film_start": 591.35,
+   "film_end": 597.01
+  },
+  {
+   "id": "84",
+   "voice_start": 495.45,
+   "voice_end": 499.66,
+   "insert": 0.0,
+   "dur": 4.21,
+   "film_start": 597.01,
+   "film_end": 601.22
+  },
+  {
+   "id": "85",
+   "voice_start": 499.66,
+   "voice_end": 503.19,
+   "insert": 0.0,
+   "dur": 3.53,
+   "film_start": 601.22,
+   "film_end": 604.75
+  },
+  {
+   "id": "86",
+   "voice_start": 503.19,
+   "voice_end": 507.42,
+   "insert": 1.5,
+   "dur": 5.73,
+   "film_start": 604.75,
+   "film_end": 610.48
+  },
+  {
+   "id": "87",
+   "voice_start": 507.42,
+   "voice_end": 517.06,
+   "insert": 0.0,
+   "dur": 9.64,
+   "film_start": 610.48,
+   "film_end": 620.12
+  },
+  {
+   "id": "88",
+   "voice_start": 517.06,
+   "voice_end": 520.76,
+   "insert": 0.0,
+   "dur": 3.7,
+   "film_start": 620.12,
+   "film_end": 623.82
+  },
+  {
+   "id": "89",
+   "voice_start": 520.76,
+   "voice_end": 522.16,
+   "insert": 1.0,
+   "dur": 2.4,
+   "film_start": 623.82,
+   "film_end": 626.22
+  },
+  {
+   "id": "90",
+   "voice_start": 522.16,
+   "voice_end": 523.93,
+   "insert": 2.0,
+   "dur": 3.77,
+   "film_start": 626.22,
+   "film_end": 629.99
+  },
+  {
+   "id": "91",
+   "voice_start": 523.93,
+   "voice_end": 526.87,
+   "insert": 0.0,
+   "dur": 2.94,
+   "film_start": 629.99,
+   "film_end": 632.93
+  },
+  {
+   "id": "92",
+   "voice_start": 526.87,
+   "voice_end": 529.26,
+   "insert": 0.0,
+   "dur": 2.39,
+   "film_start": 632.93,
+   "film_end": 635.32
+  },
+  {
+   "id": "93",
+   "voice_start": 529.26,
+   "voice_end": 532.53,
+   "insert": 0.0,
+   "dur": 3.27,
+   "film_start": 635.32,
+   "film_end": 638.59
+  },
+  {
+   "id": "94",
+   "voice_start": 532.53,
+   "voice_end": 534.14,
+   "insert": 1.5,
+   "dur": 3.11,
+   "film_start": 638.59,
+   "film_end": 641.7
+  },
+  {
+   "id": "95",
+   "voice_start": 534.14,
+   "voice_end": 537.51,
+   "insert": 0.0,
+   "dur": 3.37,
+   "film_start": 641.7,
+   "film_end": 645.07
+  },
+  {
+   "id": "96",
+   "voice_start": 537.51,
+   "voice_end": 537.51,
+   "insert": 5.0,
+   "dur": 5.0,
+   "film_start": 645.07,
+   "film_end": 650.07
+  },
+  {
+   "id": "97",
+   "voice_start": 537.51,
+   "voice_end": 542.63,
+   "insert": 0.0,
+   "dur": 5.12,
+   "film_start": 650.07,
+   "film_end": 655.19
+  },
+  {
+   "id": "98",
+   "voice_start": 542.63,
+   "voice_end": 544.11,
+   "insert": 0.0,
+   "dur": 1.48,
+   "film_start": 655.19,
+   "film_end": 656.67
+  },
+  {
+   "id": "99",
+   "voice_start": 544.11,
+   "voice_end": 548.1,
+   "insert": 0.0,
+   "dur": 3.99,
+   "film_start": 656.67,
+   "film_end": 660.66
+  },
+  {
+   "id": "100",
+   "voice_start": 548.1,
+   "voice_end": 551.04,
+   "insert": 0.0,
+   "dur": 2.94,
+   "film_start": 660.66,
+   "film_end": 663.6
+  },
+  {
+   "id": "101",
+   "voice_start": 551.04,
+   "voice_end": 553.59,
+   "insert": 0.0,
+   "dur": 2.55,
+   "film_start": 663.6,
+   "film_end": 666.15
+  },
+  {
+   "id": "102",
+   "voice_start": 553.59,
+   "voice_end": 555.24,
+   "insert": 0.0,
+   "dur": 1.65,
+   "film_start": 666.15,
+   "film_end": 667.8
+  },
+  {
+   "id": "103",
+   "voice_start": 555.24,
+   "voice_end": 560.04,
+   "insert": 0.0,
+   "dur": 4.8,
+   "film_start": 667.8,
+   "film_end": 672.6
+  },
+  {
+   "id": "104",
+   "voice_start": 560.04,
+   "voice_end": 561.5,
+   "insert": 1.0,
+   "dur": 2.46,
+   "film_start": 672.6,
+   "film_end": 675.06
+  },
+  {
+   "id": "105",
+   "voice_start": 561.5,
+   "voice_end": 563.24,
+   "insert": 2.0,
+   "dur": 3.74,
+   "film_start": 675.06,
+   "film_end": 678.8
+  },
+  {
+   "id": "106",
+   "voice_start": 563.24,
+   "voice_end": 566.13,
+   "insert": 0.0,
+   "dur": 2.89,
+   "film_start": 678.8,
+   "film_end": 681.69
+  },
+  {
+   "id": "107",
+   "voice_start": 566.13,
+   "voice_end": 569.61,
+   "insert": 0.0,
+   "dur": 3.48,
+   "film_start": 681.69,
+   "film_end": 685.17
+  },
+  {
+   "id": "108",
+   "voice_start": 569.61,
+   "voice_end": 572.01,
+   "insert": 0.0,
+   "dur": 2.4,
+   "film_start": 685.17,
+   "film_end": 687.57
+  },
+  {
+   "id": "109",
+   "voice_start": 572.01,
+   "voice_end": 574.62,
+   "insert": 0.0,
+   "dur": 2.61,
+   "film_start": 687.57,
+   "film_end": 690.18
+  },
+  {
+   "id": "110",
+   "voice_start": 574.62,
+   "voice_end": 580.82,
+   "insert": 0.0,
+   "dur": 6.2,
+   "film_start": 690.18,
+   "film_end": 696.38
+  },
+  {
+   "id": "111",
+   "voice_start": 580.82,
+   "voice_end": 585.71,
+   "insert": 2.0,
+   "dur": 6.89,
+   "film_start": 696.38,
+   "film_end": 703.27
+  },
+  {
+   "id": "112",
+   "voice_start": 585.71,
+   "voice_end": 587.64,
+   "insert": 0.0,
+   "dur": 1.93,
+   "film_start": 703.27,
+   "film_end": 705.2
+  },
+  {
+   "id": "113",
+   "voice_start": 587.64,
+   "voice_end": 590.38,
+   "insert": 0.0,
+   "dur": 2.74,
+   "film_start": 705.2,
+   "film_end": 707.94
+  },
+  {
+   "id": "114",
+   "voice_start": 590.38,
+   "voice_end": 593.85,
+   "insert": 1.5,
+   "dur": 4.97,
+   "film_start": 707.94,
+   "film_end": 712.91
+  },
+  {
+   "id": "115",
+   "voice_start": 593.85,
+   "voice_end": 600.84,
+   "insert": 0.0,
+   "dur": 6.99,
+   "film_start": 712.91,
+   "film_end": 719.9
+  },
+  {
+   "id": "116",
+   "voice_start": 600.84,
+   "voice_end": 600.84,
+   "insert": 4.0,
+   "dur": 4.0,
+   "film_start": 719.9,
+   "film_end": 723.9
+  },
+  {
+   "id": "117",
+   "voice_start": 600.84,
+   "voice_end": 605.72,
+   "insert": 0.0,
+   "dur": 4.88,
+   "film_start": 723.9,
+   "film_end": 728.78
+  },
+  {
+   "id": "118",
+   "voice_start": 605.72,
+   "voice_end": 605.72,
+   "insert": 12.0,
+   "dur": 12.0,
+   "film_start": 728.78,
+   "film_end": 740.78
   }
  ]
 }

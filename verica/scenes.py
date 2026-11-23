@@ -719,3 +719,4 @@ import scenes2  # noqa: E402,F401  — сцены второго куска (09-
 import scenes3  # noqa: E402,F401  — сцены третьего куска (27-39)
 import scenes4  # noqa: E402,F401  — сцены четвёртого куска (40-56)
 import scenes5  # noqa: E402,F401  — сцены пятого куска (57-81)
+import scenes6  # noqa: E402,F401  — сцены шестого куска (82-118)
