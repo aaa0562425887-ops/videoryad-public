@@ -1,0 +1,146 @@
+# Фильм «Верица»: каждая сцена на своей машине (копия kino.yml, папка verica/).
+name: verica
+on:
+  workflow_dispatch:
+    inputs:
+      scenes:
+        description: "какие сцены считать, списком JSON"
+        default: '["01","02","03"]'
+      workers:
+        description: "процессов на сцену"
+        default: "4"
+      transcribe:
+        description: "расшифровать звук: файл:язык через запятую (пусто — нет)"
+        default: ""
+      sborka:
+        description: "собрать фильм из клипов этих прогонов (run_id через запятую, поздние поверх ранних; self — клипы этого же прогона; пусто — нет)"
+        default: ""
+      otrezok:
+        description: "собрать только эти сцены подряд (01,02,03,04 — первая минута); пусто — весь фильм"
+        default: ""
+concurrency:
+  group: verica-${{ github.run_id }}
+  cancel-in-progress: false
+permissions:
+  contents: write
+jobs:
+  clip:
+    if: github.event.inputs.scenes != '[]'
+    runs-on: ubuntu-latest
+    timeout-minutes: 120
+    strategy:
+      fail-fast: false
+      max-parallel: 8
+      matrix:
+        scene: ${{ fromJSON(github.event.inputs.scenes) }}
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          sparse-checkout: verica
+      - name: Библиотеки
+        run: pip install --quiet --upgrade numpy pillow imageio-ffmpeg
+      - name: ffmpeg
+        run: |
+          python3 - <<'EOF'
+          import imageio_ffmpeg, os
+          p = imageio_ffmpeg.get_ffmpeg_exe()
+          os.makedirs(os.path.expanduser("~/.local/bin"), exist_ok=True)
+          os.symlink(p, os.path.expanduser("~/.local/bin/ffmpeg"))
+          print(p)
+          EOF
+      - name: Клип сцены
+        env:
+          KINO_ARCHIV: ${{ github.workspace }}/verica/archiv
+        run: |
+          cd verica
+          time python3 shard.py "${{ matrix.scene }}" "$GITHUB_WORKSPACE/verica_${{ matrix.scene }}.mp4" --workers ${{ github.event.inputs.workers }}
+      - uses: actions/upload-artifact@v4
+        with:
+          name: verica-${{ matrix.scene }}
+          path: verica_${{ matrix.scene }}.mp4
+          retention-days: 2
+  transcribe:
+    if: github.event.inputs.transcribe != ''
+    runs-on: ubuntu-latest
+    timeout-minutes: 60
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          sparse-checkout: verica
+      - run: pip install --quiet faster-whisper imageio-ffmpeg numpy
+      - name: Расшифровка
+        run: |
+          cd verica
+          mkdir -p "$GITHUB_WORKSPACE/tr"
+          IFS=',' read -ra ITEMS <<< "${{ github.event.inputs.transcribe }}"
+          for it in "${ITEMS[@]}"; do
+            f="${it%%:*}"; l="${it##*:}"
+            python3 transcribe.py "archiv/$f" "$l" "$GITHUB_WORKSPACE/tr/${f%.*}.json"
+          done
+      - uses: actions/upload-artifact@v4
+        with:
+          name: verica-transcribe
+          path: tr/*.json
+          retention-days: 2
+  sborka:
+    needs: [clip]
+    if: ${{ always() && github.event.inputs.sborka != '' && needs.clip.result != 'failure' }}
+    runs-on: ubuntu-latest
+    timeout-minutes: 90
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          sparse-checkout: verica
+      - run: pip install --quiet numpy pillow imageio-ffmpeg
+      - name: ffmpeg
+        run: |
+          python3 - <<'EOF'
+          import imageio_ffmpeg, os
+          p = imageio_ffmpeg.get_ffmpeg_exe()
+          os.makedirs(os.path.expanduser("~/.local/bin"), exist_ok=True)
+          os.symlink(p, os.path.expanduser("~/.local/bin/ffmpeg"))
+          EOF
+          sudo apt-get install -y -qq fonts-liberation >/dev/null 2>&1 || true
+      - name: Клипы этого же прогона
+        if: contains(github.event.inputs.sborka, 'self')
+        uses: actions/download-artifact@v4
+        with: {path: clips_self, pattern: "verica-*", merge-multiple: true}
+      - name: Клипы из прогонов
+        env: {GH_TOKEN: "${{ github.token }}"}
+        run: |
+          mkdir -p clips
+          IFS=',' read -ra RUNS <<< "${{ github.event.inputs.sborka }}"
+          for r in "${RUNS[@]}"; do
+            [ "$r" = "self" ] && continue
+            rm -rf tmpdl; mkdir tmpdl
+            gh run download "$r" -R "${{ github.repository }}" -D tmpdl || true
+            find tmpdl -name 'verica_*.mp4' -exec cp -f {} clips/ \;
+          done
+          # клипы ЭТОГО прогона — поверх всех прежних
+          find clips_self -name 'verica_*.mp4' -exec cp -f {} clips/ \; 2>/dev/null || true
+          ls clips
+      - name: Сборка и звук
+        env:
+          KINO_ARCHIV: ${{ github.workspace }}/verica/archiv
+          KINO_SCENES: ${{ github.event.inputs.otrezok }}
+        run: |
+          cd verica
+          python3 sborka.py "$GITHUB_WORKSPACE/clips" golos/golos.mp3 golos/golos.srt "$GITHUB_WORKSPACE/film_golos.mp4"
+          python3 zvuk.py "$GITHUB_WORKSPACE/film_golos.mp4" "$GITHUB_WORKSPACE/film.mp4"
+      - uses: actions/upload-artifact@v4
+        with:
+          name: verica-film
+          path: film.mp4
+          retention-days: 3
+  pack:
+    needs: [clip, transcribe, sborka]
+    if: always()
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/download-artifact@v4
+        with: {path: clips, merge-multiple: true}
+      - env: {GH_TOKEN: "${{ github.token }}"}
+        run: |
+          ls -la clips
+          tag="verica-${{ github.run_id }}"
+          gh release create "$tag" clips/* -R "${{ github.repository }}" -t "$tag" -n "Клипы сцен фильма."
