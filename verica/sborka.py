@@ -28,7 +28,56 @@ INSERT_AUDIO = {
     "09": ("v01_intro_0000-0014.mp4", 5.0, -22.0),   # заставка канала, звук оригинала, потом приглушить (фейд 0,8 с)
     "16": ("v09_krupno_3910.mp4", 0.0, -30.0),
     "35": ("putin_2018_dresden.mp4", 0.0, -20.0),   # врезка Путина: фильм «Путин», А. Кондрашов, 2018 — оригинальный звук
+    # пятый кусок: смеси из нескольких слоёв — словарь {"layers": [...]}: file · start (с источника) · at (с от начала
+    # вставки) · dur · target (средняя дБ) · fade_in/fade_out · duck=[(t0, t1, дБ)] — плавно приглушить с t0 до t1
+    "59": {"layers": [
+        {"file": "v02_delo3_1336-1420.mp4", "start": 32.0, "at": 0.0, "dur": 9.3, "target": -19.0, "fade_in": 0.3, "fade_out": 0.8,
+         "duck": [(2.0, 2.5, -13.0)]},                                   # Верица: 2 с оригинал, потом приглушить (по тексту)
+        {"file": "olga_1.mp3", "start": 0.0, "at": 2.3, "dur": 6.8, "target": -18.0, "fade_in": 0.0, "fade_out": 0.15},   # ОЛЬГА, перевод за кадром
+    ]},
+    "64": ("v14_krupno_2640.mp4", 0.0, -30.0),      # Верица без слов
+    "65": {"layers": [{"file": "olga_2.mp3", "start": 0.0, "at": 0.1, "dur": 2.72, "target": -18.0, "fade_in": 0.0, "fade_out": 0.1}]},
 }
+
+
+def _mean_db(src, start, dur):
+    meas = subprocess.run([FF, "-nostdin", "-ss", "%.3f" % start, "-t", "%.3f" % dur, "-i", src,
+                           "-vn", "-af", "volumedetect", "-f", "null", "-"], capture_output=True, text=True).stderr
+    m = re.search(r"mean_volume: ([-\d.]+) dB", meas)
+    return float(m.group(1)) if m else None
+
+
+def insert_mix(sc, spec, out):
+    """вставка из нескольких слоёв звука поверх тишины длиной sc["insert"]"""
+    L = sc["insert"]
+    inputs = ["-f", "lavfi", "-t", "%.3f" % L, "-i", "anullsrc=r=48000:cl=stereo"]
+    filters, mixes, n = [], ["[0:a]"], 1
+    for ly in spec["layers"]:
+        src = C.apath(ly["file"])
+        if not os.path.exists(src):
+            print("вставка %s: нет файла %s" % (sc["id"], ly["file"]))
+            continue
+        at = float(ly.get("at", 0.0))
+        d = float(ly.get("dur", L - at))
+        mean = _mean_db(src, ly["start"], d)
+        gain = max(-10.0, min(16.0, ly["target"] - mean)) if mean is not None else 0.0
+        af = ["atrim=0:%.3f" % d, "asetpts=PTS-STARTPTS"]
+        if ly.get("fade_in", 0) > 0:
+            af.append("afade=t=in:d=%.2f" % ly["fade_in"])
+        if ly.get("fade_out", 0) > 0:
+            af.append("afade=t=out:st=%.2f:d=%.2f" % (d - ly["fade_out"], ly["fade_out"]))
+        for t0, t1, db in ly.get("duck", []):
+            g = 10 ** (db / 20.0)
+            af.append("volume='if(lt(t,%.2f),1,if(lt(t,%.2f),1-(1-%.4f)*(t-%.2f)/%.2f,%.4f))':eval=frame" % (t0, t1, g, t0, t1 - t0, g))
+        af.append("volume=%.1fdB" % gain)
+        af.append("adelay=%d|%d" % (int(at * 1000), int(at * 1000)))
+        af.append("aresample=48000")
+        inputs += ["-ss", "%.3f" % ly["start"], "-i", src]
+        filters.append("[%d:a]%s[l%d]" % (n, ",".join(af), n))
+        mixes.append("[l%d]" % n)
+        n += 1
+    fc = ";".join(filters + ["%samix=inputs=%d:normalize=0:duration=first[aout]" % ("".join(mixes), len(mixes))])
+    run([FF, "-nostdin", "-v", "error", "-y"] + inputs + ["-filter_complex", fc, "-map", "[aout]", "-ac", "2", "-ar", "48000", out])
 
 
 def run(cmd):
@@ -109,8 +158,13 @@ def main():
             parts.append(seg)
         cursor = sc["voice_start"]
         # оригинал на длину вставки
-        name, start, target = INSERT_AUDIO.get(sc["id"], (None, 0.0, -20.0))
+        spec = INSERT_AUDIO.get(sc["id"], (None, 0.0, -20.0))
         ins = os.path.join(tmp, "i_%s.wav" % sc["id"])
+        if isinstance(spec, dict):
+            insert_mix(sc, spec, ins)
+            parts.append(ins)
+            continue
+        name, start, target = spec
         src = C.apath(name) if name else None
         if src and os.path.exists(src):
             # уровень оригинала подтягиваем к голосу диктора (−20 дБ средней)

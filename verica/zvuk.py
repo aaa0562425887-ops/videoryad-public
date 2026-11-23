@@ -24,7 +24,8 @@ MUS = os.path.join(HERE, "zvuk", "music")
 SFX = os.path.join(HERE, "zvuk", "sfx")
 
 # «Верица»: один трек на хук — «Missing Persons» (Jeremy Blake, его медиатека), тихо
-AKTY = [("01", "missing"), ("09", "final"), ("21", "missing"), ("27", "topass"), ("37", "missing"), ("40", "incoming"), ("54", "final")]   # Дрезден — «To Pass Time» (Godmode)
+AKTY = [("01", "missing"), ("09", "final"), ("21", "missing"), ("27", "topass"), ("37", "missing"), ("40", "incoming"), ("54", "final"),
+        ("57", "topass"), ("66", "tishina"), ("67", "missing")]   # Дрезден — «To Pass Time» (Godmode); «tishina» — файла нет, музыка уходит ([ПАУЗА 3 с. Тишина] блока 4)
 MUSIC_DB = -22.0   # как у Киссинджера после п.62 («музыка еле слышно»)
 MEAN = {"missing": -12.4, "final": -12.9, "topass": -13.9, "incoming": -17.2}
 SFX_DB = -20.0
@@ -91,6 +92,32 @@ EVENTS = {
     "54": [(1.5, "click"), (3.2, "scribble"), (4.7, "rise"), (6.6, "tick"), (7.4, "tick"), (7.9, "impact")],
     "55": [(0.1, "rise"), (0.6, "tick"), (1.2, "tick"), (1.8, "impact"), (2.2, "click"), (4.2, "swoosh"), (6.2, "thud"), (7.5, "click"), (8.7, "thud"), (9.7, "pop")],
     "56": [(0.2, "thud"), (1.6, "click"), (2.6, "scribble"), (3.4, "tick")],
+    # пятый кусок (scenes5.py)
+    "57": [(0.05, "impact"), (0.5, "click"), (1.2, "shutter"), (1.4, "typewriter")],
+    "58": [(0.1, "click"), (0.3, "tick"), (1.3, "tick"), (2.3, "tick"), (2.9, "rise"), (3.3, "tick"), (3.6, "tick"), (3.9, "tick"), (4.2, "impact")],
+    "59": [(0.1, "click"), (2.3, "tick"), (9.0, "thud")],
+    "60": [(0.1, "glitch"), (0.4, "whoosh"), (0.8, "tick"), (1.0, "tick"), (1.2, "tick"), (1.4, "tick"), (1.55, "thud"), (1.9, "click")],
+    "61": [(0.2, "typewriter"), (0.6, "scribble"), (2.4, "swoosh"), (2.6, "click")],
+    "62": [(0.2, "rise"), (0.6, "typewriter"), (1.6, "typewriter"), (2.7, "impact")],
+    "63": [(0.3, "click"), (1.1, "swoosh"), (2.1, "impact"), (3.1, "scribble"), (3.4, "tick")],
+    "64": [(0.2, "click")],
+    "65": [(0.1, "scribble"), (0.3, "typewriter")],
+    "66": [(0.2, "click"), (0.5, "swoosh"), (1.6, "click"), (2.0, "tick"), (2.3, "tick"), (2.6, "tick"), (2.9, "impact"), (3.2, "thud"), (5.3, "rise")],
+    "67": [(0.2, "click"), (1.2, "swoosh"), (1.5, "rise"), (3.0, "scribble"), (3.3, "thud")],
+    "68": [(0.15, "thud"), (0.4, "swoosh"), (0.6, "swoosh"), (0.8, "swoosh"), (1.9, "whoosh"), (2.75, "rise"), (3.3, "impact")],
+    "69": [(0.2, "thud"), (0.7, "rise"), (1.4, "impact"), (1.8, "click")],
+    "70": [(0.15, "scribble"), (0.25, "impact")],
+    "71": [(0.2, "swoosh"), (0.45, "swoosh"), (0.7, "swoosh"), (0.95, "swoosh"), (1.2, "swoosh"), (1.7, "thud"), (2.2, "click")],
+    "72": [(0.2, "click"), (0.6, "whoosh"), (1.0, "whoosh"), (1.4, "whoosh"), (2.1, "rise"), (2.5, "tick"), (2.8, "tick"), (3.1, "tick"), (3.4, "impact")],
+    "73": [(0.2, "typewriter"), (0.5, "thud"), (2.1, "typewriter"), (2.3, "thud")],
+    "74": [(0.2, "click"), (1.1, "scribble"), (2.0, "scribble"), (2.6, "scribble"), (3.0, "thud")],
+    "75": [(0.1, "swoosh"), (0.45, "swoosh"), (0.8, "swoosh"), (1.15, "swoosh"), (1.5, "swoosh"), (2.2, "impact"), (2.6, "tick")],
+    "76": [(0.3, "door"), (1.6, "typewriter"), (3.3, "typewriter"), (5.2, "typewriter"), (7.1, "scribble"), (7.4, "thud")],
+    "77": [(0.2, "typewriter"), (1.0, "impact")],
+    "78": [(0.1, "rise"), (0.6, "click"), (1.2, "tick"), (1.6, "tick"), (2.1, "tick"), (2.7, "thud"), (3.3, "buzz")],
+    "79": [(0.3, "thud"), (0.6, "click"), (1.2, "scribble"), (1.7, "pop"), (2.0, "thud")],
+    "80": [(0.2, "click"), (0.5, "rise"), (2.5, "swoosh"), (2.7, "scribble"), (4.5, "click"), (5.0, "whoosh"), (6.5, "thud"), (7.4, "pop"), (8.2, "pop"), (9.0, "pop")],
+    "81": [(0.1, "typewriter"), (0.4, "typewriter"), (0.7, "typewriter"), (1.0, "typewriter"), (1.4, "buzz"), (1.5, "impact")],
 }
 
 

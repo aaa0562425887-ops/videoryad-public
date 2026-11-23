@@ -504,6 +504,231 @@
    "dur": 4.25,
    "film_start": 488.06,
    "film_end": 492.31
+  },
+  {
+   "id": "57",
+   "voice_start": 410.11,
+   "voice_end": 411.68,
+   "insert": 1.0,
+   "dur": 2.57,
+   "film_start": 492.31,
+   "film_end": 494.88
+  },
+  {
+   "id": "58",
+   "voice_start": 411.68,
+   "voice_end": 416.26,
+   "insert": 0.0,
+   "dur": 4.58,
+   "film_start": 494.88,
+   "film_end": 499.46
+  },
+  {
+   "id": "59",
+   "voice_start": 416.26,
+   "voice_end": 416.26,
+   "insert": 9.3,
+   "dur": 9.3,
+   "film_start": 499.46,
+   "film_end": 508.76
+  },
+  {
+   "id": "60",
+   "voice_start": 416.26,
+   "voice_end": 418.25,
+   "insert": 1.5,
+   "dur": 3.49,
+   "film_start": 508.76,
+   "film_end": 512.25
+  },
+  {
+   "id": "61",
+   "voice_start": 418.25,
+   "voice_end": 422.17,
+   "insert": 0.0,
+   "dur": 3.92,
+   "film_start": 512.25,
+   "film_end": 516.17
+  },
+  {
+   "id": "62",
+   "voice_start": 422.17,
+   "voice_end": 425.32,
+   "insert": 0.0,
+   "dur": 3.15,
+   "film_start": 516.17,
+   "film_end": 519.32
+  },
+  {
+   "id": "63",
+   "voice_start": 425.32,
+   "voice_end": 429.68,
+   "insert": 0.0,
+   "dur": 4.36,
+   "film_start": 519.32,
+   "film_end": 523.68
+  },
+  {
+   "id": "64",
+   "voice_start": 429.68,
+   "voice_end": 429.68,
+   "insert": 3.0,
+   "dur": 3.0,
+   "film_start": 523.68,
+   "film_end": 526.68
+  },
+  {
+   "id": "65",
+   "voice_start": 429.68,
+   "voice_end": 429.68,
+   "insert": 2.9,
+   "dur": 2.9,
+   "film_start": 526.68,
+   "film_end": 529.58
+  },
+  {
+   "id": "66",
+   "voice_start": 429.68,
+   "voice_end": 433.27,
+   "insert": 3.0,
+   "dur": 6.59,
+   "film_start": 529.58,
+   "film_end": 536.17
+  },
+  {
+   "id": "67",
+   "voice_start": 433.27,
+   "voice_end": 436.97,
+   "insert": 1.0,
+   "dur": 4.7,
+   "film_start": 536.17,
+   "film_end": 540.87
+  },
+  {
+   "id": "68",
+   "voice_start": 436.97,
+   "voice_end": 440.93,
+   "insert": 0.0,
+   "dur": 3.96,
+   "film_start": 540.87,
+   "film_end": 544.83
+  },
+  {
+   "id": "69",
+   "voice_start": 440.93,
+   "voice_end": 443.28,
+   "insert": 0.0,
+   "dur": 2.35,
+   "film_start": 544.83,
+   "film_end": 547.18
+  },
+  {
+   "id": "70",
+   "voice_start": 443.28,
+   "voice_end": 444.79,
+   "insert": 0.0,
+   "dur": 1.51,
+   "film_start": 547.18,
+   "film_end": 548.69
+  },
+  {
+   "id": "71",
+   "voice_start": 444.79,
+   "voice_end": 447.94,
+   "insert": 1.5,
+   "dur": 4.65,
+   "film_start": 548.69,
+   "film_end": 553.34
+  },
+  {
+   "id": "72",
+   "voice_start": 447.94,
+   "voice_end": 452.37,
+   "insert": 0.0,
+   "dur": 4.43,
+   "film_start": 553.34,
+   "film_end": 557.77
+  },
+  {
+   "id": "73",
+   "voice_start": 452.37,
+   "voice_end": 456.04,
+   "insert": 0.0,
+   "dur": 3.67,
+   "film_start": 557.77,
+   "film_end": 561.44
+  },
+  {
+   "id": "74",
+   "voice_start": 456.04,
+   "voice_end": 459.25,
+   "insert": 0.0,
+   "dur": 3.21,
+   "film_start": 561.44,
+   "film_end": 564.65
+  },
+  {
+   "id": "75",
+   "voice_start": 459.25,
+   "voice_end": 461.23,
+   "insert": 2.0,
+   "dur": 3.98,
+   "film_start": 564.65,
+   "film_end": 568.63
+  },
+  {
+   "id": "76",
+   "voice_start": 461.23,
+   "voice_end": 468.77,
+   "insert": 1.5,
+   "dur": 9.04,
+   "film_start": 568.63,
+   "film_end": 577.67
+  },
+  {
+   "id": "77",
+   "voice_start": 468.77,
+   "voice_end": 470.52,
+   "insert": 0.0,
+   "dur": 1.75,
+   "film_start": 577.67,
+   "film_end": 579.42
+  },
+  {
+   "id": "78",
+   "voice_start": 470.52,
+   "voice_end": 474.6,
+   "insert": 0.0,
+   "dur": 4.08,
+   "film_start": 579.42,
+   "film_end": 583.5
+  },
+  {
+   "id": "79",
+   "voice_start": 474.6,
+   "voice_end": 476.19,
+   "insert": 1.0,
+   "dur": 2.59,
+   "film_start": 583.5,
+   "film_end": 586.09
+  },
+  {
+   "id": "80",
+   "voice_start": 476.19,
+   "voice_end": 485.8,
+   "insert": 0.0,
+   "dur": 9.61,
+   "film_start": 586.09,
+   "film_end": 595.7
+  },
+  {
+   "id": "81",
+   "voice_start": 485.8,
+   "voice_end": 487.82,
+   "insert": 0.0,
+   "dur": 2.02,
+   "film_start": 595.7,
+   "film_end": 597.72
   }
  ]
 }
