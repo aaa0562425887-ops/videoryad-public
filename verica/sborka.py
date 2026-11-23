@@ -35,6 +35,7 @@ INSERT_AUDIO = {
          "duck": [(2.0, 2.5, -13.0)]},                                   # Верица: 2 с оригинал, потом приглушить (по тексту)
         {"file": "olga_1.mp3", "start": 0.0, "at": 2.3, "dur": 6.8, "target": -18.0, "fade_in": 0.0, "fade_out": 0.15},   # ОЛЬГА, перевод за кадром
     ]},
+    "70b": {"layers": [{"file": "poka.mp3", "start": 0.0, "at": 0.1, "dur": 1.12, "target": -18.0, "fade_in": 0.0, "fade_out": 0.05}]},   # его дописка «Пока не случилось.»
     "64": ("v06_krupno_2400.mp4", 0.0, -30.0),      # Верица без слов (v11-v16 без звуковой дорожки — только v03-v10)
     "65": {"layers": [{"file": "olga_2.mp3", "start": 0.0, "at": 0.1, "dur": 2.72, "target": -18.0, "fade_in": 0.0, "fade_out": 0.1}]},
 }
@@ -84,6 +85,39 @@ def run(cmd):
     subprocess.run(cmd, check=True)
 
 
+def voice_piece(mp3, a, b, out, cuts):
+    """кусок голоса a→b (b=None — до конца) без вырезанных отрезков cuts; пишет out, возвращает True если что-то есть"""
+    spans, cur = [], a
+    for c0, c1 in sorted(cuts):
+        if b is not None and c0 >= b:
+            break
+        if c1 <= cur:
+            continue
+        if c0 > cur:
+            spans.append((cur, c0))
+        cur = max(cur, c1)
+    if b is None or b - cur > 0.02:
+        spans.append((cur, b))
+    spans = [(x, y) for x, y in spans if y is None or y - x > 0.02]
+    if not spans:
+        return False
+    parts = []
+    for i, (x, y) in enumerate(spans):
+        seg = out[:-4] + "_%d.wav" % i
+        cmd = [FF, "-nostdin", "-v", "error", "-y", "-ss", "%.3f" % x]
+        if y is not None:
+            cmd += ["-to", "%.3f" % y]
+        run(cmd + ["-i", mp3, "-ac", "2", "-ar", "48000", seg])
+        parts.append(seg)
+    if len(parts) == 1:
+        os.replace(parts[0], out)
+    else:
+        lst = out[:-4] + "_list.txt"
+        open(lst, "w", encoding="utf-8").write("".join("file '%s'\n" % p for p in parts))
+        run([FF, "-nostdin", "-v", "error", "-y", "-f", "concat", "-safe", "0", "-i", lst, "-c", "copy", out])
+    return True
+
+
 def srt_shift(srt_in, scenes, out_ass):
     """субтитры озвучки → .ass со сдвигом на вставки; строка — внизу, спокойная"""
     import razbivka
@@ -123,6 +157,7 @@ def main():
     clips, mp3, srt, out = sys.argv[1:5]
     tm = json.load(open(os.path.join(HERE, "timing.json"), encoding="utf-8"))
     scenes = tm["scenes"]
+    cuts = [tuple(c) for c in tm.get("cuts", [])]   # вырезанные отрезки озвучки (оговорка блока 4)
     # отрезок фильма: KINO_SCENES="01,02,03,04" — собрать только эти сцены (первая минута на утверждение)
     only = [x.strip() for x in os.environ.get("KINO_SCENES", "").split(",") if x.strip()]
     if only:
@@ -153,9 +188,8 @@ def main():
         # голос до начала этой сцены
         seg = os.path.join(tmp, "v_%s.wav" % sc["id"])
         if sc["voice_start"] - cursor > 0.02:      # пауза в самом начале отрезка — голоса до неё нет
-            run([FF, "-nostdin", "-v", "error", "-y", "-ss", "%.3f" % cursor, "-to", "%.3f" % sc["voice_start"],
-                 "-i", mp3, "-ac", "2", "-ar", "48000", seg])
-            parts.append(seg)
+            if voice_piece(mp3, cursor, sc["voice_start"], seg, cuts):
+                parts.append(seg)
         cursor = sc["voice_start"]
         # оригинал на длину вставки
         spec = INSERT_AUDIO.get(sc["id"], (None, 0.0, -20.0))
@@ -182,8 +216,8 @@ def main():
                  "-t", "%.3f" % sc["insert"], ins])
         parts.append(ins)
     tail = os.path.join(tmp, "v_tail.wav")
-    run([FF, "-nostdin", "-v", "error", "-y", "-ss", "%.3f" % cursor, "-i", mp3, "-ac", "2", "-ar", "48000", tail])
-    parts.append(tail)
+    if voice_piece(mp3, cursor, None, tail, cuts):
+        parts.append(tail)
     alist = os.path.join(tmp, "alist.txt")
     open(alist, "w", encoding="utf-8").write("".join("file '%s'\n" % p for p in parts))
     audio = os.path.join(tmp, "audio.wav")

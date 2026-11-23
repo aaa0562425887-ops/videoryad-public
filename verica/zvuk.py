@@ -107,6 +107,7 @@ EVENTS = {
     "68": [(0.15, "thud"), (0.4, "swoosh"), (0.6, "swoosh"), (0.8, "swoosh"), (1.9, "whoosh"), (2.75, "rise"), (3.3, "impact")],
     "69": [(0.2, "thud"), (0.7, "rise"), (1.4, "impact"), (1.8, "click")],
     "70": [(0.15, "scribble"), (0.25, "impact")],
+    "70b": [(0.08, "thud"), (0.3, "scribble")],
     "71": [(0.2, "swoosh"), (0.45, "swoosh"), (0.7, "swoosh"), (0.95, "swoosh"), (1.2, "swoosh"), (1.7, "thud"), (2.2, "click")],
     "72": [(0.2, "click"), (0.6, "whoosh"), (1.0, "whoosh"), (1.4, "whoosh"), (2.1, "rise"), (2.5, "tick"), (2.8, "tick"), (3.1, "tick"), (3.4, "impact")],
     "73": [(0.2, "typewriter"), (0.5, "thud"), (2.1, "typewriter"), (2.3, "thud")],

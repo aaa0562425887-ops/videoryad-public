@@ -391,6 +391,32 @@ def s70(t, dur):
     return C.finish(a(t, dur), t, dur, fi=0.0, fo=0.0, grain_k=0.0, vig=0.3)
 
 
+# ═════════════════════════ 70b · пока не случилось (его дописка, вставка 1,45 с) ═════════════════════════
+@scene("70b")
+def s70b(t, dur):
+    img = C.kb(dark_bg(73), (t + 1.51) / 2.0, 0.05, 0.5, 0.5)
+    kp = C.seg(t, 0.12, 0.5)
+    lays = [label("НАТО ОТСТУПИТ", 1.0, H * 0.5 - 120, 56, C.GREY2, x=W * 0.5),
+            label("КИТАЙ ВСТАНЕТ РЯДОМ", 1.0, H * 0.5 - 40, 56, C.GREY2, x=W * 0.5),
+            roscherk(1.0, 5),
+            word("НЕ СЛУЧИЛОСЬ", 1.0, H * 0.5 + 200, 130, "head", C.RED, 0.1, rise=30),
+            rukopis_layer("пока", kp, W * 0.5 - 560, H * 0.5 + 215, 110)]
+    return C.finish(C.grain(C.over(img, *lays).convert("RGB"), t, 0.04), t, dur, fi=0.0, fo=0.0, grain_k=0.0, vig=0.3)
+
+
+def rukopis_layer(text, k, x, y, px):
+    """рукописное слово пером поверх кадра (белым), пишется слева направо"""
+    if k <= 0:
+        return None
+    lay = rukopis(text, k, 0, int(px * 1.1), px, (int(px * len(text) * 0.8), int(px * 1.8)), angle=-6.0, heavy=True)
+    a = np.asarray(lay, np.uint8).copy()
+    a[:, :, 0:3] = (240, 238, 234)
+    lay = Image.fromarray(a, "RGBA")
+    out = Image.new("RGBA", (W, H), (0, 0, 0, 0))
+    out.alpha_composite(lay, (int(x), int(y - px * 1.1)))
+    return out
+
+
 # ═════════════════════════ 71 · только в пересказах ═════════════════════════
 @scene("71")
 def s71(t, dur):
