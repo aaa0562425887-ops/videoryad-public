@@ -1,0 +1,148 @@
+[
+ {
+  "scene": 31,
+  "view": "charts.cartogram",
+  "dur": 8.81,
+  "anim": 8.81,
+  "tail_zoom": 0.045,
+  "watermark": "ПЛАНЕТА",
+  "channel": "ПЛАНЕТА",
+  "kwargs": {
+   "data": [
+    "Украина",
+    "Россия"
+   ],
+   "mode": "bubble",
+   "watermark": "ПЛАНЕТА"
+  }
+ },
+ {
+  "scene": 36,
+  "view": "zal_g18",
+  "dur": 7.82,
+  "anim": 7.82,
+  "tail_zoom": 0.045,
+  "watermark": "ПЛАНЕТА",
+  "channel": "ПЛАНЕТА",
+  "kwargs": {
+   "channel": "ПЛАНЕТА",
+   "dur": 7.82,
+   "sheets": [],
+   "text": "До какого года готовы ждать",
+   "value": "2029",
+   "watermark": "ПЛАНЕТА"
+  }
+ },
+ {
+  "scene": 41,
+  "view": "charts.slope",
+  "dur": 12.02,
+  "anim": 2.6,
+  "tail_zoom": 0.045,
+  "watermark": "ПЛАНЕТА",
+  "channel": "ПЛАНЕТА",
+  "kwargs": {
+   "items": [
+    {
+     "label": "Открытость к разговору",
+     "from": 1.0,
+     "to": 1.0,
+     "to_label": "Сначала условия"
+    },
+    {
+     "label": "Снизить напряжение",
+     "from": 1.0,
+     "to": 1.0,
+     "to_label": "Больше снарядов"
+    }
+   ],
+   "source": "по ходу речи",
+   "sobytiya": true,
+   "watermark": "ПЛАНЕТА"
+  }
+ },
+ {
+  "scene": 42,
+  "view": "charts.network",
+  "dur": 8.48,
+  "anim": 8.48,
+  "tail_zoom": 0.045,
+  "watermark": "ПЛАНЕТА",
+  "channel": "ПЛАНЕТА",
+  "kwargs": {
+   "nodes": [
+    {
+     "id": "Зеленский",
+     "label": "Зеленский",
+     "weight": 1.0
+    },
+    {
+     "id": "НАТО",
+     "label": "НАТО",
+     "weight": 2.0
+    },
+    {
+     "id": "Рютте",
+     "label": "Рютте",
+     "weight": 1.0
+    },
+    {
+     "id": "Мерц",
+     "label": "Мерц",
+     "weight": 1.0
+    },
+    {
+     "id": "Москва",
+     "label": "Москва",
+     "weight": 1.0
+    },
+    {
+     "id": "МИД Германии",
+     "label": "МИД Германии",
+     "weight": 1.0
+    },
+    {
+     "id": "Россия",
+     "label": "Россия",
+     "weight": 1.0
+    }
+   ],
+   "links": [
+    {
+     "from": "Зеленский",
+     "to": "НАТО",
+     "weight": 1.0
+    },
+    {
+     "from": "Рютте",
+     "to": "НАТО",
+     "weight": 1.0
+    },
+    {
+     "from": "Мерц",
+     "to": "Москва",
+     "weight": 1.0
+    },
+    {
+     "from": "МИД Германии",
+     "to": "Россия",
+     "weight": 1.0
+    }
+   ],
+   "watermark": "ПЛАНЕТА"
+  }
+ },
+ {
+  "scene": 76,
+  "view": "paper_hand",
+  "dur": 11.5,
+  "anim": 2.8,
+  "tail_zoom": 0.04,
+  "watermark": "ПЛАНЕТА",
+  "channel": "ПЛАНЕТА",
+  "kwargs": {
+   "text": "Но дом, где расписали удобства для всех жильцов и забыли одного из главных владельцев, долго не простоит",
+   "watermark": "ПЛАНЕТА"
+  }
+ }
+]
