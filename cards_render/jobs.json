@@ -1,5 +1,31 @@
 [
  {
+  "scene": 19,
+  "view": "poster.poster",
+  "dur": 11.97,
+  "anim": 11.97,
+  "tail_zoom": 0.0,
+  "watermark": "ПЛАНЕТА",
+  "channel": "ПЛАНЕТА",
+  "kwargs": {
+   "title": "ПЛАН БЕЗОПАСНОСТИ",
+   "hero_photo": "cards/photo/card_019.jpg",
+   "bottom": "России в плане нет",
+   "facts": [
+    {
+     "label": "Украина",
+     "value": "безопасность"
+    },
+    {
+     "label": "Европа",
+     "value": "стабильность"
+    }
+   ],
+   "watermark": "ПЛАНЕТА"
+  },
+  "mode": "frame"
+ },
+ {
   "scene": 22,
   "view": "paper_typed",
   "dur": 13.5,
@@ -65,6 +91,43 @@
   }
  },
  {
+  "scene": 28,
+  "view": "cinematic.evidence_wall",
+  "dur": 9.61,
+  "anim": 9.61,
+  "tail_zoom": 0.0,
+  "watermark": "ПЛАНЕТА",
+  "channel": "ПЛАНЕТА",
+  "kwargs": {
+   "shots": [
+    [
+     "cards/photo/card_028.jpg",
+     240,
+     380,
+     -4,
+     "Трамп"
+    ],
+    [
+     "cards/photo/card_028_2.jpg",
+     800,
+     380,
+     3,
+     "фон дер Ляйен"
+    ],
+    [
+     "cards/photo/card_028_3.jpg",
+     1360,
+     380,
+     -2,
+     "Мерц"
+    ]
+   ],
+   "title": "КТО В ИГРЕ",
+   "watermark": "ПЛАНЕТА"
+  },
+  "mode": "frame"
+ },
+ {
   "scene": 34,
   "view": "slider",
   "dur": 14.65,
@@ -87,6 +150,24 @@
    "range_label": "РАЗБРОС ОЦЕНОК",
    "caption": "",
    "source": ""
+  }
+ },
+ {
+  "scene": 35,
+  "view": "film.film_strip",
+  "dur": 10.52,
+  "anim": 10.52,
+  "tail_zoom": 0.045,
+  "watermark": "ПЛАНЕТА",
+  "channel": "ПЛАНЕТА",
+  "kwargs": {
+   "shots": [
+    "cards/photo/card_035.jpg",
+    "cards/photo/card_035_2.jpg",
+    "cards/photo/card_035_3.jpg"
+   ],
+   "title": "КТО РЕШАЕТ",
+   "watermark": "ПЛАНЕТА"
   }
  },
  {
