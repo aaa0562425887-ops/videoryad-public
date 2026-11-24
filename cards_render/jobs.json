@@ -1,0 +1,22 @@
+[
+ {
+  "scene": 65,
+  "view": "charts.cartogram",
+  "dur": 9.71,
+  "anim": 9.71,
+  "tail_zoom": 0.045,
+  "watermark": "ПЛАНЕТА",
+  "channel": "ПЛАНЕТА",
+  "kwargs": {
+   "data": [
+    "Германия",
+    "Франция",
+    "Бельгия"
+   ],
+   "accent": [
+    "Германия"
+   ],
+   "watermark": "ПЛАНЕТА"
+  }
+ }
+]
