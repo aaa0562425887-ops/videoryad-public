@@ -1,0 +1,28 @@
+{
+ "scenes": [
+  {
+   "id": 201,
+   "start_sec": 0,
+   "duration_sec": 5,
+   "text": "",
+   "source": "press_photo",
+   "source_query": "флаг НАТО крупным планом здание"
+  },
+  {
+   "id": 202,
+   "start_sec": 0,
+   "duration_sec": 5,
+   "text": "",
+   "source": "web_search",
+   "source_query": "Омский нефтеперерабатывающий завод дым после удара"
+  },
+  {
+   "id": 203,
+   "start_sec": 0,
+   "duration_sec": 5,
+   "text": "",
+   "source": "press_photo",
+   "source_query": "форт Дуомон вход бетонные стены Верден"
+  }
+ ]
+}
