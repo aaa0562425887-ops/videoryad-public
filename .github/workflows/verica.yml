@@ -114,6 +114,11 @@ jobs:
             [ "$r" = "self" ] && continue
             rm -rf tmpdl; mkdir tmpdl
             gh run download "$r" -R "${{ github.repository }}" -D tmpdl || true
+            # артефакты живут 2-3 дня; если пусто — клипы из релиза verica-<run_id>
+            if [ -z "$(find tmpdl -name 'verica_*.mp4' | head -1)" ]; then
+              echo "артефакт $r пуст — беру релиз verica-$r"
+              gh release download "verica-$r" -R "${{ github.repository }}" -p 'verica_*.mp4' -D tmpdl || true
+            fi
             find tmpdl -name 'verica_*.mp4' -exec cp -f {} clips/ \;
           done
           # клипы ЭТОГО прогона — поверх всех прежних
