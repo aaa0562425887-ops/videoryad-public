@@ -24,8 +24,9 @@ def main():
                           "-ar", "16000", "-"], capture_output=True, check=True).stdout
     audio = np.frombuffer(raw, np.float32)
     model = WhisperModel("small", device="cpu", compute_type="int8")
-    segments, info = model.transcribe(audio, language=lang, vad_filter=True)
-    res = [{"t0": round(s.start, 2), "t1": round(s.end, 2), "text": s.text.strip()} for s in segments]
+    segments, info = model.transcribe(audio, language=lang, vad_filter=True, word_timestamps=True)
+    res = [{"t0": round(s.start, 2), "t1": round(s.end, 2), "text": s.text.strip(),
+            "words": [{"t0": round(w.start, 2), "t1": round(w.end, 2), "w": w.word} for w in (s.words or [])]} for s in segments]
     json.dump(res, open(out, "w", encoding="utf-8"), ensure_ascii=False, indent=0)
     for r in res:
         print("%7.1f  %s" % (r["t0"], r["text"]))
