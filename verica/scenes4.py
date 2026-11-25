@@ -52,9 +52,75 @@ EXTRA["sech"] = ((W * 0.84, H * 0.21, 2.0), "", "СЕЧИН", ["«Роснефт
 EXTRA["dolzh"] = ((W * 0.51, H * 0.19, 0.5), "", "ДОЛЖНОСТЬ", ["политической — нет", "пока"])
 
 
-def board4(t, lamp_t, extra, threads=(), amp=0.0, dark=0.10, prior=("lich", "zachem", "mitr", "dres")):
+# ── фото-улика (финал, его слово 23.11 ~13:35: «как журналистское расследование — фото как улика»)
+_fp = {}
+
+
+def foto_print(name, w, h, lines, empty=False, bw=False):
+    """фотоотпечаток на доске: белое поле, снимок в тёмном строе, подпись от руки внизу; empty — пустая рамка «снимка нет»"""
+    key = ("fp", name, w, h, tuple(lines), empty, bw)
+    if key in _fp:
+        return _fp[key]
+    s = 2
+    m = 12 * s
+    px = max(13, int(w / 13))
+    cap_h = (int(px * 1.25) * len(lines) + 10) * s
+    W2, H2 = w * s, h * s
+    im = C.paper(W2, H2, seed=7 + len(name) + len(lines), tone=(236, 232, 222), dark=0.0).convert("RGBA")
+    d = ImageDraw.Draw(im)
+    box = (m, m, W2 - m, H2 - m - cap_h)
+    bw_, bh_ = box[2] - box[0], box[3] - box[1]
+    if empty:
+        d.rectangle(box, fill=(58, 54, 50, 255), outline=(120, 110, 95, 255), width=2)
+        d.line([(box[0], box[1]), (box[2], box[3])], fill=(96, 90, 84, 255), width=2)
+        d.line([(box[2], box[1]), (box[0], box[3])], fill=(96, 90, 84, 255), width=2)
+        C.tracked(d, (box[0] + box[2]) / 2, (box[1] + box[3]) / 2 + px * s * 0.4, "ФОТО НЕТ", C.font("head_l", int(px * 1.6) * s), (150, 142, 134, 255), 0.2, "ms")
+    else:
+        ph = foto(name).convert("RGB")
+        r = max(bw_ / ph.size[0], bh_ / ph.size[1])
+        ph = ph.resize((max(1, int(ph.size[0] * r)), max(1, int(ph.size[1] * r))), Image.LANCZOS)
+        x0 = (ph.size[0] - bw_) // 2
+        y0 = int((ph.size[1] - bh_) * 0.25)
+        ph = ph.crop((x0, y0, x0 + bw_, y0 + bh_))
+        if bw:
+            ph = ph.convert("L").convert("RGB")
+        ph = grade(ph, 0.7)
+        im.paste(ph, (box[0], box[1]))
+        d.rectangle(box, outline=(120, 110, 95, 255), width=2)
+    y = H2 - m - cap_h + int(px * 1.15) * s
+    for ln in lines:
+        d.text((m + 4 * s, y), ln, font=C.font("serif_i", px * s), fill=(74, 66, 58, 255), anchor="ls")
+        y += int(px * 1.25) * s
+    out = im.resize((w, h), Image.LANCZOS)
+    _fp[key] = out
+    return out
+
+
+def pin_foto(img, tex, cx, cy, ang, k, lx=W / 2, ly=-300.0):
+    """приколоть отпечаток к тёмному фону (не к доске): тень, поворот, булавка; возвращает RGBA-слой"""
+    lay = Image.new("RGBA", (W, H), (0, 0, 0, 0))
+    if k <= 0:
+        return lay
+    kk = C.out_cubic(k)
+    sc = 1.25 - 0.25 * kk
+    yy = cy - 70 * (1 - kk)
+    t2 = tex.rotate(ang, Image.BICUBIC, expand=True)
+    if sc != 1.0:
+        t2 = t2.resize((int(t2.size[0] * sc), int(t2.size[1] * sc)), Image.LANCZOS)
+    sh, sx, sy = fx.shadow_of(t2.size, lx, ly, cx, yy, blur=18 + int(30 * (1 - kk)), a=int(190 * kk))
+    lay.alpha_composite(sh, (sx, sy))
+    lay.alpha_composite(C.alpha(t2, C.clamp(k * 2)), (int(cx - t2.size[0] / 2), int(yy - t2.size[1] / 2)))
+    if k >= 1:
+        pl = C.layer()
+        pin_at(ImageDraw.Draw(pl), cx, cy - tex.size[1] / 2 + 24)
+        lay = Image.alpha_composite(lay, C.done(pl))
+    return lay
+
+
+def board4(t, lamp_t, extra, threads=(), amp=0.0, dark=0.10, prior=("lich", "zachem", "mitr", "dres"), fotos=()):
     """вся доска фильма: 3 карточки хука + prior пришпилены; extra=[(key, k_drop, k_text)];
-    threads=[(keyA, keyB, k)] — нити между карточками (ключ None/0/1/2 — карточки хука)"""
+    threads=[(keyA, keyB, k)] — нити между карточками (ключ None/0/1/2 — карточки хука);
+    fotos=[(key, tex, cx, cy, ang, k)] — фотоотпечатки-улики, приколоты как карточки (финал)"""
     lx, ly = fx.lampa_pos(lamp_t, W / 2, amp, 3.6)
     img = board_bg().copy().convert("RGBA")
     pins = {}
@@ -64,6 +130,9 @@ def board4(t, lamp_t, extra, threads=(), amp=0.0, dark=0.10, prior=("lich", "zac
     for key, kd, kt in extra:
         if kd > 0:
             items.append((EXTRA[key][0], card_extra(key, kt), kd, key))
+    for key, tex, cx, cy, ang, k in fotos:
+        if k > 0:
+            items.append(((cx, cy, ang), tex, k, key))
     for (cx, cy, ang), tex0, k, key in items:
         kk = C.out_cubic(k)
         sc = 1.3 - 0.3 * kk
@@ -76,7 +145,7 @@ def board4(t, lamp_t, extra, threads=(), amp=0.0, dark=0.10, prior=("lich", "zac
         tex = C.alpha(tex, C.clamp(k * 2))
         img.alpha_composite(tex, (int(cx - tex.size[0] / 2), int(yy - tex.size[1] / 2)))
         if k >= 1:
-            pins[key] = (cx, cy - CARD_H / 2 + 26)
+            pins[key] = (cx, cy - tex0.size[1] / 2 + 26)
     lay = C.layer()
     d = ImageDraw.Draw(lay)
     base = [pins[i] for i in range(3)]
@@ -204,9 +273,12 @@ def s43(t, dur):
     def a_card(tt, d):
         kd = C.seg(tt, 0.0, 0.5)
         kt = C.seg(tt, c_kat - 0.2, c_kat + 0.5)
-        img = board4(t, 12.0 + tt, [("kat", kd, kt)], threads=[("kat", 1, C.seg(tt, 0.5, 1.1))], amp=300.0)
+        kf = C.seg(tt, c_kat + 0.2, c_kat + 0.8)   # финал: фото уликой — его слово 23.11 ~13:35 (взрослого свободного снимка нет, детское из архива kremlin.ru)
+        ft = foto_print("foto/tikhonova_1.jpg", 260, 330, ["Катерина Путина · 1988", "личный архив В. Путина", "kremlin.ru · CC BY 4.0"], bw=True)
+        img = board4(t, 12.0 + tt, [("kat", kd, kt)], threads=[("kat", 1, C.seg(tt, 0.5, 1.1)), ("kat", "f_kat", C.seg(tt, c_kat + 0.7, c_kat + 1.2))],
+                     amp=300.0, fotos=[("f_kat", ft, W * 0.585, H * 0.19, 4.0, kf)])
         cx, cy, _ = EXTRA["kat"][0]
-        img = zoom_at(img, 1.7, cx, cy + 60)
+        img = zoom_at(img, 1.7, cx + 60, cy + 60)
         return flash(C.over(img, label("МЛАДШАЯ", C.seg(tt, 0.1, 0.5), H - 120, 50, C.WHITE)).convert("RGB"), tt, 0.08, 0.4)
 
     def b_dresden(tt, d):
@@ -416,7 +488,10 @@ def s48(t, dur):
     def c_sechin(tt, d):
         kd = C.seg(tt, 0.0, 0.5)
         kt = C.seg(tt, 0.3, 0.9)
-        img = board4(t, 16.0 + tt, [("kat", 1, 1), ("mar", 1, 1), ("sech", kd, kt)], threads=[("kat", 1, 1.0), ("mar", 1, 1.0), ("sech", "mar", C.seg(tt, 0.5, 1.1))], amp=300.0)
+        fs = foto_print("foto/sechin_17.jpg", 260, 310, ["Игорь Сечин · 2016", "пресс-служба Президента", "kremlin.ru · CC BY 4.0"])   # финал: фото уликой, его слово 23.11
+        img = board4(t, 16.0 + tt, [("kat", 1, 1), ("mar", 1, 1), ("sech", kd, kt)],
+                     threads=[("kat", 1, 1.0), ("mar", 1, 1.0), ("sech", "mar", C.seg(tt, 0.5, 1.1)), ("sech", "f_sech", C.seg(tt, 0.9, 1.4))],
+                     amp=300.0, fotos=[("f_sech", fs, W * 0.72, H * 0.40, 3.0, C.seg(tt, 0.4, 0.95))])
         cx, cy, _ = EXTRA["sech"][0]
         img = zoom_at(img, 1.6, cx - 120, cy + 80)
         return flash(C.over(img, label("ИГОРЬ СЕЧИН", C.seg(tt, 0.1, 0.5), H - 120, 50, C.WHITE)).convert("RGB"), tt, 0.08, 0.4)
@@ -531,7 +606,10 @@ def s51(t, dur):
             y = H * 0.52 - 30 * (1 - C.out_cubic(k))
             C.tracked(dd, x * s, (y + 40) * s, yr, C.font("head", 150 * s), (C.RED if i == 2 else C.WHITE) + (a,), 0.04, "ms")
             dd.rectangle([(x - 90) * s, (y + 62) * s, (x + 90) * s, (y + 66) * s], fill=C.RED + (a,))
-        return C.grain(C.over(img, C.done(lay), K.date_tag("2024", C.seg(tt, 0.1, 0.5), sub="обе выходят на публику"),
+        kf = C.seg(tt, 0.4, 1.0)   # финал: фото обеих дочерей — его слово 23.11 ~13:35; у Тихоновой свободного снимка нет — честная пустая рамка
+        f_mar = pin_foto(img, foto_print("foto/vorontsova_14.jpg", 250, 320, ["Мария Воронцова · 2024", "ФФМ МГУ / МФТИ · CC BY 4.0"]), W * 0.14, H * 0.71, -3.0, kf)
+        f_kat = pin_foto(img, foto_print("", 250, 320, ["Катерина Тихонова", "свободного снимка нет"], empty=True), W * 0.86, H * 0.71, 3.0, kf)
+        return C.grain(C.over(img, C.done(lay), f_mar, f_kat, K.date_tag("2024", C.seg(tt, 0.1, 0.5), sub="обе выходят на публику"),
                               label("ТРИ ГОДА ПОДРЯД · ГЛАВНЫЙ ЭКОНОМИЧЕСКИЙ ФОРУМ СТРАНЫ", C.seg(tt, t_tri, t_tri + 0.4), H - 110, 34, C.WHITE)).convert("RGB"), t, 0.04)
 
     fn, tt, d = shots(t, [(0.0, a_cols), (c_vokrug, b_krug), (c_2024, c_forum)], dur)
