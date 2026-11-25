@@ -1,0 +1,72 @@
+{
+  "1": {
+    "text": {
+      "words": "БАЛТИКА",
+      "color": "yellow",
+      "pos": "ml",
+      "font": "default",
+      "sound": "whoosh",
+      "at": 0.5,
+      "scale": 1.0,
+      "style": "mask_plate",
+      "sub": "что происходит у порога",
+      "approved": true
+    }
+  },
+  "15": {
+    "text": {
+      "words": "НАПАДЕНИЕ",
+      "color": "white",
+      "pos": "ml",
+      "font": "default",
+      "sound": "whoosh",
+      "at": 0.5,
+      "scale": 1.0,
+      "style": "mask_plate",
+      "sub": "Финский залив",
+      "approved": true
+    }
+  },
+  "26": {
+    "text": {
+      "words": "ПОЛЬША",
+      "color": "yellow",
+      "pos": "tr",
+      "font": "default",
+      "sound": "whoosh",
+      "at": 0.5,
+      "scale": 1.0,
+      "style": "mask_plate",
+      "sub": "беспилотник над Хелмом",
+      "approved": true
+    }
+  },
+  "40": {
+    "text": {
+      "words": "СРЕДИЗЕМНОМОРЬЕ",
+      "color": "white",
+      "pos": "ml",
+      "font": "default",
+      "sound": "whoosh",
+      "at": 0.5,
+      "scale": 1.0,
+      "style": "mask_plate",
+      "sub": "удар у Бенгази",
+      "approved": true
+    }
+  },
+  "69": {
+    "text": {
+      "words": "ДЕНЬГИ",
+      "color": "orange",
+      "pos": "ml",
+      "font": "default",
+      "sound": "whoosh",
+      "at": 0.5,
+      "scale": 1.0,
+      "style": "mask_plate",
+      "sub": "кредит и диверсии",
+      "approved": true
+    }
+  }
+}
