@@ -29,12 +29,12 @@ import core as C
 import fx
 import karta as K
 from core import W, H, SS
-from scenes import (scene, rel, shots, flash, word, red_line, zoom_at, vid, verica,
+from scenes import (scene, rel, shots, flash, word, red_line, zoom_at, vid, verica, pin_at,
                     CAP_V, CAP_B, page_view, to_frame, page_dark, dark_bg, CARD_POS, CARD_W, CARD_H, fit_px,
                     LINE_PUTIN, LINE_DAUGHTERS, BALKAN)
 from scenes2 import label, EXTRA
 from scenes3 import lamp_bg, rukopis
-from scenes4 import board4, board_blur_bg
+from scenes4 import board4, board_blur_bg, foto_print
 from scenes5 import roscherk, strana_layer, rukopis_layer
 
 SAFE_X, SAFE_Y = 96, 54
@@ -42,7 +42,7 @@ SAFE_X, SAFE_Y = 96, 54
 CAP_PUBL = ("по публикациям", "документов в кадре нет", None)
 CAP_KARTA = ("карта условная", None, None)
 CAP_SHEMA = ("схема условная", None, None)
-CAP_VANGA = ("Ванга · Болгария", "по публикациям · документов в кадре нет", None)
+CAP_VANGA = ("Ванга · Болгария", "по публикациям · в кадре — бюст в Петриче", "фото Maraschino Cherry · Wikimedia Commons · CC BY 4.0")
 CAP_PROM = ("интервью 2016 года", "по публикациям", None)
 
 EXTRA["promahi"] = ((W * 0.09, H * 0.60, -2.0), "", "ПРОМАХИ", ["Курдистан · Германия · Испания", "Босния · Турция · база в Сербии"])
@@ -392,8 +392,17 @@ def vanga_sheet(tt, t, k_in, ks, zoom=1.0, note=0.0):
         if n > 0:
             d.text((60, y), ln[:n], font=C.font("serif", 44), fill=C.INK + (255,), anchor="ls")
         y += 100
+    # финал, его слово 25.11 ~20:52 («тут тоже её фотография просится»): свободного ФОТО Ванги нет (Commons — только бюст,
+    # дом, могила, бланк пропуска без снимка) — в досье приколот бюст из Петрича, подпись честная
+    fp = foto_print("foto/vanga_bust_face.jpg", 236, 326, ["бюст Ванги · Петрич", "фото 2024 · CC BY 4.0"]).rotate(2.0, Image.BICUBIC, expand=True)
+    fsh, fsx, fsy = fx.shadow_of(fp.size, w / 2, -200, 1068, 370, blur=14, a=150)
+    sheet.alpha_composite(fsh, (fsx, fsy))
+    sheet.alpha_composite(fp, (int(1068 - fp.size[0] / 2), int(370 - fp.size[1] / 2)))
+    pl = Image.new("RGBA", (w * SS, h * SS), (0, 0, 0, 0))
+    pin_at(ImageDraw.Draw(pl), 1068, 370 - 163 + 22)
+    sheet.alpha_composite(pl.resize((w, h), Image.LANCZOS))
     if note > 0:
-        sheet = Image.alpha_composite(sheet, rukopis("полвека", note, 760, 640, 56, (w, h), angle=-5.0, heavy=True))
+        sheet = Image.alpha_composite(sheet, rukopis("полвека", note, 700, 640, 56, (w, h), angle=-5.0, heavy=True))
     kk = C.out_cubic(k_in)
     x0, y0 = int(W / 2 - w / 2), int(H * 0.52 - h / 2 + (1 - kk) * 400)
     sh, sx, sy = fx.shadow_of((w, h), W / 2, -300, x0 + w / 2, y0 + h / 2, blur=24, a=180)
@@ -706,6 +715,9 @@ TITRY = [
     ("Дрезден, декабрь 1989", "Bundesarchiv, Bild 183 · фото Ulrich Haessler, Matthias Hiekel · CC BY-SA 3.0 de"),
     ("Указ Президента РФ № 680", "kremlin.ru · Указ № 192 · pravo.gov.ru"),
     ("Итоги голосования 01.07.2020", "ЦИК России"),
+    ("Фото: Катерина Путина 1988 · Игорь Сечин 2016", "kremlin.ru · CC BY 4.0"),
+    ("Фото: Мария Воронцова 2024", "ФФМ МГУ / МФТИ · CC BY 4.0"),
+    ("Бюст Ванги · Петрич", "фото Maraschino Cherry · Wikimedia Commons · CC BY 4.0"),
     ("Карты", "Natural Earth · условные"),
     ("Музыка", "Jeremy Blake — Missing Persons, Final Girl · Godmode — To Pass Time · Incoming Transition"),
     ("Письмо 1987 года, план особняка, схемы", "реконструкция по публикациям · подлинников в кадре нет"),

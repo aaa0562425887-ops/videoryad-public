@@ -171,16 +171,30 @@ Format: Layer, Start, End, Style, Name, MarginL, MarginR, Effect, Text
     open(out_ass, "w", encoding="utf-8").write(head + "\n".join(lines) + "\n")
 
 
+AIR_AT = 80.6   # «воздух» комнаты для пауз внутри сцены: естественная тишина озвучки 80,27-82,55 с (после «…военными.»)
+FADE = 0.06     # сглаживание реза голоса на паузе, с
+
+
 def mid_pauses(sc, mp3, cursor, parts, tmp, cuts):
-    """паузы внутри сцены (финал п.1-2): голос до точки, тишина, курсор на точку"""
+    """паузы внутри сцены (финал п.1-2): голос до точки с фейдом, вместо нулевой тишины — воздух комнаты, следующий голос с фейдом.
+    Его слово 25.11 ~20:50: «паузы видны, как будто их обрезали» — поэтому не цифровой ноль и не рез впритык."""
     for k, (v, m) in enumerate(sc.get("mid", [])):
         seg = os.path.join(tmp, "v_%s_m%d.wav" % (sc["id"], k))
         if v - cursor > 0.02 and voice_piece(mp3, cursor, v, seg, cuts):
-            parts.append(seg)
-        cursor = v
-        sil = os.path.join(tmp, "s_%s_m%d.wav" % (sc["id"], k))
-        run([FF, "-nostdin", "-v", "error", "-y", "-f", "lavfi", "-i", "anullsrc=r=48000:cl=stereo", "-t", "%.3f" % m, sil])
-        parts.append(sil)
+            d = float(subprocess.run([FF.replace("ffmpeg", "ffprobe"), "-v", "error", "-show_entries", "format=duration", "-of", "csv=p=0", seg],
+                                     capture_output=True, text=True).stdout.strip() or 0)
+            seg2 = seg[:-4] + "_f.wav"
+            run([FF, "-nostdin", "-v", "error", "-y", "-i", seg, "-af", "afade=t=out:st=%.3f:d=%.3f" % (max(0.0, d - FADE), FADE), seg2])
+            parts.append(seg2)
+        air = os.path.join(tmp, "s_%s_m%d.wav" % (sc["id"], k))
+        run([FF, "-nostdin", "-v", "error", "-y", "-ss", "%.3f" % AIR_AT, "-t", "%.3f" % m, "-i", mp3, "-ac", "2", "-ar", "48000",
+             "-af", "afade=t=in:d=0.08,afade=t=out:st=%.3f:d=0.08" % (m - 0.08), air])
+        parts.append(air)
+        head = os.path.join(tmp, "h_%s_m%d.wav" % (sc["id"], k))
+        run([FF, "-nostdin", "-v", "error", "-y", "-ss", "%.3f" % v, "-t", "%.3f" % FADE, "-i", mp3, "-ac", "2", "-ar", "48000",
+             "-af", "afade=t=in:d=%.3f" % FADE, head])
+        parts.append(head)
+        cursor = v + FADE
     return cursor
 
 

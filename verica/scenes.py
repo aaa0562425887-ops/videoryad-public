@@ -32,7 +32,10 @@ def scene(sid):
 def rel(sid, v):
     """секунда озвучки → секунда сцены (с учётом вставки в начале)"""
     s = C.scene_info(sid)
-    return v - s["voice_start"] + s["insert"]
+    # паузы внутри сцены (финал, MID в timing.py): метки после точки паузы сдвигаются на её длину;
+    # метки, поставленные «за 0,15 с до слова» перед самой точкой, тоже относятся к слову после паузы
+    mid = sum(m for vm, m in s.get("mid", []) if v >= vm - 0.2)
+    return v - s["voice_start"] + s["insert"] + mid
 
 
 def shots(t, lst, dur):
