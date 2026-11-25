@@ -647,13 +647,31 @@
    "film_end": 550.14
   },
   {
+   "id": "R6",
+   "voice_start": 444.79,
+   "voice_end": 444.79,
+   "insert": 16.6,
+   "dur": 16.6,
+   "film_start": 550.14,
+   "film_end": 566.74
+  },
+  {
+   "id": "K6",
+   "voice_start": 444.79,
+   "voice_end": 444.79,
+   "insert": 3.9,
+   "dur": 3.9,
+   "film_start": 566.74,
+   "film_end": 570.64
+  },
+  {
    "id": "71",
    "voice_start": 444.79,
    "voice_end": 447.94,
    "insert": 1.5,
    "dur": 4.65,
-   "film_start": 550.14,
-   "film_end": 554.79
+   "film_start": 570.64,
+   "film_end": 575.29
   },
   {
    "id": "72",
@@ -661,8 +679,8 @@
    "voice_end": 452.37,
    "insert": 0.0,
    "dur": 4.43,
-   "film_start": 554.79,
-   "film_end": 559.22
+   "film_start": 575.29,
+   "film_end": 579.72
   },
   {
    "id": "73",
@@ -670,8 +688,8 @@
    "voice_end": 456.04,
    "insert": 0.0,
    "dur": 3.67,
-   "film_start": 559.22,
-   "film_end": 562.89
+   "film_start": 579.72,
+   "film_end": 583.39
   },
   {
    "id": "74",
@@ -679,8 +697,8 @@
    "voice_end": 459.25,
    "insert": 0.0,
    "dur": 3.21,
-   "film_start": 562.89,
-   "film_end": 566.1
+   "film_start": 583.39,
+   "film_end": 586.6
   },
   {
    "id": "75",
@@ -688,8 +706,8 @@
    "voice_end": 461.23,
    "insert": 2.0,
    "dur": 3.98,
-   "film_start": 566.1,
-   "film_end": 570.08
+   "film_start": 586.6,
+   "film_end": 590.58
   },
   {
    "id": "78",
@@ -697,8 +715,8 @@
    "voice_end": 474.6,
    "insert": 0.0,
    "dur": 4.08,
-   "film_start": 570.08,
-   "film_end": 574.16
+   "film_start": 590.58,
+   "film_end": 594.66
   },
   {
    "id": "79",
@@ -706,8 +724,8 @@
    "voice_end": 476.19,
    "insert": 1.0,
    "dur": 2.59,
-   "film_start": 574.16,
-   "film_end": 576.75
+   "film_start": 594.66,
+   "film_end": 597.25
   },
   {
    "id": "80",
@@ -715,8 +733,8 @@
    "voice_end": 485.8,
    "insert": 0.0,
    "dur": 9.61,
-   "film_start": 576.75,
-   "film_end": 586.36
+   "film_start": 597.25,
+   "film_end": 606.86
   },
   {
    "id": "81",
@@ -724,26 +742,8 @@
    "voice_end": 487.82,
    "insert": 0.0,
    "dur": 2.02,
-   "film_start": 586.36,
-   "film_end": 588.38
-  },
-  {
-   "id": "R0",
-   "voice_start": 487.82,
-   "voice_end": 487.82,
-   "insert": 3.0,
-   "dur": 3.0,
-   "film_start": 588.38,
-   "film_end": 591.38
-  },
-  {
-   "id": "R1",
-   "voice_start": 487.82,
-   "voice_end": 487.82,
-   "insert": 14.6,
-   "dur": 14.6,
-   "film_start": 591.38,
-   "film_end": 605.98
+   "film_start": 606.86,
+   "film_end": 608.88
   },
   {
    "id": "R2",
@@ -751,8 +751,17 @@
    "voice_end": 487.82,
    "insert": 13.6,
    "dur": 13.6,
-   "film_start": 605.98,
-   "film_end": 619.58
+   "film_start": 608.88,
+   "film_end": 622.48
+  },
+  {
+   "id": "K2",
+   "voice_start": 487.82,
+   "voice_end": 487.82,
+   "insert": 9.75,
+   "dur": 9.75,
+   "film_start": 622.48,
+   "film_end": 632.23
   },
   {
    "id": "R3",
@@ -760,35 +769,35 @@
    "voice_end": 487.82,
    "insert": 20.6,
    "dur": 20.6,
-   "film_start": 619.58,
-   "film_end": 640.18
+   "film_start": 632.23,
+   "film_end": 652.83
   },
   {
-   "id": "R4",
+   "id": "K3",
    "voice_start": 487.82,
    "voice_end": 487.82,
-   "insert": 25.8,
-   "dur": 25.8,
-   "film_start": 640.18,
-   "film_end": 665.98
+   "insert": 9.8,
+   "dur": 9.8,
+   "film_start": 652.83,
+   "film_end": 662.63
   },
   {
-   "id": "R5",
+   "id": "R1",
    "voice_start": 487.82,
    "voice_end": 487.82,
-   "insert": 35.6,
-   "dur": 35.6,
-   "film_start": 665.98,
-   "film_end": 701.58
+   "insert": 14.6,
+   "dur": 14.6,
+   "film_start": 662.63,
+   "film_end": 677.23
   },
   {
-   "id": "R6",
+   "id": "K1",
    "voice_start": 487.82,
    "voice_end": 487.82,
-   "insert": 44.0,
-   "dur": 44.0,
-   "film_start": 701.58,
-   "film_end": 745.58
+   "insert": 8.4,
+   "dur": 8.4,
+   "film_start": 677.23,
+   "film_end": 685.63
   },
   {
    "id": "82",
@@ -796,8 +805,8 @@
    "voice_end": 489.79,
    "insert": 1.0,
    "dur": 2.97,
-   "film_start": 745.58,
-   "film_end": 748.55
+   "film_start": 685.63,
+   "film_end": 688.6
   },
   {
    "id": "83",
@@ -805,8 +814,8 @@
    "voice_end": 495.45,
    "insert": 0.0,
    "dur": 5.66,
-   "film_start": 748.55,
-   "film_end": 754.21
+   "film_start": 688.6,
+   "film_end": 694.26
   },
   {
    "id": "84",
@@ -814,8 +823,8 @@
    "voice_end": 499.66,
    "insert": 0.0,
    "dur": 4.21,
-   "film_start": 754.21,
-   "film_end": 758.42
+   "film_start": 694.26,
+   "film_end": 698.47
   },
   {
    "id": "85",
@@ -823,8 +832,8 @@
    "voice_end": 503.19,
    "insert": 0.0,
    "dur": 3.53,
-   "film_start": 758.42,
-   "film_end": 761.95
+   "film_start": 698.47,
+   "film_end": 702.0
   },
   {
    "id": "86",
@@ -832,8 +841,8 @@
    "voice_end": 507.42,
    "insert": 1.5,
    "dur": 5.73,
-   "film_start": 761.95,
-   "film_end": 767.68
+   "film_start": 702.0,
+   "film_end": 707.73
   },
   {
    "id": "87",
@@ -841,8 +850,8 @@
    "voice_end": 517.06,
    "insert": 0.0,
    "dur": 9.64,
-   "film_start": 767.68,
-   "film_end": 777.32
+   "film_start": 707.73,
+   "film_end": 717.37
   },
   {
    "id": "88",
@@ -850,8 +859,8 @@
    "voice_end": 520.76,
    "insert": 0.0,
    "dur": 3.7,
-   "film_start": 777.32,
-   "film_end": 781.02
+   "film_start": 717.37,
+   "film_end": 721.07
   },
   {
    "id": "89",
@@ -859,8 +868,8 @@
    "voice_end": 522.16,
    "insert": 1.0,
    "dur": 2.4,
-   "film_start": 781.02,
-   "film_end": 783.42
+   "film_start": 721.07,
+   "film_end": 723.47
   },
   {
    "id": "90",
@@ -868,8 +877,8 @@
    "voice_end": 523.93,
    "insert": 2.0,
    "dur": 3.77,
-   "film_start": 783.42,
-   "film_end": 787.19
+   "film_start": 723.47,
+   "film_end": 727.24
   },
   {
    "id": "91",
@@ -877,8 +886,8 @@
    "voice_end": 526.87,
    "insert": 0.0,
    "dur": 2.94,
-   "film_start": 787.19,
-   "film_end": 790.13
+   "film_start": 727.24,
+   "film_end": 730.18
   },
   {
    "id": "92",
@@ -886,8 +895,8 @@
    "voice_end": 529.26,
    "insert": 0.0,
    "dur": 2.39,
-   "film_start": 790.13,
-   "film_end": 792.52
+   "film_start": 730.18,
+   "film_end": 732.57
   },
   {
    "id": "93",
@@ -895,8 +904,8 @@
    "voice_end": 532.53,
    "insert": 0.0,
    "dur": 3.27,
-   "film_start": 792.52,
-   "film_end": 795.79
+   "film_start": 732.57,
+   "film_end": 735.84
   },
   {
    "id": "94",
@@ -904,8 +913,8 @@
    "voice_end": 534.14,
    "insert": 1.5,
    "dur": 3.11,
-   "film_start": 795.79,
-   "film_end": 798.9
+   "film_start": 735.84,
+   "film_end": 738.95
   },
   {
    "id": "95",
@@ -913,8 +922,8 @@
    "voice_end": 537.51,
    "insert": 0.0,
    "dur": 3.37,
-   "film_start": 798.9,
-   "film_end": 802.27
+   "film_start": 738.95,
+   "film_end": 742.32
   },
   {
    "id": "96",
@@ -922,8 +931,8 @@
    "voice_end": 537.51,
    "insert": 5.0,
    "dur": 5.0,
-   "film_start": 802.27,
-   "film_end": 807.27
+   "film_start": 742.32,
+   "film_end": 747.32
   },
   {
    "id": "97",
@@ -931,8 +940,8 @@
    "voice_end": 542.63,
    "insert": 0.0,
    "dur": 5.12,
-   "film_start": 807.27,
-   "film_end": 812.39
+   "film_start": 747.32,
+   "film_end": 752.44
   },
   {
    "id": "98",
@@ -940,8 +949,8 @@
    "voice_end": 544.11,
    "insert": 0.0,
    "dur": 1.48,
-   "film_start": 812.39,
-   "film_end": 813.87
+   "film_start": 752.44,
+   "film_end": 753.92
   },
   {
    "id": "99",
@@ -949,8 +958,8 @@
    "voice_end": 548.1,
    "insert": 0.0,
    "dur": 3.99,
-   "film_start": 813.87,
-   "film_end": 817.86
+   "film_start": 753.92,
+   "film_end": 757.91
   },
   {
    "id": "100",
@@ -958,8 +967,8 @@
    "voice_end": 551.04,
    "insert": 0.0,
    "dur": 2.94,
-   "film_start": 817.86,
-   "film_end": 820.8
+   "film_start": 757.91,
+   "film_end": 760.85
   },
   {
    "id": "101",
@@ -967,8 +976,8 @@
    "voice_end": 553.59,
    "insert": 0.0,
    "dur": 2.55,
-   "film_start": 820.8,
-   "film_end": 823.35
+   "film_start": 760.85,
+   "film_end": 763.4
   },
   {
    "id": "102",
@@ -976,8 +985,8 @@
    "voice_end": 555.24,
    "insert": 0.0,
    "dur": 1.65,
-   "film_start": 823.35,
-   "film_end": 825.0
+   "film_start": 763.4,
+   "film_end": 765.05
   },
   {
    "id": "103",
@@ -985,8 +994,8 @@
    "voice_end": 560.04,
    "insert": 0.0,
    "dur": 4.8,
-   "film_start": 825.0,
-   "film_end": 829.8
+   "film_start": 765.05,
+   "film_end": 769.85
   },
   {
    "id": "104",
@@ -994,8 +1003,8 @@
    "voice_end": 561.5,
    "insert": 1.0,
    "dur": 2.46,
-   "film_start": 829.8,
-   "film_end": 832.26
+   "film_start": 769.85,
+   "film_end": 772.31
   },
   {
    "id": "105",
@@ -1003,8 +1012,8 @@
    "voice_end": 563.24,
    "insert": 2.0,
    "dur": 3.74,
-   "film_start": 832.26,
-   "film_end": 836.0
+   "film_start": 772.31,
+   "film_end": 776.05
   },
   {
    "id": "106",
@@ -1012,8 +1021,8 @@
    "voice_end": 566.13,
    "insert": 0.0,
    "dur": 2.89,
-   "film_start": 836.0,
-   "film_end": 838.89
+   "film_start": 776.05,
+   "film_end": 778.94
   },
   {
    "id": "107",
@@ -1021,8 +1030,8 @@
    "voice_end": 569.61,
    "insert": 0.0,
    "dur": 3.48,
-   "film_start": 838.89,
-   "film_end": 842.37
+   "film_start": 778.94,
+   "film_end": 782.42
   },
   {
    "id": "108",
@@ -1030,8 +1039,8 @@
    "voice_end": 572.01,
    "insert": 0.0,
    "dur": 2.4,
-   "film_start": 842.37,
-   "film_end": 844.77
+   "film_start": 782.42,
+   "film_end": 784.82
   },
   {
    "id": "109",
@@ -1039,8 +1048,8 @@
    "voice_end": 574.62,
    "insert": 0.0,
    "dur": 2.61,
-   "film_start": 844.77,
-   "film_end": 847.38
+   "film_start": 784.82,
+   "film_end": 787.43
   },
   {
    "id": "110",
@@ -1048,8 +1057,8 @@
    "voice_end": 580.82,
    "insert": 0.0,
    "dur": 6.2,
-   "film_start": 847.38,
-   "film_end": 853.58
+   "film_start": 787.43,
+   "film_end": 793.63
   },
   {
    "id": "111",
@@ -1057,8 +1066,8 @@
    "voice_end": 585.71,
    "insert": 2.0,
    "dur": 6.89,
-   "film_start": 853.58,
-   "film_end": 860.47
+   "film_start": 793.63,
+   "film_end": 800.52
   },
   {
    "id": "112",
@@ -1066,8 +1075,8 @@
    "voice_end": 587.64,
    "insert": 0.0,
    "dur": 1.93,
-   "film_start": 860.47,
-   "film_end": 862.4
+   "film_start": 800.52,
+   "film_end": 802.45
   },
   {
    "id": "113",
@@ -1075,8 +1084,8 @@
    "voice_end": 590.38,
    "insert": 0.0,
    "dur": 2.74,
-   "film_start": 862.4,
-   "film_end": 865.14
+   "film_start": 802.45,
+   "film_end": 805.19
   },
   {
    "id": "114",
@@ -1084,8 +1093,8 @@
    "voice_end": 593.85,
    "insert": 1.5,
    "dur": 4.97,
-   "film_start": 865.14,
-   "film_end": 870.11
+   "film_start": 805.19,
+   "film_end": 810.16
   },
   {
    "id": "115",
@@ -1093,8 +1102,8 @@
    "voice_end": 600.84,
    "insert": 0.0,
    "dur": 6.99,
-   "film_start": 870.11,
-   "film_end": 877.1
+   "film_start": 810.16,
+   "film_end": 817.15
   },
   {
    "id": "116",
@@ -1102,8 +1111,8 @@
    "voice_end": 600.84,
    "insert": 4.0,
    "dur": 4.0,
-   "film_start": 877.1,
-   "film_end": 881.1
+   "film_start": 817.15,
+   "film_end": 821.15
   },
   {
    "id": "117",
@@ -1111,8 +1120,8 @@
    "voice_end": 605.72,
    "insert": 0.0,
    "dur": 4.88,
-   "film_start": 881.1,
-   "film_end": 885.98
+   "film_start": 821.15,
+   "film_end": 826.03
   },
   {
    "id": "118",
@@ -1120,8 +1129,8 @@
    "voice_end": 605.72,
    "insert": 12.0,
    "dur": 12.0,
-   "film_start": 885.98,
-   "film_end": 897.98
+   "film_start": 826.03,
+   "film_end": 838.03
   }
  ]
 }

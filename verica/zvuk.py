@@ -26,7 +26,7 @@ SFX = os.path.join(HERE, "zvuk", "sfx")
 # «Верица»: один трек на хук — «Missing Persons» (Jeremy Blake, его медиатека), тихо
 AKTY = [("01", "missing"), ("09", "final"), ("21", "missing"), ("27", "topass"), ("37", "missing"), ("40", "incoming"), ("54", "final"),
         ("57", "topass"), ("66", "tishina"), ("67", "missing"),
-        ("R0", "topass"), ("82", "incoming"), ("96", "topass"), ("111", "missing"), ("116", "tishina"), ("117", "missing")]   # Дрезден — «To Pass Time» (Godmode); «tishina» — файла нет, музыка уходит ([ПАУЗА 3 с. Тишина] блока 4)
+        ("R2", "topass"), ("82", "incoming"), ("96", "topass"), ("111", "missing"), ("116", "tishina"), ("117", "missing")]   # Дрезден — «To Pass Time» (Godmode); «tishina» — файла нет, музыка уходит ([ПАУЗА 3 с. Тишина] блока 4)
 MUSIC_DB = -22.0   # как у Киссинджера после п.62 («музыка еле слышно»)
 MEAN = {"missing": -12.4, "final": -12.9, "topass": -13.9, "incoming": -17.2}
 SFX_DB = -20.0
@@ -121,10 +121,9 @@ EVENTS = {
     "80": [(0.2, "click"), (0.5, "rise"), (2.5, "swoosh"), (2.7, "scribble"), (4.5, "click"), (5.0, "whoosh"), (6.5, "thud"), (7.4, "pop"), (8.2, "pop"), (9.0, "pop")],
     "81": [(0.1, "typewriter"), (0.4, "typewriter"), (0.7, "typewriter"), (1.0, "typewriter"), (1.4, "buzz"), (1.5, "impact")],
     # седьмой кусок (scenes7.py)
-    "R0": [(0.05, "impact"), (0.5, "click"), (1.4, "tick")],
     "R1": [(0.1, "click"), (2.3, "tick")], "R2": [(0.1, "click"), (2.3, "tick")], "R3": [(0.1, "click"), (2.3, "tick")],
-    "R4": [(0.1, "click"), (2.3, "tick")], "R5": [(0.1, "click"), (2.3, "tick")], "R6": [(0.1, "click"), (2.3, "tick"), (38.0, "tick")],
-    # шестой кусок (scenes6.py)
+    "R6": [(0.1, "click"), (2.3, "tick"), (8.7, "click"), (10.5, "tick")],
+    "K6": [(0.05, "thud")], "K2": [(0.05, "thud")], "K3": [(0.05, "thud")], "K1": [(0.05, "thud")],
     "82": [(0.05, "impact"), (0.5, "click"), (1.2, "swoosh"), (1.5, "thud")],
     "83": [(0.2, "click"), (0.5, "thud"), (2.6, "tick"), (3.4, "tick"), (4.8, "impact"), (4.95, "thud")],
     "84": [(0.2, "click"), (0.5, "thud"), (1.7, "scribble"), (3.35, "impact"), (3.5, "thud")],

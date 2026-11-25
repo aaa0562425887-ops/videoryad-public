@@ -37,21 +37,23 @@ INSERT_AUDIO = {
     ]},
     "70b": {"layers": [{"file": "poka.mp3", "start": 0.0, "at": 0.1, "dur": 1.12, "target": -18.0, "fade_in": 0.0, "fade_out": 0.05}]},   # его дописка «Пока не случилось.»
     # седьмой кусок: Верица — 2 с оригинал, приглушение −13 дБ под Ольгу, после Ольги оригинал поднимается на +7 дБ (до −6)
+    # седьмой кусок v2 (25.11): цитаты + комментарии ПЛАНЕТЫ. Оригинал 2 с, приглушение −13 дБ, Ольга с 2,3 с, после Ольги оригинал +7 дБ
     "R1": {"layers": [{"file": "r1_centr_1300.mp4", "start": 27.8, "at": 0.0, "dur": 14.6, "target": -21.0, "fade_in": 0.3, "fade_out": 0.8, "duck": [(2.0, 2.5, -13.0), (12.2, 13.2, 7.0)]},
                    {"file": "olga_r1.mp3", "start": 0.0, "at": 2.3, "dur": 9.64, "target": -18.0, "fade_in": 0.0, "fade_out": 0.1}]},
     "R2": {"layers": [{"file": "r2_vengriya_1437.mp4", "start": 1.9, "at": 0.0, "dur": 13.6, "target": -21.0, "fade_in": 0.3, "fade_out": 0.8, "duck": [(2.0, 2.5, -13.0), (8.5, 9.5, 7.0)]},
                    {"file": "olga_r2.mp3", "start": 0.0, "at": 2.3, "dur": 5.86, "target": -18.0, "fade_in": 0.0, "fade_out": 0.1}]},
     "R3": {"layers": [{"file": "r3_germaniya_2017.mp4", "start": 0.2, "at": 0.0, "dur": 20.6, "target": -21.0, "fade_in": 0.3, "fade_out": 0.8, "duck": [(2.0, 2.5, -13.0), (10.0, 11.0, 7.0)]},
                    {"file": "olga_r3.mp3", "start": 0.0, "at": 2.3, "dur": 7.40, "target": -18.0, "fade_in": 0.0, "fade_out": 0.1}]},
-    "R4": {"layers": [{"file": "r4_tanki_2233.mp4", "start": 0.0, "at": 0.0, "dur": 25.8, "target": -21.0, "fade_in": 0.3, "fade_out": 0.8, "duck": [(2.0, 2.5, -13.0), (14.2, 15.2, 7.0)]},
-                   {"file": "olga_r4.mp3", "start": 0.0, "at": 2.3, "dur": 11.65, "target": -18.0, "fade_in": 0.0, "fade_out": 0.1}]},
-    "R5": {"layers": [{"file": "r5_baza_2319.mp4", "start": 1.8, "at": 0.0, "dur": 35.6, "target": -21.0, "fade_in": 0.3, "fade_out": 0.8, "duck": [(2.0, 2.5, -13.0), (19.5, 20.5, 7.0)]},
-                   {"file": "olga_r5.mp3", "start": 0.0, "at": 2.3, "dur": 16.90, "target": -18.0, "fade_in": 0.0, "fade_out": 0.1}]},
-    "R6": {"layers": [{"file": "r6_ukraina_2401.mp4", "start": 0.5, "at": 0.0, "dur": 44.0, "target": -21.0, "fade_in": 0.3, "fade_out": 0.8, "duck": [(2.0, 2.5, -13.0), (12.7, 13.7, 7.0), (37.4, 37.9, -7.0), (41.9, 42.9, 7.0)]},
-                   {"file": "olga_r6.mp3", "start": 0.0, "at": 2.3, "dur": 10.1, "target": -18.0, "fade_in": 0.0, "fade_out": 0.1},
-                   {"file": "olga_r6.mp3", "start": 10.15, "at": 38.0, "dur": 3.5, "target": -18.0, "fade_in": 0.03, "fade_out": 0.1}]},
-    "64": ("v06_krupno_2400.mp4", 0.0, -30.0),
-    # шестой кусок: 96 — 2 с паузы, потом Верица без слов 3 с; 116 — взгляд в камеру, ПОЛНАЯ тишина (записи нет); 118 — титры
+    # Украина — два куска записи (без выборов и Порошенко, по пословной расшифровке 25.11): 16,3-25,0 с и 35,7-43,6 с; Ольга переозвучена короче
+    "R6": {"layers": [{"file": "r6_ukraina_2401.mp4", "start": 16.3, "at": 0.0, "dur": 8.7, "target": -21.0, "fade_in": 0.3, "fade_out": 0.2, "duck": [(2.0, 2.5, -13.0), (7.9, 8.5, 7.0)]},
+                   {"file": "olga_ukr_a.mp3", "start": 0.0, "at": 2.3, "dur": 5.45, "target": -18.0, "fade_in": 0.0, "fade_out": 0.1},
+                   {"file": "r6_ukraina_2401.mp4", "start": 35.7, "at": 8.7, "dur": 7.9, "target": -21.0, "fade_in": 0.05, "fade_out": 0.8, "duck": [(1.5, 2.0, -13.0), (5.4, 6.0, 7.0)]},
+                   {"file": "olga_ukr_b.mp3", "start": 0.0, "at": 10.5, "dur": 3.45, "target": -18.0, "fade_in": 0.0, "fade_out": 0.1}]},
+    # комментарии ПЛАНЕТЫ (golos/dop/planeta_komm, VoiceGen 25.11) — вставками, как «Пока не случилось»
+    "K6": {"layers": [{"file": "komm_ukr.mp3", "start": 0.0, "at": 0.35, "dur": 2.60, "target": -18.0, "fade_in": 0.0, "fade_out": 0.05}]},
+    "K2": {"layers": [{"file": "komm_veng.mp3", "start": 0.0, "at": 0.35, "dur": 8.49, "target": -18.0, "fade_in": 0.0, "fade_out": 0.05}]},
+    "K3": {"layers": [{"file": "komm_germ.mp3", "start": 0.0, "at": 0.35, "dur": 8.55, "target": -18.0, "fade_in": 0.0, "fade_out": 0.05}]},
+    "K1": {"layers": [{"file": "komm_centr.mp3", "start": 0.0, "at": 0.35, "dur": 7.12, "target": -18.0, "fade_in": 0.0, "fade_out": 0.05}]},
     "96": {"layers": [{"file": "v04_krupno_0240.mp4", "start": 0.0, "at": 2.0, "dur": 3.0, "target": -30.0, "fade_in": 0.5, "fade_out": 0.6}]},      # Верица без слов (v11-v16 без звуковой дорожки — только v03-v10)
     "65": {"layers": [{"file": "olga_2.mp3", "start": 0.0, "at": 0.1, "dur": 2.72, "target": -18.0, "fade_in": 0.0, "fade_out": 0.1}]},
 }
