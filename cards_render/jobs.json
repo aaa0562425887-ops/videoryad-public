@@ -1,0 +1,384 @@
+[
+ {
+  "scene": 7,
+  "view": "zal_g18",
+  "dur": 8.6,
+  "anim": 8.6,
+  "tail_zoom": 0.045,
+  "watermark": "ПЛАНЕТА",
+  "channel": "ПЛАНЕТА",
+  "kwargs": {
+   "channel": "ПЛАНЕТА",
+   "dur": 8.6,
+   "sheets": [],
+   "text": "Главная цифра Калининграда",
+   "value": "47 МЛРД ₽",
+   "value_sub": "НА ПАРОМЫ",
+   "watermark": "ПЛАНЕТА"
+  }
+ },
+ {
+  "scene": 8,
+  "view": "zal_g01",
+  "dur": 9.3,
+  "anim": 9.3,
+  "tail_zoom": 0.045,
+  "watermark": "ПЛАНЕТА",
+  "channel": "ПЛАНЕТА",
+  "kwargs": {
+   "channel": "ПЛАНЕТА",
+   "dur": 9.3,
+   "sheets": [
+    "паромы",
+    "блокада",
+    "снабжение",
+    "Балтийск",
+    "Усть-Луга",
+    "2030"
+   ],
+   "text": "Калининград готовится к 2030",
+   "watermark": "ПЛАНЕТА"
+  }
+ },
+ {
+  "scene": 10,
+  "view": "zal_slova",
+  "dur": 7.45,
+  "anim": 2.6,
+  "tail_zoom": 0.045,
+  "watermark": "ПЛАНЕТА",
+  "channel": "ПЛАНЕТА",
+  "kwargs": {
+   "channel": "ПЛАНЕТА",
+   "dur": 7.45,
+   "sheets": [
+    "строка"
+   ],
+   "text": "Границы закрываются одна за одной",
+   "na_polu": "ПЯТЬ СТРАН",
+   "watermark": "ПЛАНЕТА"
+  }
+ },
+ {
+  "scene": 16,
+  "view": "zal_efir",
+  "dur": 12.2,
+  "anim": 2.6,
+  "tail_zoom": 0.045,
+  "watermark": "ПЛАНЕТА",
+  "channel": "ПЛАНЕТА",
+  "kwargs": {
+   "channel": "ПЛАНЕТА",
+   "dur": 12.2,
+   "sheets": [],
+   "text": "Германия требует сдержанности",
+   "say": "Киев несёт особую ответственность",
+   "author": "Борис Писториус",
+   "role": "министр обороны Германии",
+   "source": "заявление",
+   "watermark": "ПЛАНЕТА"
+  }
+ },
+ {
+  "scene": 27,
+  "view": "zal_makety",
+  "dur": 10.2,
+  "anim": 2.6,
+  "tail_zoom": 0.045,
+  "watermark": "ПЛАНЕТА",
+  "channel": "ПЛАНЕТА",
+  "kwargs": {
+   "channel": "ПЛАНЕТА",
+   "dur": 10.2,
+   "sheets": [],
+   "text": "Готовность в один час",
+   "makety": [
+    "корабль=ПАРОМ",
+    "ракета=ДРОН"
+   ],
+   "watermark": "ПЛАНЕТА"
+  }
+ },
+ {
+  "scene": 31,
+  "view": "zal_ekran",
+  "dur": 8.0,
+  "anim": 8.0,
+  "tail_zoom": 0.045,
+  "watermark": "ПЛАНЕТА",
+  "channel": "ПЛАНЕТА",
+  "kwargs": {
+   "channel": "ПЛАНЕТА",
+   "dur": 8.0,
+   "sheets": [
+    "ЭСТОНИЯ",
+    "ПРЯМОЙ ЭФИР"
+   ],
+   "text": "Привыкайте к атакам",
+   "say": "Не дадим использовать нашу территорию для ударов",
+   "author": "Кристен Михал",
+   "role": "премьер Эстонии",
+   "source": "ERR",
+   "watermark": "ПЛАНЕТА"
+  }
+ },
+ {
+  "scene": 33,
+  "view": "cinematic.depth_of_field",
+  "dur": 12.45,
+  "anim": 12.45,
+  "tail_zoom": 0.0,
+  "watermark": "ПЛАНЕТА",
+  "channel": "ПЛАНЕТА",
+  "kwargs": {
+   "photo": "cards/photo/card_033.jpg",
+   "title": "Кристен Михал: привыкайте, но не через нас",
+   "watermark": "ПЛАНЕТА"
+  },
+  "mode": "frame"
+ },
+ {
+  "scene": 37,
+  "view": "cinematic.evidence_wall",
+  "dur": 11.2,
+  "anim": 11.2,
+  "tail_zoom": 0.0,
+  "watermark": "ПЛАНЕТА",
+  "channel": "ПЛАНЕТА",
+  "kwargs": {
+   "shots": [
+    [
+     "cards/photo/card_037.jpg",
+     240,
+     380,
+     -4,
+     "Зеленский"
+    ],
+    [
+     "cards/photo/card_037_2.jpg",
+     800,
+     380,
+     3,
+     "Джонсон"
+    ],
+    [
+     "cards/photo/card_037_3.jpg",
+     1360,
+     380,
+     -2,
+     "Таяни"
+    ]
+   ],
+   "title": "Кто заговорил об одном и том же",
+   "watermark": "ПЛАНЕТА"
+  },
+  "mode": "frame"
+ },
+ {
+  "scene": 39,
+  "view": "poster.poster",
+  "dur": 11.5,
+  "anim": 11.5,
+  "tail_zoom": 0.0,
+  "watermark": "ПЛАНЕТА",
+  "channel": "ПЛАНЕТА",
+  "kwargs": {
+   "title": "Кремль и грань столкновения",
+   "hero_photo": "cards/photo/card_039.jpg",
+   "bottom": "ответ пока дипломатический",
+   "facts": [
+    {
+     "label": "посол",
+     "value": "вызван"
+    },
+    {
+     "label": "обвинение",
+     "value": "беспилотники"
+    }
+   ],
+   "watermark": "ПЛАНЕТА"
+  },
+  "mode": "frame"
+ },
+ {
+  "scene": 42,
+  "view": "cinematic.dossier",
+  "dur": 7.3,
+  "anim": 7.3,
+  "tail_zoom": 0.045,
+  "watermark": "ПЛАНЕТА",
+  "channel": "ПЛАНЕТА",
+  "kwargs": {
+   "case": "АНТОНИО ТАЯНИ",
+   "rows": [
+    "Министр иностранных дел Италии",
+    "Заявил о риске распространения конфликта на Средиземноморье",
+    "Назвал расстояние до Бенгази — пара сотен километров",
+    "Предупредил об угрозе стабильности Ливии"
+   ],
+   "title": "ДОСЬЕ",
+   "photo": "cards/photo/card_042.jpg",
+   "stamp": "ПЕРВОИСТОЧНИК",
+   "watermark": "ПЛАНЕТА"
+  }
+ },
+ {
+  "scene": 54,
+  "view": "zal_shkala",
+  "dur": 11.5,
+  "anim": 2.6,
+  "tail_zoom": 0.045,
+  "watermark": "ПЛАНЕТА",
+  "channel": "ПЛАНЕТА",
+  "kwargs": {
+   "channel": "ПЛАНЕТА",
+   "dur": 11.5,
+   "sheets": [],
+   "text": "Калининграду выделили деньги",
+   "value": "47 МЛРД ₽",
+   "source": "бюджет России",
+   "watermark": "ПЛАНЕТА"
+  }
+ },
+ {
+  "scene": 55,
+  "view": "dok_wall",
+  "dur": 17.2,
+  "anim": 17.2,
+  "tail_zoom": 0.045,
+  "watermark": "ПЛАНЕТА",
+  "channel": "ПЛАНЕТА",
+  "kwargs": {
+   "photo": "cards/photo/card_055.jpg",
+   "karty": [
+    "семь морских беспилотников",
+    "корвет Меркурий уничтожен",
+    "вертолёт Ка-27",
+    "сухогруз Ангара повреждён",
+    "операция названа образцовой"
+   ],
+   "watermark": "ПЛАНЕТА"
+  }
+ },
+ {
+  "scene": 57,
+  "view": "zal_g44",
+  "dur": 10.5,
+  "anim": 10.5,
+  "tail_zoom": 0.045,
+  "watermark": "ПЛАНЕТА",
+  "channel": "ПЛАНЕТА",
+  "kwargs": {
+   "channel": "ПЛАНЕТА",
+   "dur": 10.5,
+   "sheets": [],
+   "text": "Доля зависимых от моря стран",
+   "value": "70%",
+   "value_sub": "ОТ ПЕРЕВОЗОК",
+   "watermark": "ПЛАНЕТА"
+  }
+ },
+ {
+  "scene": 61,
+  "view": "vyrezka.gazeta",
+  "dur": 15.5,
+  "anim": 2.6,
+  "tail_zoom": 0.045,
+  "watermark": "ПЛАНЕТА",
+  "channel": "ПЛАНЕТА",
+  "kwargs": {
+   "photo": "cards/photo/card_061.jpg",
+   "author": "Владимир Зеленский",
+   "role": "президент Украины",
+   "watermark": "ПЛАНЕТА"
+  }
+ },
+ {
+  "scene": 63,
+  "view": "zal_schetchik",
+  "dur": 13.3,
+  "anim": 2.6,
+  "tail_zoom": 0.045,
+  "watermark": "ПЛАНЕТА",
+  "channel": "ПЛАНЕТА",
+  "kwargs": {
+   "channel": "ПЛАНЕТА",
+   "dur": 13.3,
+   "sheets": [],
+   "text": "Зависимость стран от моря растёт",
+   "accent": "растёт",
+   "value": "70%",
+   "watermark": "ПЛАНЕТА"
+  }
+ },
+ {
+  "scene": 71,
+  "view": "photo",
+  "dur": 11.2,
+  "anim": 11.2,
+  "tail_zoom": 0.0,
+  "watermark": "ПЛАНЕТА",
+  "channel": "ПЛАНЕТА",
+  "kwargs": {
+   "watermark": "ПЛАНЕТА",
+   "photo": "cards/photo/card_071.jpg",
+   "title": "БОРИС ДЖОНСОН",
+   "lines": [
+    "уже заявляет об опосредованной войне",
+    "миллиарды, боеприпасы, иностранные войска"
+   ]
+  }
+ },
+ {
+  "scene": 73,
+  "view": "devices.device_scene",
+  "dur": 13.7,
+  "anim": 2.6,
+  "tail_zoom": 0.045,
+  "watermark": "ПЛАНЕТА",
+  "channel": "ПЛАНЕТА",
+  "kwargs": {
+   "content_path": "cards/photo/card_073.jpg",
+   "items": [
+    "Британия участвует",
+    "Поставляет оружие",
+    "Финансирует Украину"
+   ],
+   "watermark": "ПЛАНЕТА"
+  }
+ },
+ {
+  "scene": 74,
+  "view": "vyrezka.figura",
+  "dur": 8.7,
+  "anim": 2.6,
+  "tail_zoom": 0.045,
+  "watermark": "ПЛАНЕТА",
+  "channel": "ПЛАНЕТА",
+  "kwargs": {
+   "photo": "cards/photo/card_074.jpg",
+   "author": "Антонио Таяни",
+   "role": "министр иностранных дел Италии",
+   "watermark": "ПЛАНЕТА"
+  }
+ },
+ {
+  "scene": 81,
+  "view": "zal_g48",
+  "dur": 6.0,
+  "anim": 6.0,
+  "tail_zoom": 0.045,
+  "watermark": "ПЛАНЕТА",
+  "channel": "ПЛАНЕТА",
+  "kwargs": {
+   "channel": "ПЛАНЕТА",
+   "dur": 6.0,
+   "sheets": [
+    "Балтика",
+    "Средиземное море"
+   ],
+   "text": "Так это выглядит со стороны",
+   "watermark": "ПЛАНЕТА"
+  }
+ }
+]
