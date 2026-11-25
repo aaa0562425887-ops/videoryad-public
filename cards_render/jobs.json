@@ -1,0 +1,547 @@
+[
+ {
+  "scene": 5,
+  "view": "sceny.pechat",
+  "mode": "cli",
+  "script": "sceny_cli.py",
+  "dur": 9.4,
+  "channel": "ПЛАНЕТА",
+  "watermark": "ПЛАНЕТА",
+  "cfg": {
+   "view": "pechat",
+   "seconds": 9.4,
+   "fps": 30,
+   "t0": 0.0,
+   "kwargs": {
+    "text": "Паром Усть-Луга — Балтийск. Утверждено",
+    "channel": "ПЛАНЕТА",
+    "watermark": "ПЛАНЕТА",
+    "dur": 9.4,
+    "stamp": "утверждено"
+   }
+  },
+  "kwargs": {
+   "text": "Паром Усть-Луга — Балтийск. Утверждено",
+   "channel": "ПЛАНЕТА",
+   "watermark": "ПЛАНЕТА",
+   "dur": 9.4,
+   "stamp": "утверждено"
+  }
+ },
+ {
+  "scene": 6,
+  "view": "charts.map_dist",
+  "dur": 4.4,
+  "anim": 2.6,
+  "tail_zoom": 0.045,
+  "watermark": "ПЛАНЕТА",
+  "channel": "ПЛАНЕТА",
+  "kwargs": {
+   "points": [
+    {
+     "label": "Усть-Луга",
+     "lat": 59.68,
+     "lon": 28.35,
+     "accent": false
+    },
+    {
+     "label": "Балтийск",
+     "lat": 54.65,
+     "lon": 19.91,
+     "accent": true
+    }
+   ],
+   "watermark": "ПЛАНЕТА"
+  }
+ },
+ {
+  "scene": 9,
+  "view": "charts.slope",
+  "dur": 11.3,
+  "anim": 2.6,
+  "tail_zoom": 0.045,
+  "watermark": "ПЛАНЕТА",
+  "channel": "ПЛАНЕТА",
+  "kwargs": {
+   "items": [
+    {
+     "label": "морем",
+     "from": 8.0,
+     "to": 50.0
+    },
+    {
+     "label": "по суше",
+     "from": 92.0,
+     "to": 50.0
+    }
+   ],
+   "left_label": "2021",
+   "right_label": "сейчас",
+   "unit": "%",
+   "source": "доля маршрутов снабжения Калининграда",
+   "watermark": "ПЛАНЕТА"
+  }
+ },
+ {
+  "scene": 14,
+  "view": "duel",
+  "dur": 4.9,
+  "anim": 3.2,
+  "tail_zoom": 0.035,
+  "watermark": "ПЛАНЕТА",
+  "channel": "ПЛАНЕТА",
+  "kwargs": {
+   "top": {
+    "who": "",
+    "text": "Россия: паромы к 2030 году",
+    "accent": null,
+    "source": ""
+   },
+   "bottom": {
+    "who": "",
+    "text": "Европа: армии и призыв к 2030 году",
+    "accent": null,
+    "source": ""
+   },
+   "watermark": "ПЛАНЕТА"
+  }
+ },
+ {
+  "scene": 17,
+  "view": "sceny.prolog",
+  "mode": "cli",
+  "script": "sceny_cli.py",
+  "dur": 5.8,
+  "channel": "ПЛАНЕТА",
+  "watermark": "ПЛАНЕТА",
+  "cfg": {
+   "view": "prolog",
+   "seconds": 5.8,
+   "fps": 30,
+   "t0": 0.0,
+   "kwargs": {
+    "text": "Рубеж войны назначен на 2030 год",
+    "channel": "ПЛАНЕТА",
+    "watermark": "ПЛАНЕТА",
+    "dur": 5.8
+   }
+  },
+  "kwargs": {
+   "text": "Рубеж войны назначен на 2030 год",
+   "channel": "ПЛАНЕТА",
+   "watermark": "ПЛАНЕТА",
+   "dur": 5.8
+  }
+ },
+ {
+  "scene": 18,
+  "view": "charts.cartogram",
+  "dur": 13.6,
+  "anim": 13.6,
+  "tail_zoom": 0.045,
+  "watermark": "ПЛАНЕТА",
+  "channel": "ПЛАНЕТА",
+  "kwargs": {
+   "data": [
+    "Калининградская область"
+   ],
+   "level": "region",
+   "admin": "Россия",
+   "watermark": "ПЛАНЕТА"
+  }
+ },
+ {
+  "scene": 28,
+  "view": "doc",
+  "dur": 11.1,
+  "anim": 3.4,
+  "tail_zoom": 0.04,
+  "watermark": "ПЛАНЕТА",
+  "channel": "ПЛАНЕТА",
+  "kwargs": {
+   "text": "Эстонские службы заранее отрабатывали сценарии атак, а государственный флот разбирал возможные происшествия",
+   "watermark": "ПЛАНЕТА"
+  }
+ },
+ {
+  "scene": 29,
+  "view": "sceny.relsy",
+  "mode": "cli",
+  "script": "sceny_cli.py",
+  "dur": 13.5,
+  "channel": "ПЛАНЕТА",
+  "watermark": "ПЛАНЕТА",
+  "cfg": {
+   "view": "relsy",
+   "seconds": 13.5,
+   "fps": 30,
+   "t0": 0.0,
+   "kwargs": {
+    "text": "Реакция союзников шла по накатанной",
+    "channel": "ПЛАНЕТА",
+    "watermark": "ПЛАНЕТА",
+    "dur": 13.5,
+    "sobytiya": [
+     "Орпо=Украина имеет право отвечать",
+     "Писториус=война не должна дойти до Балтики",
+     "Сандвик=важна региональная стабильность"
+    ]
+   }
+  },
+  "kwargs": {
+   "text": "Реакция союзников шла по накатанной",
+   "channel": "ПЛАНЕТА",
+   "watermark": "ПЛАНЕТА",
+   "dur": 13.5,
+   "sobytiya": [
+    "Орпо=Украина имеет право отвечать",
+    "Писториус=война не должна дойти до Балтики",
+    "Сандвик=важна региональная стабильность"
+   ]
+  }
+ },
+ {
+  "scene": 34,
+  "view": "sceny.globus_map",
+  "mode": "cli",
+  "script": "sceny_cli.py",
+  "dur": 12.45,
+  "channel": "ПЛАНЕТА",
+  "watermark": "ПЛАНЕТА",
+  "cfg": {
+   "view": "globus",
+   "seconds": 12.45,
+   "fps": 30,
+   "t0": 0.0,
+   "kwargs": {
+    "text": "Эстония: привыкайте, но не через нас",
+    "channel": "ПЛАНЕТА",
+    "watermark": "ПЛАНЕТА",
+    "dur": 12.45,
+    "region": "Эстония"
+   }
+  },
+  "kwargs": {
+   "text": "Эстония: привыкайте, но не через нас",
+   "channel": "ПЛАНЕТА",
+   "watermark": "ПЛАНЕТА",
+   "dur": 12.45,
+   "region": "Эстония"
+  }
+ },
+ {
+  "scene": 35,
+  "view": "charts.waterfall",
+  "dur": 11.2,
+  "anim": 11.2,
+  "tail_zoom": 0.045,
+  "watermark": "ПЛАНЕТА",
+  "channel": "ПЛАНЕТА",
+  "kwargs": {
+   "start": {
+    "label": "старт",
+    "value": 100.0
+   },
+   "steps": [
+    {
+     "label": "порты",
+     "value": -10.0
+    },
+    {
+     "label": "суда",
+     "value": -10.0
+    },
+    {
+     "label": "страховка",
+     "value": -15.0
+    }
+   ],
+   "end": {
+    "label": "итог"
+   },
+   "watermark": "ПЛАНЕТА"
+  }
+ },
+ {
+  "scene": 36,
+  "view": "charts.network",
+  "dur": 12.3,
+  "anim": 12.3,
+  "tail_zoom": 0.045,
+  "watermark": "ПЛАНЕТА",
+  "channel": "ПЛАНЕТА",
+  "kwargs": {
+   "nodes": [
+    {
+     "id": "Эстония",
+     "label": "Эстония",
+     "weight": 7.0
+    },
+    {
+     "id": "Россия",
+     "label": "Россия",
+     "weight": 4.0
+    },
+    {
+     "id": "НАТО",
+     "label": "НАТО",
+     "weight": 3.0
+    }
+   ],
+   "links": [
+    {
+     "from": "Эстония",
+     "to": "Россия",
+     "weight": 2.0
+    },
+    {
+     "from": "Россия",
+     "to": "Эстония",
+     "weight": 2.0
+    },
+    {
+     "from": "Эстония",
+     "to": "НАТО",
+     "weight": 3.0
+    }
+   ],
+   "watermark": "ПЛАНЕТА"
+  }
+ },
+ {
+  "scene": 38,
+  "view": "charts.line",
+  "dur": 12.8,
+  "anim": 2.6,
+  "tail_zoom": 0.045,
+  "watermark": "ПЛАНЕТА",
+  "channel": "ПЛАНЕТА",
+  "kwargs": {
+   "x_labels": [
+    "1-я линия",
+    "2-я линия",
+    "3-я линия"
+   ],
+   "series": [
+    {
+     "name": "",
+     "values": [
+      100.0,
+      65.0,
+      30.0
+     ]
+    }
+   ],
+   "unit": "%",
+   "source": "доверие к красным линиям",
+   "watermark": "ПЛАНЕТА"
+  }
+ },
+ {
+  "scene": 44,
+  "view": "sceny.prohod",
+  "mode": "cli",
+  "script": "sceny_cli.py",
+  "dur": 14.1,
+  "channel": "ПЛАНЕТА",
+  "watermark": "ПЛАНЕТА",
+  "cfg": {
+   "view": "prohod",
+   "seconds": 14.1,
+   "fps": 30,
+   "t0": 0.0,
+   "kwargs": {
+    "text": "Решение не стрелять",
+    "channel": "ПЛАНЕТА",
+    "watermark": "ПЛАНЕТА",
+    "dur": 14.1,
+    "tezisy": [
+     "риск для людей на земле",
+     "дрон уже разворачивался домой",
+     "простой вопрос: куда упадёт"
+    ]
+   }
+  },
+  "kwargs": {
+   "text": "Решение не стрелять",
+   "channel": "ПЛАНЕТА",
+   "watermark": "ПЛАНЕТА",
+   "dur": 14.1,
+   "tezisy": [
+    "риск для людей на земле",
+    "дрон уже разворачивался домой",
+    "простой вопрос: куда упадёт"
+   ]
+  }
+ },
+ {
+  "scene": 47,
+  "view": "bars",
+  "dur": 20.6,
+  "anim": 20.6,
+  "tail_zoom": 0.0,
+  "watermark": "ПЛАНЕТА",
+  "channel": "ПЛАНЕТА",
+  "kwargs": {},
+  "mode": "cli",
+  "script": "build_chart_bars.py",
+  "cfg": {
+   "title": "Цена громкого жеста",
+   "caption": "",
+   "seconds": 20.6,
+   "bars": [
+    {
+     "label": "ВЫСЛАТЬ ПОСЛА",
+     "value": 0.3,
+     "color": "4A90E2"
+    },
+    {
+     "label": "ПОТЕРЯТЬ ПОСОЛЬСТВО",
+     "value": 0.9,
+     "color": "48BB78"
+    }
+   ]
+  }
+ },
+ {
+  "scene": 50,
+  "view": "charts.radar",
+  "dur": 9.2,
+  "anim": 9.2,
+  "tail_zoom": 0.045,
+  "watermark": "ПЛАНЕТА",
+  "channel": "ПЛАНЕТА",
+  "kwargs": {
+   "axes": [
+    "заявление",
+    "последствия",
+    "риск"
+   ],
+   "series": [
+    {
+     "label": "",
+     "values": [
+      90.0,
+      20.0,
+      70.0
+     ]
+    }
+   ],
+   "watermark": "ПЛАНЕТА"
+  }
+ },
+ {
+  "scene": 51,
+  "view": "bullets",
+  "dur": 14.4,
+  "anim": 14.4,
+  "tail_zoom": 0.06,
+  "watermark": "ПЛАНЕТА",
+  "channel": "ПЛАНЕТА",
+  "kwargs": {
+   "kick": "СКОЛЬЗКАЯ ДОРОЖКА",
+   "watermark": "ПЛАНЕТА",
+   "items": [
+    "судно под чужим флагом",
+    "владельцы объявлены украинскими",
+    "доказывай обратное, когда корабль уже горит"
+   ]
+  }
+ },
+ {
+  "scene": 59,
+  "view": "forces",
+  "dur": 13.1,
+  "anim": 13.1,
+  "tail_zoom": 0.06,
+  "watermark": "ПЛАНЕТА",
+  "channel": "ПЛАНЕТА",
+  "kwargs": {
+   "watermark": "ПЛАНЕТА",
+   "title": "ПОСЛЕ УДАРА У БЕНГАЗИ",
+   "rows": [
+    {
+     "who": "Ливия",
+     "want": "требует разбирательства"
+    },
+    {
+     "who": "Киев",
+     "want": "называет удар образцовым"
+    },
+    {
+     "who": "ООН",
+     "want": "ждёт обращения"
+    }
+   ]
+  }
+ },
+ {
+  "scene": 60,
+  "view": "timeline",
+  "dur": 6.8,
+  "anim": 6.8,
+  "tail_zoom": 0.06,
+  "watermark": "ПЛАНЕТА",
+  "channel": "ПЛАНЕТА",
+  "kwargs": {
+   "watermark": "ПЛАНЕТА",
+   "title": "ОТВЕТ ЛИВИИ",
+   "events": [
+    {
+     "date": "заявление",
+     "text": "нарушение суверенитета"
+    },
+    {
+     "date": "обращение",
+     "text": "Совбез ООН"
+    },
+    {
+     "date": "требование",
+     "text": "список терроризма"
+    }
+   ]
+  }
+ },
+ {
+  "scene": 62,
+  "view": "charts.pie",
+  "dur": 10.3,
+  "anim": 10.3,
+  "tail_zoom": 0.045,
+  "watermark": "ПЛАНЕТА",
+  "channel": "ПЛАНЕТА",
+  "kwargs": {
+   "segments": [
+    {
+     "label": "образцовая операция",
+     "value": 50.0
+    },
+    {
+     "label": "объявление войны",
+     "value": 50.0
+    }
+   ],
+   "watermark": "ПЛАНЕТА"
+  }
+ },
+ {
+  "scene": 64,
+  "view": "charts.cartogram",
+  "dur": 13.6,
+  "anim": 13.6,
+  "tail_zoom": 0.045,
+  "watermark": "ПЛАНЕТА",
+  "channel": "ПЛАНЕТА",
+  "kwargs": {
+   "data": [
+    "Великобритания",
+    "Германия",
+    "Франция"
+   ],
+   "accent": [
+    "Великобритания"
+   ],
+   "watermark": "ПЛАНЕТА"
+  }
+ }
+]
