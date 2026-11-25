@@ -709,7 +709,6 @@ TITRY = [
     ("Карты", "Natural Earth · условные"),
     ("Музыка", "Jeremy Blake — Missing Persons, Final Girl · Godmode — To Pass Time · Incoming Transition"),
     ("Письмо 1987 года, план особняка, схемы", "реконструкция по публикациям · подлинников в кадре нет"),
-    ("Голос", "ПЛАНЕТА · ОЛЬКА NEWS"),
 ]
 
 

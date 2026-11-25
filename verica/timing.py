@@ -155,6 +155,11 @@ VOICE_END = 605.72
 CUTS = [(461.230, 470.520)]   # оговорка (сцены 76-77), его слово 23.11
 
 
+# паузы ВНУТРИ сцены (финал, его слово 23.11 ~12:05): id → [(секунда голоса, длина тишины)]. Голос замирает, картинка идёт.
+# 12: после «…российские и югославские издания пишут» перед «она работала» · 14: после «…из статьи в статью» перед «власти выделили»
+MID = {"12": [(77.80, 1.0)], "14": [(91.85, 1.0)]}
+
+
 def cut_before(v):
     """сколько секунд вырезок лежит до момента v озвучки"""
     return sum(min(b, v) - a for a, b in CUTS if v > a)
@@ -165,12 +170,14 @@ def main():
     for k, (sid, vs, ins, ve) in enumerate(SCENES):
         if ve is None:
             ve = SCENES[k + 1][1] if k + 1 < len(SCENES) else VOICE_END
+        mid = MID.get(sid, [])
         res.append({"id": sid, "voice_start": round(vs, 3), "voice_end": round(ve, 3),
-                    "insert": ins, "dur": round(ve - vs + ins, 3)})
+                    "insert": ins, "mid": [[round(v, 3), m] for v, m in mid],
+                    "dur": round(ve - vs + ins + sum(m for _, m in mid), 3)})
     shift = 0.0
     for r in res:
         r["film_start"] = round(r["voice_start"] - cut_before(r["voice_start"]) + shift, 3)
-        shift += r["insert"]
+        shift += r["insert"] + sum(m for _, m in r["mid"])
         r["film_end"] = round(r["voice_end"] - cut_before(r["voice_end"]) + shift, 3)
     json.dump({"voice_end": VOICE_END, "cuts": CUTS, "scenes": res}, open(os.path.join(HERE, "timing.json"), "w", encoding="utf-8"),
               ensure_ascii=False, indent=1)

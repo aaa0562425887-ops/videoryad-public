@@ -171,6 +171,19 @@ Format: Layer, Start, End, Style, Name, MarginL, MarginR, Effect, Text
     open(out_ass, "w", encoding="utf-8").write(head + "\n".join(lines) + "\n")
 
 
+def mid_pauses(sc, mp3, cursor, parts, tmp, cuts):
+    """паузы внутри сцены (финал п.1-2): голос до точки, тишина, курсор на точку"""
+    for k, (v, m) in enumerate(sc.get("mid", [])):
+        seg = os.path.join(tmp, "v_%s_m%d.wav" % (sc["id"], k))
+        if v - cursor > 0.02 and voice_piece(mp3, cursor, v, seg, cuts):
+            parts.append(seg)
+        cursor = v
+        sil = os.path.join(tmp, "s_%s_m%d.wav" % (sc["id"], k))
+        run([FF, "-nostdin", "-v", "error", "-y", "-f", "lavfi", "-i", "anullsrc=r=48000:cl=stereo", "-t", "%.3f" % m, sil])
+        parts.append(sil)
+    return cursor
+
+
 def main():
     clips, mp3, srt, out = sys.argv[1:5]
     tm = json.load(open(os.path.join(HERE, "timing.json"), encoding="utf-8"))
@@ -201,7 +214,11 @@ def main():
     parts = []
     cursor = scenes[0]["voice_start"] if only else 0.0   # позиция в голосе диктора
     for sc in scenes:
+        mid = sc.get("mid", [])
+        if sc["insert"] <= 0 and not mid:
+            continue
         if sc["insert"] <= 0:
+            cursor = mid_pauses(sc, mp3, cursor, parts, tmp, cuts)   # только паузы внутри сцены (сцена 14)
             continue
         # голос до начала этой сцены
         seg = os.path.join(tmp, "v_%s.wav" % sc["id"])
@@ -215,6 +232,7 @@ def main():
         if isinstance(spec, dict):
             insert_mix(sc, spec, ins)
             parts.append(ins)
+            cursor = mid_pauses(sc, mp3, cursor, parts, tmp, cuts)
             continue
         name, start, target = spec
         src = C.apath(name) if name else None
@@ -233,6 +251,7 @@ def main():
             run([FF, "-nostdin", "-v", "error", "-y", "-f", "lavfi", "-i", "anullsrc=r=48000:cl=stereo",
                  "-t", "%.3f" % sc["insert"], ins])
         parts.append(ins)
+        cursor = mid_pauses(sc, mp3, cursor, parts, tmp, cuts)   # паузы внутри сцены со вставкой в начале (сцена 12)
     tail = os.path.join(tmp, "v_tail.wav")
     if voice_piece(mp3, cursor, None, tail, cuts):
         parts.append(tail)
