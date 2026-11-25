@@ -181,10 +181,8 @@ def mid_pauses(sc, mp3, cursor, parts, tmp, cuts):
     for k, (v, m) in enumerate(sc.get("mid", [])):
         seg = os.path.join(tmp, "v_%s_m%d.wav" % (sc["id"], k))
         if v - cursor > 0.02 and voice_piece(mp3, cursor, v, seg, cuts):
-            d = float(subprocess.run([FF.replace("ffmpeg", "ffprobe"), "-v", "error", "-show_entries", "format=duration", "-of", "csv=p=0", seg],
-                                     capture_output=True, text=True).stdout.strip() or 0)
-            seg2 = seg[:-4] + "_f.wav"
-            run([FF, "-nostdin", "-v", "error", "-y", "-i", seg, "-af", "afade=t=out:st=%.3f:d=%.3f" % (max(0.0, d - FADE), FADE), seg2])
+            seg2 = seg[:-4] + "_f.wav"   # фейд хвоста без ffprobe (на раннере его нет): переворот → фейд входа → переворот
+            run([FF, "-nostdin", "-v", "error", "-y", "-i", seg, "-af", "areverse,afade=t=in:d=%.3f,areverse" % FADE, seg2])
             parts.append(seg2)
         air = os.path.join(tmp, "s_%s_m%d.wav" % (sc["id"], k))
         run([FF, "-nostdin", "-v", "error", "-y", "-ss", "%.3f" % AIR_AT, "-t", "%.3f" % m, "-i", mp3, "-ac", "2", "-ar", "48000",
