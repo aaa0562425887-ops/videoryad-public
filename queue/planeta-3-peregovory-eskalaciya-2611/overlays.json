@@ -1,0 +1,36 @@
+{
+  "33": {
+    "photo": "overlays/scene_033.jpg",
+    "sound": "pop",
+    "at": 2.2,
+    "shape": "rect",
+    "scale": 1.0,
+    "style": "up-right",
+    "approved": true,
+    "dash_ok": true
+  },
+  "23": {
+    "text": {
+      "words": "НЕ ЦЕНОЙ УКРАИНЫ",
+      "pos": "bc",
+      "font": "default",
+      "sound": "zatvor",
+      "at": 0.35,
+      "scale": 2.0,
+      "style": "mask_plate",
+      "approved": true
+    }
+  },
+  "56": {
+    "text": {
+      "words": "НЕ ЧЕМОДАН",
+      "pos": "mc",
+      "font": "default",
+      "sound": "mashinka",
+      "at": 0.35,
+      "scale": 2.0,
+      "style": "mask_plate",
+      "approved": true
+    }
+  }
+}
