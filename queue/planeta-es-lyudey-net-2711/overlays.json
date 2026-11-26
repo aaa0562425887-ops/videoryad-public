@@ -1,0 +1,32 @@
+{
+ "9": {
+  "text": {
+   "words": "ЛЮДСКОЙ РЕСУРС",
+   "sub": "кто будет воевать дальше",
+   "style": "mask_plate",
+   "pos": "ml",
+   "at": 0.3,
+   "sound": "whoosh"
+  }
+ },
+ "27": {
+  "text": {
+   "words": "БЮДЖЕТ",
+   "sub": "кто платит по счетам",
+   "style": "mask_plate",
+   "pos": "ml",
+   "at": 0.3,
+   "sound": "whoosh"
+  }
+ },
+ "3": {
+  "text": {
+   "words": "ОБЕЩАНИЯ ЕС",
+   "sub": "люди заканчиваются быстрее",
+   "style": "mask_plate",
+   "pos": "ml",
+   "at": 0.3,
+   "sound": "whoosh"
+  }
+ }
+}
