@@ -531,3 +531,4 @@ def s11(t, dur):
 
 
 import scenes2  # noqa: E402,F401 — блок 1 «ВОЙНА», сцены 12-29
+import scenes3  # noqa: E402,F401 — блок 2 «ЗАПРЕТНАЯ ДВЕРЬ», сцены 30-40

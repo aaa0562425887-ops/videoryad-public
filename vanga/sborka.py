@@ -50,6 +50,17 @@ INSERT_AUDIO = {
     "25": {"layers": [{"file": "v3_g2_0938.mp4", "start": 612.0 - 575.68, "at": 1.5, "dur": 8.7, "target": -19.0, "fade_in": 0.2, "fade_out": 0.5, "duck": [(2.0, 2.5, -13.0)]},
                       {"file": "olga_b4.mp3", "start": 0.0, "at": 3.8, "dur": 5.93, "target": -18.0, "fade_in": 0.0, "fade_out": 0.1}]},
     "29": {"layers": [{"file": "b_g1_2115.mp4", "start": 1276.0 - 1272.44, "at": 0.0, "dur": 7.9, "target": -30.0, "fade_in": 0.3, "fade_out": 0.5}]},
+    # блок 2 «ЗАПРЕТНАЯ ДВЕРЬ». v5 с 2460,28 · v7 с 2639,80 · b_g2_2110 с 1267,36
+    "33": {"layers": [{"file": "v5_g1_4105.mp4", "start": 2469.0 - 2460.28, "at": 3.0, "dur": 12.6, "target": -19.0, "fade_in": 0.2, "fade_out": 0.5, "duck": [(2.0, 2.5, -13.0)]},
+                      {"file": "olga_b5a.mp3", "start": 0.0, "at": 5.3, "dur": 10.14, "target": -18.0, "fade_in": 0.0, "fade_out": 0.1}]},
+    "34": {"layers": [{"file": "v5_g1_4105.mp4", "start": 2507.0 - 2460.28, "at": 0.0, "dur": 10.0, "target": -19.0, "fade_in": 0.2, "fade_out": 0.3, "duck": [(2.0, 2.5, -13.0)]},
+                      {"file": "olga_b5b.mp3", "start": 0.0, "at": 2.3, "dur": 7.42, "target": -18.0, "fade_in": 0.0, "fade_out": 0.1},
+                      {"file": "v5_g1_4105.mp4", "start": 2549.0 - 2460.28, "at": 10.0, "dur": 6.5, "target": -19.0, "fade_in": 0.1, "fade_out": 0.5, "duck": [(1.7, 2.2, -13.0)]},
+                      {"file": "olga_b5c.mp3", "start": 0.0, "at": 12.0, "dur": 3.92, "target": -18.0, "fade_in": 0.0, "fade_out": 0.1}]},
+    "35": {"layers": [{"file": "b_g1_2115.mp4", "start": 1293.0 - 1272.44, "at": 0.0, "dur": 2.6, "target": -30.0, "fade_in": 0.3, "fade_out": 0.3}]},
+    "38": {"layers": [{"file": "v7_g1_4400.mp4", "start": 2653.0 - 2639.8, "at": 0.0, "dur": 7.5, "target": -19.0, "fade_in": 0.2, "fade_out": 0.5, "duck": [(2.0, 2.5, -13.0)]},
+                      {"file": "olga_b7a.mp3", "start": 0.0, "at": 2.3, "dur": 1.07, "target": -18.0, "fade_in": 0.0, "fade_out": 0.05},
+                      {"file": "olga_b7b.mp3", "start": 0.0, "at": 3.7, "dur": 3.11, "target": -18.0, "fade_in": 0.0, "fade_out": 0.1}]},
 }
 
 

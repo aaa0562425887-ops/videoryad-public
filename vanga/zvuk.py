@@ -24,7 +24,7 @@ MUS = os.path.join(HERE, "zvuk", "music")
 SFX = os.path.join(HERE, "zvuk", "sfx")
 
 # «Верица»: один трек на хук — «Missing Persons» (Jeremy Blake, его медиатека), тихо
-AKTY = [("01", "incoming"), ("09", "tishina"), ("10", "final"), ("12", "missing"), ("14", "tishina"), ("17", "topass"), ("19", "tishina"), ("20", "missing"), ("22", "tishina"), ("23", "missing"), ("25", "tishina"), ("26", "topass")]   # хук — «Inception»-тема тихо; В0 — музыка уходит; финал хука и титр — «Eyes of Glory»
+AKTY = [("01", "incoming"), ("09", "tishina"), ("10", "final"), ("12", "missing"), ("14", "tishina"), ("17", "topass"), ("19", "tishina"), ("20", "missing"), ("22", "tishina"), ("23", "missing"), ("25", "tishina"), ("26", "topass"), ("30", "incoming"), ("33", "tishina"), ("35", "missing"), ("38", "tishina"), ("39", "missing")]   # хук — «Inception»-тема тихо; В0 — музыка уходит; финал хука и титр — «Eyes of Glory»
 MUSIC_DB = -22.0   # как у Киссинджера после п.62 («музыка еле слышно»)
 MEAN = {"missing": -12.4, "final": -12.9, "topass": -13.9, "incoming": -17.2}
 SFX_DB = -20.0
@@ -60,6 +60,17 @@ EVENTS = {
     "27": [(2.2, "rise"), (5.4, "thud"), (10.4, "shutter"), (10.5, "thud"), (13.0, "typewriter"), (15.5, "typewriter"), (16.6, "glitch2")],
     "28": [(1.2, "click"), (2.6, "thud"), (4.3, "scribble"), (6.9, "impact"), (7.1, "thud"), (8.4, "shutter"), (10.1, "reveal")],
     "29": [(0.1, "shutter"), (2.3, "thud"), (3.2, "tick"), (3.5, "tick"), (3.8, "tick"), (4.6, "shutter"), (7.0, "impact")],
+    "30": [(0.05, "impact"), (0.5, "swoosh"), (1.6, "shutter"), (6.5, "thud"), (7.6, "thud"), (10.1, "thud"), (11.1, "thud"), (11.9, "thud"), (13.0, "scribble"), (13.2, "scribble"), (13.4, "scribble")],
+    "31": [(0.2, "click"), (1.9, "swoosh"), (3.5, "swoosh"), (5.1, "swoosh"), (7.0, "reveal"), (8.4, "click"), (10.2, "click"), (13.1, "click"), (13.9, "click"), (15.1, "click"), (17.0, "click")],
+    "32": [(0.2, "click"), (4.2, "thud"), (4.8, "thud"), (5.5, "thud"), (7.7, "shutter"), (9.7, "shutter"), (11.6, "thud")],
+    "33": [(0.1, "scribble"), (1.0, "click"), (3.0, "click"), (5.35, "typewriter"), (8.6, "typewriter")],
+    "34": [(0.05, "click"), (2.35, "typewriter"), (6.8, "typewriter"), (10.0, "click"), (12.05, "typewriter")],
+    "35": [(0.1, "shutter"), (1.5, "thud"), (2.6, "shutter"), (4.6, "shutter"), (5.6, "click"), (6.7, "thud"), (10.0, "cash"), (10.3, "impact")],
+    "36": [(0.2, "click"), (1.8, "tick"), (3.4, "thud"), (5.1, "impact"), (6.2, "door"), (7.5, "click")],
+    "37": [(0.3, "click"), (2.8, "reveal"), (3.9, "click")],
+    "38": [(0.05, "click"), (2.35, "typewriter"), (3.75, "typewriter"), (5.0, "typewriter")],
+    "39": [(0.2, "click"), (1.3, "thud"), (2.8, "rise"), (3.6, "click"), (4.0, "impact")],
+    "40": [(1.5, "click"), (2.3, "thud"), (3.7, "swoosh"), (6.3, "swoosh"), (8.2, "sparkle"), (9.9, "impact")],
 }
 
 

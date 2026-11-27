@@ -291,6 +291,116 @@
    "dur": 7.89,
    "film_start": 295.41,
    "film_end": 303.3
+  },
+  {
+   "id": "30",
+   "voice_start": 192.68,
+   "voice_end": 207.43,
+   "insert": 2.5,
+   "mid": [],
+   "dur": 17.25,
+   "film_start": 303.3,
+   "film_end": 320.55
+  },
+  {
+   "id": "31",
+   "voice_start": 207.43,
+   "voice_end": 224.31,
+   "insert": 1.0,
+   "mid": [],
+   "dur": 17.88,
+   "film_start": 320.55,
+   "film_end": 338.43
+  },
+  {
+   "id": "32",
+   "voice_start": 224.31,
+   "voice_end": 237.38,
+   "insert": 0.0,
+   "mid": [],
+   "dur": 13.07,
+   "film_start": 338.43,
+   "film_end": 351.5
+  },
+  {
+   "id": "33",
+   "voice_start": 237.38,
+   "voice_end": 237.38,
+   "insert": 15.6,
+   "mid": [],
+   "dur": 15.6,
+   "film_start": 351.5,
+   "film_end": 367.1
+  },
+  {
+   "id": "34",
+   "voice_start": 237.38,
+   "voice_end": 237.38,
+   "insert": 16.5,
+   "mid": [],
+   "dur": 16.5,
+   "film_start": 367.1,
+   "film_end": 383.6
+  },
+  {
+   "id": "35",
+   "voice_start": 237.82,
+   "voice_end": 250.91000000000003,
+   "insert": 1.0,
+   "mid": [],
+   "dur": 14.09,
+   "film_start": 383.6,
+   "film_end": 397.69
+  },
+  {
+   "id": "36",
+   "voice_start": 250.91000000000003,
+   "voice_end": 260.06,
+   "insert": 0.0,
+   "mid": [],
+   "dur": 9.15,
+   "film_start": 397.69,
+   "film_end": 406.84
+  },
+  {
+   "id": "37",
+   "voice_start": 260.06,
+   "voice_end": 265.0,
+   "insert": 0.0,
+   "mid": [],
+   "dur": 4.94,
+   "film_start": 406.84,
+   "film_end": 411.78
+  },
+  {
+   "id": "38",
+   "voice_start": 265.0,
+   "voice_end": 265.0,
+   "insert": 7.5,
+   "mid": [],
+   "dur": 7.5,
+   "film_start": 411.78,
+   "film_end": 419.28
+  },
+  {
+   "id": "39",
+   "voice_start": 265.48,
+   "voice_end": 270.44,
+   "insert": 0.0,
+   "mid": [],
+   "dur": 4.96,
+   "film_start": 419.28,
+   "film_end": 424.24
+  },
+  {
+   "id": "40",
+   "voice_start": 270.44,
+   "voice_end": 281.195,
+   "insert": 1.5,
+   "mid": [],
+   "dur": 12.255,
+   "film_start": 424.24,
+   "film_end": 436.495
   }
  ]
 }
