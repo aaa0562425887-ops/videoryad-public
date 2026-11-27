@@ -528,3 +528,6 @@ def s11(t, dur):
     out = C.over(img, *lays).convert("RGB")
     out = flash(out, tt, 0.1, 0.5)
     return C.finish(out, t, dur, fi=0.0, fo=0.7, grain_k=0.04, vig=0.35)
+
+
+import scenes2  # noqa: E402,F401 — блок 1 «ВОЙНА», сцены 12-29

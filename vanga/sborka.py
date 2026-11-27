@@ -32,6 +32,24 @@ INSERT_AUDIO = {
          "duck": [(2.0, 2.5, -13.0), (7.7, 8.2, 7.0)]},
         {"file": "olga_v0.mp3", "start": 0.0, "at": 2.3, "dur": 5.3, "target": -18.0, "fade_in": 0.0, "fade_out": 0.1},
     ]},
+    # блок 1 «ВОЙНА». Куски: v0 с 660,16 · v3 с 575,68 · v2 с 1848,16 · b_g1_0920 с 559,64 · b_g1_2115 с 1272,44 · b_g1_2755 с 1673,72
+    "12": {"layers": [{"file": "b_g1_0920.mp4", "start": 587.0 - 559.64, "at": 11.75, "dur": 4.2, "target": -30.0, "fade_in": 0.3, "fade_out": 0.3}]},
+    "14": {"layers": [{"file": "v0_g2_1103.mp4", "start": 673.5 - 660.16, "at": 0.0, "dur": 7.4, "target": -19.0, "fade_in": 0.2, "fade_out": 0.4, "duck": [(2.0, 2.5, -13.0)]},
+                      {"file": "olga_b1a.mp3", "start": 0.0, "at": 2.3, "dur": 4.65, "target": -18.0, "fade_in": 0.0, "fade_out": 0.1}]},
+    "15": {"layers": [{"file": "v0_g2_1103.mp4", "start": 687.0 - 660.16, "at": 1.3, "dur": 9.0, "target": -19.0, "fade_in": 0.2, "fade_out": 0.4, "duck": [(2.0, 2.5, -13.0)]},
+                      {"file": "olga_b1b.mp3", "start": 0.0, "at": 3.6, "dur": 6.24, "target": -18.0, "fade_in": 0.0, "fade_out": 0.1}]},
+    "16": {"layers": [{"file": "v0_g2_1103.mp4", "start": 725.0 - 660.16, "at": 1.3, "dur": 15.4, "target": -19.0, "fade_in": 0.2, "fade_out": 0.6, "duck": [(2.0, 2.5, -13.0)]},
+                      {"file": "olga_b1v.mp3", "start": 0.0, "at": 3.6, "dur": 12.62, "target": -18.0, "fade_in": 0.0, "fade_out": 0.1}]},
+    "17": {"layers": [{"file": "hronika/Invasion_of_Yugoslavia_and_Greece.ogv", "start": 168.0, "at": 2.15, "dur": 4.0, "target": -24.0, "fade_in": 0.3, "fade_out": 0.4}]},
+    "18": {"layers": [{"file": "b_g1_2755.mp4", "start": 1680.5 - 1673.72, "at": 1.0, "dur": 3.4, "target": -30.0, "fade_in": 0.3, "fade_out": 0.3}]},
+    "19": {"layers": [{"file": "v3_g2_0938.mp4", "start": 592.5 - 575.68, "at": 0.0, "dur": 11.0, "target": -19.0, "fade_in": 0.2, "fade_out": 0.6, "duck": [(2.0, 2.5, -13.0)]},
+                      {"file": "olga_b3.mp3", "start": 0.0, "at": 2.3, "dur": 9.48, "target": -18.0, "fade_in": 0.0, "fade_out": 0.1}]},
+    "22": {"layers": [{"file": "v2_g2_3050.mp4", "start": 1865.0 - 1848.16, "at": 0.0, "dur": 4.0, "target": -19.0, "fade_in": 0.2, "fade_out": 0.3, "duck": [(3.0, 3.5, -13.0)]},
+                      {"file": "v2_g2_3050.mp4", "start": 1860.0 - 1848.16, "at": 4.0, "dur": 6.0, "target": -32.0, "fade_in": 0.3, "fade_out": 0.6},
+                      {"file": "olga_b2.mp3", "start": 0.0, "at": 3.3, "dur": 6.01, "target": -18.0, "fade_in": 0.0, "fade_out": 0.1}]},
+    "25": {"layers": [{"file": "v3_g2_0938.mp4", "start": 612.0 - 575.68, "at": 1.5, "dur": 8.7, "target": -19.0, "fade_in": 0.2, "fade_out": 0.5, "duck": [(2.0, 2.5, -13.0)]},
+                      {"file": "olga_b4.mp3", "start": 0.0, "at": 3.8, "dur": 5.93, "target": -18.0, "fade_in": 0.0, "fade_out": 0.1}]},
+    "29": {"layers": [{"file": "b_g1_2115.mp4", "start": 1276.0 - 1272.44, "at": 0.0, "dur": 7.9, "target": -30.0, "fade_in": 0.3, "fade_out": 0.5}]},
 }
 
 
