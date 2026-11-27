@@ -260,16 +260,17 @@ def s06(t, dur):
     img = C.kb(dark_bg(9, (14, 14, 17)), t / dur, 0.04, 0.5, 0.5)
     img = C.fade(img, 1 - 0.6 * kd)
     k8 = C.seg(t, c_vos, dur)
+    k8a = C.seg(t, c_temn, c_vos)          # с «Самое тёмное» восьмёрка едва проступает и медленно растёт
     lays = []
-    if k8 > 0:
-        # восьмёрка проступает за текстом
-        lays.append(V.cifry(1.0, t, px=int(900 - 120 * C.smoother(k8)), text="8", a=0.08 + 0.5 * k8, glow=0.8 * k8, breathe=0.01))
+    if k8a > 0:
+        lays.append(V.cifry(1.0, t, px=int(760 + 140 * C.smoother(k8a) - 120 * C.smoother(k8)), text="8",
+                            a=0.03 + 0.07 * k8a + 0.48 * k8, glow=0.25 * k8a + 0.6 * k8, breathe=0.01))
     k1 = C.seg(t, c_novy, c_novy + 0.9)
     k2 = C.seg(t, c_vos, c_vos + 0.6)
     k3 = C.seg(t, c_vse, c_vse + 0.7)
     lays += [label("04", C.seg(t, c_chet, c_chet + 0.3), 150, 40, x=SAFE_X, anchor="ls", track=0.3),
              red_line(C.seg(t, c_chet, c_chet + 0.3), SAFE_X, SAFE_X + 70, 164, 3),
-             label("САМОЕ ТЁМНОЕ", C.seg(t, c_temn, c_temn + 0.4), H * 0.34, 34, C.GREY, x=SAFE_X + 30, anchor="ls", track=0.3)]
+             word("САМОЕ ТЁМНОЕ", C.seg(t, c_temn, c_temn + 0.45), H * 0.34, 72, "head", C.WHITE, 0.12, x=SAFE_X + 30, anchor="ls", rise=22)]
     if k1 > 0:
         lays.append(fx.typed("«Новый человек грядёт.", k1, "serif", 66, C.WHITE, SAFE_X + 30, H * 0.50, 0.0, k2 <= 0, t))
     if k2 > 0:
@@ -306,12 +307,12 @@ def s07(t, dur):
         base = Image.fromarray(np.clip(np.asarray(base, np.float32) * 1.7, 0, 255).astype(np.uint8), "RGB")
         mx, my = EURASIA.xy(*K.CITIES["Москва"])
         lays = []
-        k_r = C.seg(tt, c_kgod - c_apro, c_kgod - c_apro + 0.3)
+        k_r = C.seg(tt, 0.3, 0.7)
         if k_r > 0:
             lay = C.layer()
             dd = ImageDraw.Draw(lay)
             for j in range(3):
-                ph = ((tt - (c_kgod - c_apro)) * 0.5 + j * 0.33) % 1.0
+                ph = ((tt - 0.3) * 0.5 + j * 0.33) % 1.0
                 r = (10 + 260 * ph) * SS
                 a = int(170 * (1 - ph) * k_r)
                 dd.ellipse([mx * SS - r, my * SS - r, mx * SS + r, my * SS + r], outline=C.RED + (a,), width=3 * SS)
