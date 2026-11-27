@@ -40,7 +40,7 @@ INSERT_AUDIO = {
                       {"file": "olga_b1b.mp3", "start": 0.0, "at": 3.6, "dur": 6.24, "target": -18.0, "fade_in": 0.0, "fade_out": 0.1}]},
     "16": {"layers": [{"file": "v0_g2_1103.mp4", "start": 725.0 - 660.16, "at": 1.3, "dur": 15.4, "target": -19.0, "fade_in": 0.2, "fade_out": 0.6, "duck": [(2.0, 2.5, -13.0)]},
                       {"file": "olga_b1v.mp3", "start": 0.0, "at": 3.6, "dur": 12.62, "target": -18.0, "fade_in": 0.0, "fade_out": 0.1}]},
-    "17": {"layers": [{"file": "hronika/Invasion_of_Yugoslavia_and_Greece.ogv", "start": 168.0, "at": 2.15, "dur": 4.0, "target": -24.0, "fade_in": 0.3, "fade_out": 0.4}]},
+    "17": {"layers": [{"file": "hronika/Invasion_of_Yugoslavia_and_Greece.ogv", "start": 171.6, "at": 2.15, "dur": 4.0, "target": -24.0, "fade_in": 0.3, "fade_out": 0.4}]},
     "18": {"layers": [{"file": "b_g1_2755.mp4", "start": 1680.5 - 1673.72, "at": 1.0, "dur": 3.4, "target": -30.0, "fade_in": 0.3, "fade_out": 0.3}]},
     "19": {"layers": [{"file": "v3_g2_0938.mp4", "start": 592.5 - 575.68, "at": 0.0, "dur": 11.0, "target": -19.0, "fade_in": 0.2, "fade_out": 0.6, "duck": [(2.0, 2.5, -13.0)]},
                       {"file": "olga_b3.mp3", "start": 0.0, "at": 2.3, "dur": 9.48, "target": -18.0, "fade_in": 0.0, "fade_out": 0.1}]},

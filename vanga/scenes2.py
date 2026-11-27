@@ -31,7 +31,7 @@ def src(file_start, mmss):
 
 # хроника (кладёт mehanika в archiv/hronika/, реестр REESTR-HRONIKA.tsv); подписи — место · дата · источник
 HRON = {
-    "yugo": ("hronika/Invasion_of_Yugoslavia_and_Greece.ogv", 168.0, ("Югославия", "апрель 1941", "кинохроника · Мемориальный музей Холокоста США · public domain")),
+    "yugo": ("hronika/Invasion_of_Yugoslavia_and_Greece.ogv", 171.6, ("Югославия", "апрель 1941", "кинохроника · Мемориальный музей Холокоста США · public domain")),
     "praga": ("hronika/10_Soviet_Invasion_of_Czechoslovakia_CIA.jpg", ("Прага", "август 1968", "фото · ЦРУ · public domain")),
     "boris": ("hronika/Boris_III_of_Bulgaria_portrait.jpg", ("Царь Борис III", "портрет", "Викисклад · CC BY-SA 4.0")),
     "pohorony": ("hronika/Boris_III_funeral_train_1943.jpg", ("Болгария", "траур по царю · август 1943", "Викисклад · public domain")),
