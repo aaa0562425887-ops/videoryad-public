@@ -43,10 +43,10 @@ def main():
         v1 = vend if vend is not None else (SCENES[i + 1][1] if i + 1 < len(SCENES) else total)
         mid = MID.get(sid, [])
         dur = ins + (v1 - v0) + sum(m for _, m in mid)
-        out.append({"id": sid, "voice_start": v0, "voice_end": v1, "insert": ins, "dur": round(dur, 3),
-                    "film_start": round(film, 3), "mid": mid})
+        out.append({"id": sid, "voice_start": v0, "voice_end": v1, "insert": ins, "mid": mid, "dur": round(dur, 3),
+                    "film_start": round(film, 3), "film_end": round(film + dur, 3)})
         film += dur
-    json.dump({"scenes": out, "total": round(film, 3), "cuts": CUTS}, open(os.path.join(HERE, "timing.json"), "w"),
+    json.dump({"voice_end": total, "cuts": CUTS, "scenes": out}, open(os.path.join(HERE, "timing.json"), "w"),
               ensure_ascii=False, indent=1)
     for s in out:
         print("%-4s voice %7.2f-%7.2f  ins %4.1f  dur %6.2f  film %7.2f" % (s["id"], s["voice_start"], s["voice_end"], s["insert"], s["dur"], s["film_start"]))

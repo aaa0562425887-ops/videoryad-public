@@ -1,105 +1,116 @@
 {
+ "voice_end": 80.48,
+ "cuts": [],
  "scenes": [
   {
    "id": "01",
    "voice_start": 0.0,
    "voice_end": 2.22,
    "insert": 1.0,
+   "mid": [],
    "dur": 3.22,
    "film_start": 0.0,
-   "mid": []
+   "film_end": 3.22
   },
   {
    "id": "02",
    "voice_start": 2.22,
    "voice_end": 13.58,
    "insert": 1.0,
+   "mid": [],
    "dur": 12.36,
    "film_start": 3.22,
-   "mid": []
+   "film_end": 15.58
   },
   {
    "id": "03",
    "voice_start": 13.58,
    "voice_end": 20.85,
    "insert": 1.5,
+   "mid": [],
    "dur": 8.77,
    "film_start": 15.58,
-   "mid": []
+   "film_end": 24.35
   },
   {
    "id": "04",
    "voice_start": 20.85,
    "voice_end": 29.44,
    "insert": 4.0,
+   "mid": [],
    "dur": 12.59,
    "film_start": 24.35,
-   "mid": []
+   "film_end": 36.94
   },
   {
    "id": "05",
    "voice_start": 29.44,
    "voice_end": 36.79,
    "insert": 1.0,
+   "mid": [],
    "dur": 8.35,
    "film_start": 36.94,
-   "mid": []
+   "film_end": 45.29
   },
   {
    "id": "06",
    "voice_start": 36.79,
    "voice_end": 42.3,
    "insert": 1.0,
+   "mid": [],
    "dur": 6.51,
    "film_start": 45.29,
-   "mid": []
+   "film_end": 51.8
   },
   {
    "id": "07",
    "voice_start": 42.3,
    "voice_end": 50.23,
    "insert": 1.5,
+   "mid": [],
    "dur": 9.43,
    "film_start": 51.8,
-   "mid": []
+   "film_end": 61.23
   },
   {
    "id": "08",
    "voice_start": 50.23,
    "voice_end": 63.76,
    "insert": 1.0,
+   "mid": [],
    "dur": 14.53,
    "film_start": 61.23,
-   "mid": []
+   "film_end": 75.76
   },
   {
    "id": "09",
    "voice_start": 63.76,
    "voice_end": 63.76,
    "insert": 11.0,
+   "mid": [],
    "dur": 11.0,
    "film_start": 75.76,
-   "mid": []
+   "film_end": 86.76
   },
   {
    "id": "10",
    "voice_start": 63.76,
    "voice_end": 80.48,
    "insert": 0.0,
+   "mid": [],
    "dur": 16.72,
    "film_start": 86.76,
-   "mid": []
+   "film_end": 103.48
   },
   {
    "id": "11",
    "voice_start": 80.48,
    "voice_end": 80.48,
    "insert": 7.0,
+   "mid": [],
    "dur": 7.0,
    "film_start": 103.48,
-   "mid": []
+   "film_end": 110.48
   }
- ],
- "total": 110.48,
- "cuts": []
+ ]
 }
