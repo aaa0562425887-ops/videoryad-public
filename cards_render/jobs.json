@@ -1,0 +1,19 @@
+[
+ {
+  "scene": 1,
+  "view": "kalendar",
+  "dur": 6.0,
+  "anim": 2.6,
+  "tail_zoom": 0.045,
+  "watermark": "ПЛАНЕТА",
+  "channel": "ПЛАНЕТА",
+  "kwargs": {
+   "channel": "ПЛАНЕТА",
+   "dur": 6.0,
+   "accent": "ОКТЯБРЬ 1962",
+   "value": "СЕНТЯБРЬ 1962",
+   "kick": "Начало блокады Кубы",
+   "watermark": "ПЛАНЕТА"
+  }
+ }
+]
