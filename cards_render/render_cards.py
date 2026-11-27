@@ -278,6 +278,15 @@ def _registry():
     except Exception as exc:
         print(f"  вид «dok_mosaic» недоступен: {type(exc).__name__}: {exc}",
               file=sys.stderr, flush=True)
+    # ДВЕНАДЦАТЬ КАРТОЧЕК ИЗ «ВЕРИЦЫ» (27.11.2026, принято 26.11 — его слово,
+    # план в effects-library/OPEN-ITEMS.md). Перенесены один в один, без
+    # привязки к фильму, как и kino_dok_text выше. Импорт мягкий: падение
+    # одного модуля не должно ронять весь шард ролика.
+    try:
+        reg["verica_cards"] = __import__("verica_cards")
+    except Exception as exc:
+        print(f"  карточки «Верицы» недоступны: {type(exc).__name__}: {exc}",
+              file=sys.stderr, flush=True)
     return reg
 
 
@@ -336,6 +345,22 @@ ALIAS = {
     # `card:dok_wall`, без точки.
     "dok_mosaic": "kino_dok_mosaic.dok_mosaic",
     "dok_wall": "kino_dok_wall.dok_wall",
+    # ДВЕНАДЦАТЬ КАРТОЧЕК ИЗ «ВЕРИЦЫ» (27.11.2026): источники сцены —
+    # `card:kalendar`, `card:kartoteka` и так далее, без точки. Заводя новый
+    # вид, не забудь ТРИ других места — `card_put.VIEWS` (дверь), `_registry`
+    # выше (импорт) и `cards_cloud.CODE` (посылка файла в облако).
+    "kalendar": "verica_cards.kalendar",
+    "kartoteka": "verica_cards.kartoteka",
+    "oscillo": "verica_cards.oscillo",
+    "pismo": "verica_cards.pismo",
+    "schyot_palochek": "verica_cards.schyot_palochek",
+    "liniya_zhizni": "verica_cards.liniya_zhizni",
+    "pereskaz": "verica_cards.pereskaz",
+    "otschet_dney": "verica_cards.otschet_dney",
+    "shtamp_lestnica": "verica_cards.shtamp_lestnica",
+    "sortirovka": "verica_cards.sortirovka",
+    "kompas": "verica_cards.kompas",
+    "chertezh": "verica_cards.chertezh",
 }
 
 
