@@ -1,0 +1,213 @@
+[
+ {
+  "scene": 1,
+  "view": "kalendar",
+  "dur": 6.0,
+  "anim": 2.6,
+  "tail_zoom": 0.045,
+  "watermark": "ПЛАНЕТА",
+  "channel": "ПЛАНЕТА",
+  "kwargs": {
+   "channel": "ПЛАНЕТА",
+   "dur": 6.0,
+   "accent": "ОКТЯБРЬ 1962",
+   "value": "СЕНТЯБРЬ 1962",
+   "kick": "Начало блокады Кубы",
+   "watermark": "ПЛАНЕТА"
+  }
+ },
+ {
+  "scene": 2,
+  "view": "kartoteka",
+  "dur": 6.0,
+  "anim": 2.6,
+  "tail_zoom": 0.045,
+  "watermark": "ПЛАНЕТА",
+  "channel": "ПЛАНЕТА",
+  "kwargs": {
+   "channel": "ПЛАНЕТА",
+   "dur": 6.0,
+   "accent": "ЭНДРЮ ДЖОНСОН",
+   "kick": "ДОСЬЕ",
+   "watermark": "ПЛАНЕТА"
+  }
+ },
+ {
+  "scene": 3,
+  "view": "oscillo",
+  "dur": 6.0,
+  "anim": 2.6,
+  "tail_zoom": 0.045,
+  "watermark": "ПЛАНЕТА",
+  "channel": "ПЛАНЕТА",
+  "kwargs": {
+   "channel": "ПЛАНЕТА",
+   "dur": 6.0,
+   "accent": "Напряжённость спадает",
+   "value": "после встречи",
+   "watermark": "ПЛАНЕТА"
+  }
+ },
+ {
+  "scene": 4,
+  "view": "pismo",
+  "dur": 6.0,
+  "anim": 2.6,
+  "tail_zoom": 0.045,
+  "watermark": "ПЛАНЕТА",
+  "channel": "ПЛАНЕТА",
+  "kwargs": {
+   "channel": "ПЛАНЕТА",
+   "dur": 6.0,
+   "text": "Переговоры зашли в тупик, но стороны согласились продолжить диалог на следующей неделе",
+   "author": "источник в МИД",
+   "watermark": "ПЛАНЕТА"
+  }
+ },
+ {
+  "scene": 5,
+  "view": "schyot_palochek",
+  "dur": 6.0,
+  "anim": 2.6,
+  "tail_zoom": 0.045,
+  "watermark": "ПЛАНЕТА",
+  "channel": "ПЛАНЕТА",
+  "kwargs": {
+   "channel": "ПЛАНЕТА",
+   "dur": 6.0,
+   "accent": "раундов переговоров",
+   "value": "14",
+   "watermark": "ПЛАНЕТА"
+  }
+ },
+ {
+  "scene": 6,
+  "view": "liniya_zhizni",
+  "dur": 6.0,
+  "anim": 2.6,
+  "tail_zoom": 0.045,
+  "watermark": "ПЛАНЕТА",
+  "channel": "ПЛАНЕТА",
+  "kwargs": {
+   "channel": "ПЛАНЕТА",
+   "dur": 6.0,
+   "accent": "открытый конфликт",
+   "value": "85",
+   "watermark": "ПЛАНЕТА"
+  }
+ },
+ {
+  "scene": 7,
+  "view": "pereskaz",
+  "dur": 6.0,
+  "anim": 2.6,
+  "tail_zoom": 0.045,
+  "watermark": "ПЛАНЕТА",
+  "channel": "ПЛАНЕТА",
+  "kwargs": {
+   "channel": "ПЛАНЕТА",
+   "dur": 6.0,
+   "items": [
+    "Стороны не достигли соглашения",
+    "Санкции остаются в силе",
+    "Следующий раунд назначен на декабрь"
+   ],
+   "watermark": "ПЛАНЕТА"
+  }
+ },
+ {
+  "scene": 8,
+  "view": "otschet_dney",
+  "dur": 6.0,
+  "anim": 2.6,
+  "tail_zoom": 0.045,
+  "watermark": "ПЛАНЕТА",
+  "channel": "ПЛАНЕТА",
+  "kwargs": {
+   "channel": "ПЛАНЕТА",
+   "dur": 6.0,
+   "accent": "дней до саммита",
+   "value": "30",
+   "watermark": "ПЛАНЕТА"
+  }
+ },
+ {
+  "scene": 9,
+  "view": "shtamp_lestnica",
+  "dur": 6.0,
+  "anim": 2.6,
+  "tail_zoom": 0.045,
+  "watermark": "ПЛАНЕТА",
+  "channel": "ПЛАНЕТА",
+  "kwargs": {
+   "channel": "ПЛАНЕТА",
+   "dur": 6.0,
+   "kick": "Провалы дипломатии",
+   "accent": "СОРВАНО",
+   "items": [
+    "Первая попытка, 2023",
+    "Вторая попытка, 2024",
+    "Третья попытка, 2025"
+   ],
+   "watermark": "ПЛАНЕТА"
+  }
+ },
+ {
+  "scene": 10,
+  "view": "sortirovka",
+  "dur": 6.0,
+  "anim": 2.6,
+  "tail_zoom": 0.045,
+  "watermark": "ПЛАНЕТА",
+  "channel": "ПЛАНЕТА",
+  "kwargs": {
+   "channel": "ПЛАНЕТА",
+   "dur": 6.0,
+   "left": "ПОДДЕРЖАЛИ",
+   "right": "ОТВЕРГЛИ",
+   "items": [
+    "Франция",
+    "Германия",
+    "Польша",
+    "Венгрия"
+   ],
+   "watermark": "ПЛАНЕТА"
+  }
+ },
+ {
+  "scene": 11,
+  "view": "kompas",
+  "dur": 6.0,
+  "anim": 2.6,
+  "tail_zoom": 0.045,
+  "watermark": "ПЛАНЕТА",
+  "channel": "ПЛАНЕТА",
+  "kwargs": {
+   "channel": "ПЛАНЕТА",
+   "dur": 6.0,
+   "accent": "курс на эскалацию",
+   "value": "В",
+   "watermark": "ПЛАНЕТА"
+  }
+ },
+ {
+  "scene": 12,
+  "view": "chertezh",
+  "dur": 6.0,
+  "anim": 2.6,
+  "tail_zoom": 0.045,
+  "watermark": "ПЛАНЕТА",
+  "channel": "ПЛАНЕТА",
+  "kwargs": {
+   "channel": "ПЛАНЕТА",
+   "dur": 6.0,
+   "accent": "Новая военная база",
+   "items": [
+    "Периметр",
+    "Казармы",
+    "Взлётная полоса"
+   ],
+   "watermark": "ПЛАНЕТА"
+  }
+ }
+]
