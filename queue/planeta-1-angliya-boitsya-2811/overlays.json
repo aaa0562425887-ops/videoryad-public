@@ -1,0 +1,32 @@
+{
+ "1": {
+  "photo": "overlays/scene_001.jpg",
+  "sound": "pop",
+  "at": 2.2,
+  "shape": "rect",
+  "scale": 1.0,
+  "style": "right"
+ },
+ "7": {
+  "photo": "overlays/scene_007.jpg",
+  "sound": "whoosh",
+  "at": 2.4,
+  "shape": "rect",
+  "scale": 1.2,
+  "style": "right"
+ },
+ "22": {
+  "photo": "overlays/scene_022.jpg",
+  "sound": "ding",
+  "at": 2.6,
+  "shape": "circle",
+  "scale": 1.0,
+  "style": "right"
+ },
+ "39": {
+  "text": {"words": "ЛАТВИЯ", "sub": "перелом назначают на весну", "style": "mask_plate", "pos": "ml", "at": 0.5}
+ },
+ "60": {
+  "text": {"words": "ЭСТОНИЯ", "sub": "запрет на удары с её территории", "style": "mask_plate", "pos": "ml", "at": 0.5}
+ }
+}
