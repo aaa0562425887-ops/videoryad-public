@@ -1,0 +1,202 @@
+# Фильм «Ванга»: каждая сцена на своей машине (копия kino.yml, папка vanga/).
+name: vanga
+on:
+  workflow_dispatch:
+    inputs:
+      scenes:
+        description: "какие сцены считать, списком JSON"
+        default: '["01","02","03"]'
+      workers:
+        description: "процессов на сцену"
+        default: "4"
+      transcribe:
+        description: "расшифровать звук: файл:язык через запятую (пусто — нет)"
+        default: ""
+      sborka:
+        description: "собрать фильм из клипов этих прогонов (run_id через запятую, поздние поверх ранних; self — клипы этого же прогона; пусто — нет)"
+        default: ""
+      otrezok:
+        description: "собрать только эти сцены подряд (01,02,03,04 — первая минута); пусто — весь фильм"
+        default: ""
+      shots:
+        description: "снимки страниц изданий: имя=URL через пробел (пусто — нет)"
+        default: ""
+concurrency:
+  group: vanga-${{ github.run_id }}
+  cancel-in-progress: false
+permissions:
+  contents: write
+jobs:
+  clip:
+    if: github.event.inputs.scenes != '[]'
+    runs-on: ubuntu-latest
+    timeout-minutes: 120
+    strategy:
+      fail-fast: false
+      max-parallel: 8
+      matrix:
+        scene: ${{ fromJSON(github.event.inputs.scenes) }}
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          sparse-checkout: vanga
+      - name: Библиотеки
+        run: pip install --quiet --upgrade numpy pillow imageio-ffmpeg
+      - name: ffmpeg
+        run: |
+          python3 - <<'EOF'
+          import imageio_ffmpeg, os
+          p = imageio_ffmpeg.get_ffmpeg_exe()
+          os.makedirs(os.path.expanduser("~/.local/bin"), exist_ok=True)
+          os.symlink(p, os.path.expanduser("~/.local/bin/ffmpeg"))
+          print(p)
+          EOF
+      - name: Клип сцены
+        env:
+          KINO_ARCHIV: ${{ github.workspace }}/vanga/archiv
+        run: |
+          cd vanga
+          time python3 shard.py "${{ matrix.scene }}" "$GITHUB_WORKSPACE/vanga_${{ matrix.scene }}.mp4" --workers ${{ github.event.inputs.workers }}
+      - uses: actions/upload-artifact@v4
+        with:
+          name: vanga-${{ matrix.scene }}
+          path: vanga_${{ matrix.scene }}.mp4
+          retention-days: 2
+  shots:
+    if: github.event.inputs.shots != ''
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    steps:
+      - run: pip install --quiet playwright && python3 -m playwright install --with-deps chromium >/dev/null 2>&1
+      - name: Снимки страниц
+        run: |
+          mkdir -p shots
+          python3 - <<'PY'
+          import os, asyncio
+          from playwright.async_api import async_playwright
+          items = [x.split("=", 1) for x in os.environ["SHOTS"].split() if "=" in x]
+          async def main():
+              async with async_playwright() as p:
+                  b = await p.chromium.launch()
+                  ctx = await b.new_context(viewport={"width": 1440, "height": 900}, device_scale_factor=1.5,
+                                            user_agent="Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/131 Safari/537.36")
+                  for name, url in items:
+                      pg = await ctx.new_page()
+                      try:
+                          await pg.goto(url, wait_until="domcontentloaded", timeout=60000)
+                          await pg.wait_for_timeout(4000)
+                          for sel in ["button:has-text('Accept')", "button:has-text('Agree')", "button:has-text('I Accept')", "button:has-text('Got it')", "#onetrust-accept-btn-handler", "button[title='Accept']", "button:has-text('Accept all')", "button:has-text('AGREE')"]:
+                              try:
+                                  await pg.locator(sel).first.click(timeout=1500)
+                                  await pg.wait_for_timeout(800)
+                              except Exception:
+                                  pass
+                          await pg.screenshot(path=f"shots/{name}.png", full_page=True, clip={"x": 0, "y": 0, "width": 1440, "height": 5000})
+                          print("ok", name)
+                      except Exception as e:
+                          print("fail", name, e)
+                          try:
+                              await pg.screenshot(path=f"shots/{name}_partial.png")
+                          except Exception:
+                              pass
+                      await pg.close()
+                  await b.close()
+          asyncio.run(main())
+          PY
+        env:
+          SHOTS: ${{ github.event.inputs.shots }}
+      - uses: actions/upload-artifact@v4
+        with:
+          name: vanga-shots
+          path: shots/*.png
+          retention-days: 3
+  transcribe:
+    if: github.event.inputs.transcribe != ''
+    runs-on: ubuntu-latest
+    timeout-minutes: 60
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          sparse-checkout: vanga
+      - run: pip install --quiet faster-whisper imageio-ffmpeg numpy
+      - name: Расшифровка
+        run: |
+          cd vanga
+          mkdir -p "$GITHUB_WORKSPACE/tr"
+          IFS=',' read -ra ITEMS <<< "${{ github.event.inputs.transcribe }}"
+          for it in "${ITEMS[@]}"; do
+            f="${it%%:*}"; l="${it##*:}"
+            python3 transcribe.py "archiv/$f" "$l" "$GITHUB_WORKSPACE/tr/${f%.*}.json"
+          done
+      - uses: actions/upload-artifact@v4
+        with:
+          name: vanga-transcribe
+          path: tr/*.json
+          retention-days: 2
+  sborka:
+    needs: [clip]
+    if: ${{ always() && github.event.inputs.sborka != '' && needs.clip.result != 'failure' }}
+    runs-on: ubuntu-latest
+    timeout-minutes: 90
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          sparse-checkout: vanga
+      - run: pip install --quiet numpy pillow imageio-ffmpeg
+      - name: ffmpeg
+        run: |
+          python3 - <<'EOF'
+          import imageio_ffmpeg, os
+          p = imageio_ffmpeg.get_ffmpeg_exe()
+          os.makedirs(os.path.expanduser("~/.local/bin"), exist_ok=True)
+          os.symlink(p, os.path.expanduser("~/.local/bin/ffmpeg"))
+          EOF
+          sudo apt-get install -y -qq fonts-liberation >/dev/null 2>&1 || true
+      - name: Клипы этого же прогона
+        if: contains(github.event.inputs.sborka, 'self')
+        uses: actions/download-artifact@v4
+        with: {path: clips_self, pattern: "vanga-*", merge-multiple: true}
+      - name: Клипы из прогонов
+        env: {GH_TOKEN: "${{ github.token }}"}
+        run: |
+          mkdir -p clips
+          IFS=',' read -ra RUNS <<< "${{ github.event.inputs.sborka }}"
+          for r in "${RUNS[@]}"; do
+            [ "$r" = "self" ] && continue
+            rm -rf tmpdl; mkdir tmpdl
+            gh run download "$r" -R "${{ github.repository }}" -D tmpdl || true
+            # артефакты живут 2-3 дня; если пусто — клипы из релиза vanga-<run_id>
+            if [ -z "$(find tmpdl -name 'vanga_*.mp4' | head -1)" ]; then
+              echo "артефакт $r пуст — беру релиз vanga-$r"
+              gh release download "vanga-$r" -R "${{ github.repository }}" -p 'vanga_*.mp4' -D tmpdl || true
+            fi
+            find tmpdl -name 'vanga_*.mp4' -exec cp -f {} clips/ \;
+          done
+          # клипы ЭТОГО прогона — поверх всех прежних
+          find clips_self -name 'vanga_*.mp4' -exec cp -f {} clips/ \; 2>/dev/null || true
+          ls clips
+      - name: Сборка и звук
+        env:
+          KINO_ARCHIV: ${{ github.workspace }}/vanga/archiv
+          KINO_SCENES: ${{ github.event.inputs.otrezok }}
+        run: |
+          cd vanga
+          python3 sborka.py "$GITHUB_WORKSPACE/clips" golos/golos.mp3 golos/golos.srt "$GITHUB_WORKSPACE/film_golos.mp4"
+          python3 zvuk.py "$GITHUB_WORKSPACE/film_golos.mp4" "$GITHUB_WORKSPACE/film.mp4"
+      - uses: actions/upload-artifact@v4
+        with:
+          name: vanga-film
+          path: film.mp4
+          retention-days: 3
+  pack:
+    needs: [clip, transcribe, sborka, shots]
+    if: always()
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/download-artifact@v4
+        with: {path: clips, merge-multiple: true}
+      - env: {GH_TOKEN: "${{ github.token }}"}
+        run: |
+          ls -la clips
+          tag="vanga-${{ github.run_id }}"
+          gh release create "$tag" clips/* -R "${{ github.repository }}" -t "$tag" -n "Клипы сцен фильма."
