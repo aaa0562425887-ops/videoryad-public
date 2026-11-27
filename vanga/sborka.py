@@ -189,7 +189,7 @@ def main():
     missing = []
     with open(lst, "w", encoding="utf-8") as f:
         for sc in scenes:
-            p = os.path.join(clips, "verica_%s.mp4" % sc["id"])
+            p = os.path.join(clips, "vanga_%s.mp4" % sc["id"])
             if not os.path.exists(p):
                 p = os.path.join(clips, "%s.mp4" % sc["id"])
             if not os.path.exists(p):
