@@ -1,0 +1,731 @@
+[
+ {
+  "scene": 4,
+  "view": "krupnoe_chislo",
+  "dur": 8.8,
+  "anim": 2.6,
+  "tail_zoom": 0.045,
+  "watermark": "ПЛАНЕТА",
+  "channel": "ПЛАНЕТА",
+  "kwargs": {
+   "channel": "ПЛАНЕТА",
+   "dur": 8.8,
+   "value": "17 лет",
+   "watermark": "ПЛАНЕТА"
+  }
+ },
+ {
+  "scene": 7,
+  "view": "zal",
+  "dur": 10.2,
+  "anim": 2.6,
+  "tail_zoom": 0.045,
+  "watermark": "ПЛАНЕТА",
+  "channel": "ПЛАНЕТА",
+  "kwargs": {
+   "text": "Вас аккуратно найдут и проследят",
+   "words": [
+    "УЧЁТ",
+    "РЕЕСТР"
+   ],
+   "sheets": [
+    "Налоговый номер",
+    "Паспортные реквизиты",
+    "Цифровое фото",
+    "Адрес регистрации",
+    "Гражданство",
+    "Место пребывания"
+   ],
+   "channel": "ПЛАНЕТА",
+   "dur": 10.2,
+   "watermark": "ПЛАНЕТА"
+  }
+ },
+ {
+  "scene": 9,
+  "view": "zastavka",
+  "dur": 9.0,
+  "anim": 2.6,
+  "tail_zoom": 0.045,
+  "watermark": "ПЛАНЕТА",
+  "channel": "ПЛАНЕТА",
+  "kwargs": {
+   "channel": "ПЛАНЕТА",
+   "dur": 9.0,
+   "watermark": "ПЛАНЕТА"
+  }
+ },
+ {
+  "scene": 15,
+  "view": "dok_title",
+  "dur": 3.5,
+  "anim": 2.6,
+  "tail_zoom": 0.045,
+  "watermark": "ПЛАНЕТА",
+  "channel": "ПЛАНЕТА",
+  "kwargs": {
+   "text": "Теперь тем же компаниям могут сообщить",
+   "accent": "компаниям",
+   "watermark": "ПЛАНЕТА"
+  }
+ },
+ {
+  "scene": 19,
+  "view": "doc",
+  "dur": 11.3,
+  "anim": 3.4,
+  "tail_zoom": 0.04,
+  "watermark": "ПЛАНЕТА",
+  "channel": "ПЛАНЕТА",
+  "kwargs": {
+   "text": "Прежнее правило постепенно теряет силу. Стратегическая должность больше не гарантирует человеку защиты от мобилизации. Документ остаётся, а уверенность в нём испаряется быстрее, чем подпись успевает высохнуть",
+   "mark": "Документ",
+   "stamp": "БЕЗ ГАРАНТИЙ",
+   "watermark": "ПЛАНЕТА"
+  }
+ },
+ {
+  "scene": 21,
+  "view": "stroki_faktov",
+  "dur": 3.5,
+  "anim": 2.6,
+  "tail_zoom": 0.045,
+  "watermark": "ПЛАНЕТА",
+  "channel": "ПЛАНЕТА",
+  "kwargs": {
+   "channel": "ПЛАНЕТА",
+   "dur": 3.5,
+   "items": [
+    "1=Производить",
+    "2=Ремонтировать",
+    "3=Платить налоги",
+    "4=Удерживать экономику"
+   ],
+   "kick": "Поручение предприятию",
+   "watermark": "ПЛАНЕТА"
+  }
+ },
+ {
+  "scene": 23,
+  "view": "sceny.mehanizm",
+  "mode": "cli",
+  "script": "sceny_cli.py",
+  "dur": 6.8,
+  "channel": "ПЛАНЕТА",
+  "watermark": "ПЛАНЕТА",
+  "cfg": {
+   "view": "mehanizm",
+   "seconds": 6.8,
+   "fps": 30,
+   "t0": 0.0,
+   "kwargs": {
+    "text": "Оно развалится не сразу, а позже",
+    "channel": "ПЛАНЕТА",
+    "watermark": "ПЛАНЕТА",
+    "dur": 6.8,
+    "pary": [
+     "Предприятие>без инженера",
+     "Предприятие>без энергетика",
+     "Предприятие>без механика"
+    ]
+   }
+  },
+  "kwargs": {
+   "text": "Оно развалится не сразу, а позже",
+   "channel": "ПЛАНЕТА",
+   "watermark": "ПЛАНЕТА",
+   "dur": 6.8,
+   "pary": [
+    "Предприятие>без инженера",
+    "Предприятие>без энергетика",
+    "Предприятие>без механика"
+   ]
+  }
+ },
+ {
+  "scene": 29,
+  "view": "charts.cartogram",
+  "dur": 7.5,
+  "anim": 7.5,
+  "tail_zoom": 0.045,
+  "watermark": "ПЛАНЕТА",
+  "channel": "ПЛАНЕТА",
+  "kwargs": {
+   "data": [
+    "Закарпатская область"
+   ],
+   "level": "region",
+   "admin": "Украина",
+   "watermark": "ПЛАНЕТА"
+  }
+ },
+ {
+  "scene": 31,
+  "view": "bars",
+  "dur": 5.6,
+  "anim": 5.6,
+  "tail_zoom": 0.0,
+  "watermark": "ПЛАНЕТА",
+  "channel": "ПЛАНЕТА",
+  "kwargs": {},
+  "mode": "cli",
+  "script": "build_chart_bars.py",
+  "cfg": {
+   "title": "",
+   "caption": "",
+   "seconds": 5.6,
+   "bars": [
+    {
+     "label": "ОТКУП НА МЕСТЕ",
+     "value": 0.13,
+     "color": "4A90E2"
+    },
+    {
+     "label": "ПОЛНАЯ БРОНЬ",
+     "value": 0.87,
+     "color": "48BB78"
+    }
+   ]
+  }
+ },
+ {
+  "scene": 36,
+  "view": "quote",
+  "dur": 3.6,
+  "anim": 2.6,
+  "tail_zoom": 0.045,
+  "watermark": "ПЛАНЕТА",
+  "channel": "ПЛАНЕТА",
+  "kwargs": {
+   "text": "Отсюда следует самый жёсткий вывод. Единственный способ выжить — уехать из Украины как можно скорее",
+   "watermark": "ПЛАНЕТА"
+  }
+ },
+ {
+  "scene": 40,
+  "view": "charts.waterfall",
+  "dur": 7.1,
+  "anim": 7.1,
+  "tail_zoom": 0.045,
+  "watermark": "ПЛАНЕТА",
+  "channel": "ПЛАНЕТА",
+  "kwargs": {
+   "start": {
+    "label": "Кредит",
+    "value": 1.0
+   },
+   "steps": [
+    {
+     "label": "Снаряды",
+     "value": 1.0
+    },
+    {
+     "label": "Машины от партнёров",
+     "value": 1.0
+    }
+   ],
+   "end": {
+    "label": "ИТОГ"
+   },
+   "sobytiya": true,
+   "watermark": "ПЛАНЕТА"
+  }
+ },
+ {
+  "scene": 43,
+  "view": "strike",
+  "dur": 3.8,
+  "anim": 3.0,
+  "tail_zoom": 0.045,
+  "watermark": "ПЛАНЕТА",
+  "channel": "ПЛАНЕТА",
+  "kwargs": {
+   "text": "Государство собирает их адреса и фотографии, хотя они готовятся жить за пределами страны",
+   "struck": "за пределами страны",
+   "fix": "но всё равно в реестре",
+   "watermark": "ПЛАНЕТА"
+  }
+ },
+ {
+  "scene": 44,
+  "view": "zal_slova",
+  "dur": 5.4,
+  "anim": 2.6,
+  "tail_zoom": 0.045,
+  "watermark": "ПЛАНЕТА",
+  "channel": "ПЛАНЕТА",
+  "kwargs": {
+   "channel": "ПЛАНЕТА",
+   "dur": 5.4,
+   "sheets": [],
+   "text": "Практический смысл понятен",
+   "na_polu": "РАЗВОРОТ",
+   "watermark": "ПЛАНЕТА"
+  }
+ },
+ {
+  "scene": 45,
+  "view": "zal_pol",
+  "dur": 11.7,
+  "anim": 2.6,
+  "tail_zoom": 0.045,
+  "watermark": "ПЛАНЕТА",
+  "channel": "ПЛАНЕТА",
+  "kwargs": {
+   "channel": "ПЛАНЕТА",
+   "dur": 11.7,
+   "sheets": [],
+   "text": "Вопрос об украинских мужчинах в Европе",
+   "na_polu": "ДОСТАНУТ",
+   "watermark": "ПЛАНЕТА"
+  }
+ },
+ {
+  "scene": 48,
+  "view": "zal_g01",
+  "dur": 10.6,
+  "anim": 10.6,
+  "tail_zoom": 0.045,
+  "watermark": "ПЛАНЕТА",
+  "channel": "ПЛАНЕТА",
+  "kwargs": {
+   "channel": "ПЛАНЕТА",
+   "dur": 10.6,
+   "sheets": [],
+   "text": "Слово было безобидным",
+   "watermark": "ПЛАНЕТА"
+  }
+ },
+ {
+  "scene": 49,
+  "view": "zal_g48",
+  "dur": 6.0,
+  "anim": 6.0,
+  "tail_zoom": 0.045,
+  "watermark": "ПЛАНЕТА",
+  "channel": "ПЛАНЕТА",
+  "kwargs": {
+   "channel": "ПЛАНЕТА",
+   "dur": 6.0,
+   "sheets": [],
+   "text": "Война способна продлиться весь год",
+   "value": "2027",
+   "watermark": "ПЛАНЕТА"
+  }
+ },
+ {
+  "scene": 51,
+  "view": "zal_g18",
+  "dur": 6.1,
+  "anim": 6.1,
+  "tail_zoom": 0.045,
+  "watermark": "ПЛАНЕТА",
+  "channel": "ПЛАНЕТА",
+  "kwargs": {
+   "channel": "ПЛАНЕТА",
+   "dur": 6.1,
+   "sheets": [],
+   "text": "Прогноз аналитика на следующий год",
+   "value": "10%",
+   "watermark": "ПЛАНЕТА"
+  }
+ },
+ {
+  "scene": 53,
+  "view": "zal_ekran",
+  "dur": 6.6,
+  "anim": 6.6,
+  "tail_zoom": 0.045,
+  "watermark": "ПЛАНЕТА",
+  "channel": "ПЛАНЕТА",
+  "kwargs": {
+   "channel": "ПЛАНЕТА",
+   "dur": 6.6,
+   "sheets": [
+    "ОБРАЩЕНИЕ",
+    "ПРЯМОЙ ЭФИР"
+   ],
+   "text": "Поздравление суровое",
+   "say": "Ещё один полный военный год",
+   "author": "Офис президента",
+   "role": "Офис президента",
+   "source": "прямой эфир",
+   "watermark": "ПЛАНЕТА"
+  }
+ },
+ {
+  "scene": 55,
+  "view": "film.film_strip",
+  "dur": 9.0,
+  "anim": 9.0,
+  "tail_zoom": 0.045,
+  "watermark": "ПЛАНЕТА",
+  "channel": "ПЛАНЕТА",
+  "kwargs": {
+   "shots": [
+    "cards/photo/card_055.jpg",
+    "cards/photo/card_055_2.jpg",
+    "cards/photo/card_055_3.jpg",
+    "cards/photo/card_055_4.jpg"
+   ],
+   "title": "ВОЙНА",
+   "captions": [
+    "Зал-Заседаний-Госу",
+    "Зал-Заседаний-Госу",
+    "Зал-Заседаний-Госу",
+    "Зал-Заседаний-Госу"
+   ],
+   "watermark": "ПЛАНЕТА"
+  }
+ },
+ {
+  "scene": 60,
+  "view": "slider",
+  "dur": 7.3,
+  "anim": 7.3,
+  "tail_zoom": 0.0,
+  "watermark": "ПЛАНЕТА",
+  "channel": "ПЛАНЕТА",
+  "kwargs": {},
+  "mode": "cli",
+  "script": "build_chart_slider.py",
+  "cfg": {
+   "title": "",
+   "min": 0.0,
+   "max": 100.0,
+   "low": 0.0,
+   "high": 100.0,
+   "marker_value": 50.0,
+   "marker_display": "50",
+   "seconds": 7.3,
+   "range_label": "РАЗБРОС ОЦЕНОК",
+   "caption": "",
+   "source": ""
+  }
+ },
+ {
+  "scene": 61,
+  "view": "sceny.tribuna",
+  "mode": "cli",
+  "script": "sceny_cli.py",
+  "dur": 10.7,
+  "channel": "ПЛАНЕТА",
+  "watermark": "ПЛАНЕТА",
+  "cfg": {
+   "view": "tribuna",
+   "seconds": 10.7,
+   "fps": 30,
+   "t0": 0.0,
+   "kwargs": {
+    "text": "Повезут людей в контрнаступление",
+    "channel": "ПЛАНЕТА",
+    "watermark": "ПЛАНЕТА",
+    "dur": 10.7,
+    "role": "Командир бригады"
+   }
+  },
+  "kwargs": {
+   "text": "Повезут людей в контрнаступление",
+   "channel": "ПЛАНЕТА",
+   "watermark": "ПЛАНЕТА",
+   "dur": 10.7,
+   "role": "Командир бригады"
+  }
+ },
+ {
+  "scene": 62,
+  "view": "sceny.prohod",
+  "mode": "cli",
+  "script": "sceny_cli.py",
+  "dur": 7.2,
+  "channel": "ПЛАНЕТА",
+  "watermark": "ПЛАНЕТА",
+  "cfg": {
+   "view": "prohod",
+   "seconds": 7.2,
+   "fps": 30,
+   "t0": 0.0,
+   "kwargs": {
+    "text": "Нужно выдавать талончики",
+    "channel": "ПЛАНЕТА",
+    "watermark": "ПЛАНЕТА",
+    "dur": 7.2,
+    "tezisy": [
+     "Очередь из желающих",
+     "Задача элементарная",
+     "Форсировать Днепр"
+    ]
+   }
+  },
+  "kwargs": {
+   "text": "Нужно выдавать талончики",
+   "channel": "ПЛАНЕТА",
+   "watermark": "ПЛАНЕТА",
+   "dur": 7.2,
+   "tezisy": [
+    "Очередь из желающих",
+    "Задача элементарная",
+    "Форсировать Днепр"
+   ]
+  }
+ },
+ {
+  "scene": 63,
+  "view": "sceny.relsy",
+  "mode": "cli",
+  "script": "sceny_cli.py",
+  "dur": 5.7,
+  "channel": "ПЛАНЕТА",
+  "watermark": "ПЛАНЕТА",
+  "cfg": {
+   "view": "relsy",
+   "seconds": 5.7,
+   "fps": 30,
+   "t0": 0.0,
+   "kwargs": {
+    "text": "Один берег, другой берег",
+    "channel": "ПЛАНЕТА",
+    "watermark": "ПЛАНЕТА",
+    "dur": 5.7,
+    "sobytiya": [
+     "Один берег",
+     "Стрелка",
+     "Другой берег"
+    ]
+   }
+  },
+  "kwargs": {
+   "text": "Один берег, другой берег",
+   "channel": "ПЛАНЕТА",
+   "watermark": "ПЛАНЕТА",
+   "dur": 5.7,
+   "sobytiya": [
+    "Один берег",
+    "Стрелка",
+    "Другой берег"
+   ]
+  }
+ },
+ {
+  "scene": 64,
+  "view": "sceny.kreslo",
+  "mode": "cli",
+  "script": "sceny_cli.py",
+  "dur": 6.6,
+  "channel": "ПЛАНЕТА",
+  "watermark": "ПЛАНЕТА",
+  "cfg": {
+   "view": "kreslo",
+   "seconds": 6.6,
+   "fps": 30,
+   "t0": 0.0,
+   "kwargs": {
+    "text": "Нужны войска и переправы",
+    "channel": "ПЛАНЕТА",
+    "watermark": "ПЛАНЕТА",
+    "dur": 6.6,
+    "role": "Инженерные войска"
+   }
+  },
+  "kwargs": {
+   "text": "Нужны войска и переправы",
+   "channel": "ПЛАНЕТА",
+   "watermark": "ПЛАНЕТА",
+   "dur": 6.6,
+   "role": "Инженерные войска"
+  }
+ },
+ {
+  "scene": 66,
+  "view": "sceny.lenta",
+  "mode": "cli",
+  "script": "sceny_cli.py",
+  "dur": 14.6,
+  "channel": "ПЛАНЕТА",
+  "watermark": "ПЛАНЕТА",
+  "cfg": {
+   "view": "lenta",
+   "seconds": 14.6,
+   "fps": 30,
+   "t0": 0.0,
+   "kwargs": {
+    "text": "У карты с этим проще",
+    "channel": "ПЛАНЕТА",
+    "watermark": "ПЛАНЕТА",
+    "dur": 14.6,
+    "soobshcheniya": [
+     "Поиск трёхсот тысяч мужчин",
+     "Отмена брони",
+     "Наступление на бумаге"
+    ]
+   }
+  },
+  "kwargs": {
+   "text": "У карты с этим проще",
+   "channel": "ПЛАНЕТА",
+   "watermark": "ПЛАНЕТА",
+   "dur": 14.6,
+   "soobshcheniya": [
+    "Поиск трёхсот тысяч мужчин",
+    "Отмена брони",
+    "Наступление на бумаге"
+   ]
+  }
+ },
+ {
+  "scene": 69,
+  "view": "kartoteka",
+  "dur": 10.2,
+  "anim": 2.6,
+  "tail_zoom": 0.045,
+  "watermark": "ПЛАНЕТА",
+  "channel": "ПЛАНЕТА",
+  "kwargs": {
+   "channel": "ПЛАНЕТА",
+   "dur": 10.2,
+   "accent": "КИЕВ",
+   "watermark": "ПЛАНЕТА"
+  }
+ },
+ {
+  "scene": 72,
+  "view": "pereskaz",
+  "dur": 10.1,
+  "anim": 2.6,
+  "tail_zoom": 0.045,
+  "watermark": "ПЛАНЕТА",
+  "channel": "ПЛАНЕТА",
+  "kwargs": {
+   "channel": "ПЛАНЕТА",
+   "dur": 10.1,
+   "items": [
+    "Силы",
+    "Средства"
+   ],
+   "watermark": "ПЛАНЕТА"
+  }
+ },
+ {
+  "scene": 76,
+  "view": "kompas",
+  "dur": 9.7,
+  "anim": 2.6,
+  "tail_zoom": 0.045,
+  "watermark": "ПЛАНЕТА",
+  "channel": "ПЛАНЕТА",
+  "kwargs": {
+   "channel": "ПЛАНЕТА",
+   "dur": 9.7,
+   "accent": "направления обороны",
+   "value": "В",
+   "watermark": "ПЛАНЕТА"
+  }
+ },
+ {
+  "scene": 77,
+  "view": "chertezh",
+  "dur": 6.0,
+  "anim": 2.6,
+  "tail_zoom": 0.045,
+  "watermark": "ПЛАНЕТА",
+  "channel": "ПЛАНЕТА",
+  "kwargs": {
+   "channel": "ПЛАНЕТА",
+   "dur": 6.0,
+   "accent": "ОБОРОНА",
+   "items": [
+    "энергетика",
+    "переправы",
+    "предприятия"
+   ],
+   "watermark": "ПЛАНЕТА"
+  }
+ },
+ {
+  "scene": 78,
+  "view": "otbivka",
+  "dur": 8.2,
+  "anim": 2.6,
+  "tail_zoom": 0.045,
+  "watermark": "ПЛАНЕТА",
+  "channel": "ПЛАНЕТА",
+  "kwargs": {
+   "channel": "ПЛАНЕТА",
+   "dur": 8.2,
+   "accent": "КАДРОВЫЙ ГОЛОД",
+   "watermark": "ПЛАНЕТА"
+  }
+ },
+ {
+  "scene": 86,
+  "view": "dok_word",
+  "dur": 11.8,
+  "anim": 2.6,
+  "tail_zoom": 0.045,
+  "watermark": "ПЛАНЕТА",
+  "channel": "ПЛАНЕТА",
+  "kwargs": {
+   "text": "Западные партнёры способны передать оружие, сведения, финансирование и публичную поддержку",
+   "accent": "финансирование",
+   "watermark": "ПЛАНЕТА"
+  }
+ },
+ {
+  "scene": 88,
+  "view": "karta_brifing",
+  "dur": 5.4,
+  "anim": 5.4,
+  "tail_zoom": 0.045,
+  "watermark": "ПЛАНЕТА",
+  "channel": "ПЛАНЕТА",
+  "kwargs": {
+   "text": "Это не документ с единым названием и печатью одного кабинета",
+   "accent": "названием",
+   "watermark": "ПЛАНЕТА"
+  }
+ },
+ {
+  "scene": 92,
+  "view": "sceny.pechat",
+  "mode": "cli",
+  "script": "sceny_cli.py",
+  "dur": 12.9,
+  "channel": "ПЛАНЕТА",
+  "watermark": "ПЛАНЕТА",
+  "cfg": {
+   "view": "pechat",
+   "seconds": 12.9,
+   "fps": 30,
+   "t0": 0.0,
+   "kwargs": {
+    "text": "Конфликт новой отчётностью не убрать",
+    "channel": "ПЛАНЕТА",
+    "watermark": "ПЛАНЕТА",
+    "dur": 12.9,
+    "stamp": "утверждено"
+   }
+  },
+  "kwargs": {
+   "text": "Конфликт новой отчётностью не убрать",
+   "channel": "ПЛАНЕТА",
+   "watermark": "ПЛАНЕТА",
+   "dur": 12.9,
+   "stamp": "утверждено"
+  }
+ },
+ {
+  "scene": 97,
+  "view": "pismo",
+  "dur": 7.2,
+  "anim": 2.6,
+  "tail_zoom": 0.045,
+  "watermark": "ПЛАНЕТА",
+  "channel": "ПЛАНЕТА",
+  "kwargs": {
+   "channel": "ПЛАНЕТА",
+   "dur": 7.2,
+   "text": "Работника заберут с предприятия, которому велели наращивать выпуск",
+   "watermark": "ПЛАНЕТА"
+  }
+ }
+]
