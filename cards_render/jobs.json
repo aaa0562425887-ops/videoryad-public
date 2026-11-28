@@ -1,0 +1,16 @@
+[
+ {
+  "scene": 86,
+  "view": "dok_word",
+  "dur": 11.8,
+  "anim": 2.6,
+  "tail_zoom": 0.045,
+  "watermark": "ПЛАНЕТА",
+  "channel": "ПЛАНЕТА",
+  "kwargs": {
+   "text": "Оружие и сведения",
+   "accent": "Оружие",
+   "watermark": "ПЛАНЕТА"
+  }
+ }
+]
