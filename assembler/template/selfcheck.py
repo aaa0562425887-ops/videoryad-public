@@ -405,7 +405,14 @@ if _карточки:
     _без = []
     for _sid, _вид in sorted(_карточки.items(), key=lambda x: int(x[0])):
         _задание = os.path.join("cards", "queue", "scene_%03d.json" % int(_sid))
-        _готово = glob.glob(os.path.join("cards", "*", "scene_%03d.*" % int(_sid)))
+        # ТРИ МЕСТА, ГДЕ ГОТОВАЯ КАРТОЧКА МОЖЕТ ЛЕЖАТЬ, А ПРОВЕРКА ЗНАЛА
+        # ОДНО (28.11.2026, пункт 185): после успешной облачной отрисовки
+        # и чистки локальной очереди гейт считал карточку несуществующей —
+        # плоский `cards/scene_NNN.*` (не вложенная папка) и сам факт
+        # готового клипа в `images/` не проверялись вовсе.
+        _готово = (glob.glob(os.path.join("cards", "*", "scene_%03d.*" % int(_sid)))
+                   or glob.glob(os.path.join("cards", "scene_%03d.*" % int(_sid)))
+                   or glob.glob(os.path.join("images", "scene_%03d.*" % int(_sid))))
         if not os.path.exists(_задание) and not _готово:
             _без.append("%s (%s)" % (_sid, _вид))
     if _без:

@@ -708,6 +708,7 @@ def main():
     _wc = int(os.environ.get("WORKER_COUNT", "1"))
     _wk = int(os.environ.get("WORKER_ID", "0"))
     concat_lines = []
+    _failed = []
     for scene in data["scenes"]:
         sid, duration = scene["id"], scene["duration_sec"]
         out_path = os.path.join(clips_dir, f"clip_{sid:03d}.mp4")
@@ -734,6 +735,7 @@ def main():
             src, ext = find_source(images_dir, sid)
             if not src:
                 print(f"[{sid:03d}] MISSING SOURCE, skip")
+                _failed.append((sid, "нет исходника"))
                 continue
             print(f"[{sid:03d}] {'video' if ext=='mp4' else 'image'} -> {duration}s")
             try:
@@ -754,6 +756,7 @@ def main():
                     build_subscribe_clip(ffmpeg, out_path, sid)
             except subprocess.CalledProcessError as e:
                 print(f"  FAILED: {e.stderr.decode()[-500:]}")
+                _failed.append((sid, "ffmpeg упал"))
                 continue
         # absolute path - ffmpeg's concat demuxer resolves relative entries
         # against the list file's own directory, not the caller's cwd, so a
@@ -766,6 +769,22 @@ def main():
         f.write("\n".join(concat_lines))
     print(f"\n{len(concat_lines)} clips ready. Concat with:")
     print(f"  ffmpeg -f concat -safe 0 -i {concat_file} -c copy <output>.mp4")
+    # ПРОПУЩЕННАЯ СЦЕНА — ЭТО ОТКАЗ ШАГА, НЕ «СБОРКА ПРОШЛА» (28.11.2026,
+    # пункт 181, его дословная находка — шарды падали на установке ffmpeg,
+    # сцена пропадала из concat молча, а job всё равно писал success:
+    # main() нигде не возвращал ненулевой код, сколько бы сцен ни
+    # пропустилось. `_parallel()` в cloud_pipeline.py УЖЕ проверяет код
+    # выхода каждого воркера (`if rc != 0: raise SystemExit`) — ему только
+    # не хватало ненулевого кода отсюда, чтобы сработать. Корень провала
+    # самого ffmpeg на конкретных шардах это не объясняет (для этого
+    # нужен реальный лог упавшего шарда) — но ролик с дырой или с
+    # заглушкой вместо сцены теперь остановит прогон, а не уедет как
+    # «готовый».
+    if _failed:
+        sys.exit("ОШИБКА: %d сцен(а) не собралась (%s) — сборка остановлена, "
+                  "а не прошла молча с пропуском." % (
+                      len(_failed),
+                      ", ".join("%d: %s" % (sid, why) for sid, why in _failed)))
 
 
 if __name__ == "__main__":

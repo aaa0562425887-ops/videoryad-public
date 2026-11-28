@@ -780,11 +780,21 @@ def _pick(txt):
     best = None
     dec = json.JSONDecoder()
     for i, ch in enumerate(txt):
-        if ch != "{":
+        if ch not in "{[":
             continue
         try:
             obj, _ = dec.raw_decode(txt[i:])
         except ValueError:
+            continue
+        # ГОЛЫЙ МАССИВ БЕЗ ОБЁРТКИ (28.11.2026, пункт 190 — Codex вернул
+        # чистый `[...]` без ```json-ограды и без обёртки {"scenes": [...]}
+        # — ни регулярка по фенсу, ни этот разбор (раньше смотрел только
+        # на «{») его не видели. Массив с непустым списком — уже готовый
+        # ответ, оборачиваем в {"scenes": [...]} ниже по тому же ключу,
+        # что ждёт остальной код.
+        if isinstance(obj, list) and obj:
+            if best is None or len(obj) > best[1]:
+                best = ({"scenes": obj}, len(obj))
             continue
         if not isinstance(obj, dict):
             continue
