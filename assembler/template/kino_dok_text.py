@@ -135,12 +135,32 @@ def dok_word(out=None, t=None, text="", channel="", watermark="",
     txt = (text or "СЛОВО").strip().upper()
 
     img = _fon()
-    px = fit_px(txt, 160, W - 2 * SAFE_X)
+    maxw = W - 2 * SAFE_X
+    px = fit_px(txt, 160, maxw)
     kk = out_cubic(tt)
     rise = 40 * (1 - kk)
     a = clamp(tt * 2)
-    lay = text_layer(txt, px, WHITE, W / 2, H / 2 + rise, anchor="ms", a=a)
-    img = Image.alpha_composite(img.convert("RGBA"), lay)
+    img = img.convert("RGBA")
+    # ПЕРЕНОС, ЕСЛИ ДАЖЕ МИНИМАЛЬНЫЙ КЕГЛЬ НЕ ВЛЕЗАЕТ (28.11.2026, пункт
+    # 197 — «кегль сам ужимается» защищал только от небольшого перебора,
+    # не от целой длинной фразы в --text). Та же логика, что у dok_title.
+    d_probe = ImageDraw.Draw(Image.new("RGBA", (4, 4)))
+    слова = txt.split()
+    if len(слова) > 1 and text_w(d_probe, txt, font(px * SS)) / SS > maxw:
+        сред = len(слова) // 2
+        ln1, ln2 = " ".join(слова[:сред]), " ".join(слова[сред:])
+        px1 = fit_px(ln1, 160, maxw)
+        px2 = fit_px(ln2, 160, maxw)
+        px = min(px1, px2)
+        lay1 = text_layer(ln1, px, WHITE, W / 2, H / 2 + rise - px * 0.6,
+                          anchor="ms", a=a)
+        lay2 = text_layer(ln2, px, WHITE, W / 2, H / 2 + rise + px * 0.6,
+                          anchor="ms", a=a)
+        img = Image.alpha_composite(img, lay1)
+        img = Image.alpha_composite(img, lay2)
+    else:
+        lay = text_layer(txt, px, WHITE, W / 2, H / 2 + rise, anchor="ms", a=a)
+        img = Image.alpha_composite(img, lay)
 
     rgb = img.convert("RGB")
     if out:
