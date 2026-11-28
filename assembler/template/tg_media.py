@@ -252,7 +252,14 @@ RETELLERS = ("ostashkonews", "readovkanews", "rian_ru", "bbbreaking",
              # сцен из 15, и все одиннадцать — вложения этих каналов:
              # скриншоты NYT и Bloomberg, испанская и немецкая пресса,
              # плашки телеэфира, вшитые титры. В списке их не было.
-             "zerada", "ostashko", "resurs_ua", "insiderua", "hueviykiev")
+             "zerada", "ostashko", "resurs_ua", "insiderua", "hueviykiev",
+             # 28.11, улов usuario-49 (ПЛАНЕТА·2): все четыре попали в
+             # tg_rejected.json как вёрстка/переснятый эфир, ни один не
+             # предупредил — kozakrichala (переснятая телепрограмма с
+             # несъёмным лого+субтитрами), infantmilitario/nabludatels/
+             # XU_kraine (скриншоты сайтов Heute.at/Politico целиком,
+             # шапка+меню).
+             "kozakrichala", "infantmilitario", "nabludatels", "xu_kraine")
 
 
 def _reteller(chan):
