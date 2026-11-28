@@ -163,21 +163,38 @@ def dok_title(out=None, t=None, text="", accent="", channel="", watermark="",
     kk = out_cubic(tt)
     a = int(255 * clamp(tt * 2))
     x, y, px = SAFE_X + 20, 150, 56
+    maxw = W - x - SAFE_X
     # КЕГЛЬ САМ УЖИМАЕТСЯ, ПОКА СТРОКА НЕ ВЛЕЗЕТ (27.11.2026, улов `usuario-c1`
     # через его личный аудит — сцена 77, строка уезжала за правый край кадра).
     # Тот же приём D9/`fit_px`, что уже у `dok_word` выше.
-    px = fit_px(white + ("  " + acc if acc else ""), px,
-                W - x - SAFE_X, track=0.06)
+    full = white + ("  " + acc if acc else "")
+    px = fit_px(full, px, maxw, track=0.06)
     d_probe = ImageDraw.Draw(Image.new("RGBA", (4, 4)))
+    # ПЕРЕНОС СТРОКИ, ЕСЛИ ДАЖЕ МИНИМАЛЬНЫЙ КЕГЛЬ НЕ ВЛЕЗАЕТ (28.11.2026,
+    # второй заход на тот же случай — «кегль сам ужимается» защищал только
+    # от небольшого перебора, не от целой фразы: на полном кегле-поле всё
+    # равно уезжало за правый край). Разбиваем на белую строку + красный
+    # акцент СТРОКОЙ НИЖЕ — та же граница, что уже естественно есть в
+    # данных (`--text`/`--accent` — два разных смысловых куска).
+    двустрочно = acc and text_w(d_probe, full, font(px * SS), 0.06) / SS > maxw
+    if двустрочно:
+        px1 = fit_px(white, 56, maxw, track=0.06)
+        px2 = fit_px(acc, 56, maxw, track=0.06)
+        px = min(px1, px2)
     f = font(px * SS)
     w1 = text_w(d_probe, white, f, 0.06)
     lay = layer()
     d = ImageDraw.Draw(lay)
     yy = (y + (1 - kk) * 16) * SS
     tracked(d, x * SS, yy, white, f, WHITE + (a,), 0.06)
-    if acc:
+    if acc and not двустрочно:
         tracked(d, x * SS + w1 + px * 0.35 * SS, yy, acc, f, RED + (a,), 0.06)
-    d.rectangle([x * SS, (y + 16) * SS, (x + 260 * kk) * SS, (y + 19) * SS], fill=RED + (a,))
+    линия_y = y + 16
+    if acc and двустрочно:
+        yy2 = yy + px * 1.2 * SS
+        tracked(d, x * SS, yy2, acc, f, RED + (a,), 0.06)
+        линия_y = y + 16 + int(px * 1.2)
+    d.rectangle([x * SS, линия_y * SS, (x + 260 * kk) * SS, (линия_y + 3) * SS], fill=RED + (a,))
     img = Image.alpha_composite(img.convert("RGBA"), done(lay))
 
     rgb = img.convert("RGB")

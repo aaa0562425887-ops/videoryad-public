@@ -335,7 +335,20 @@ def iz_proekta(proekt=""):
         with open(os.path.join(p, ".source_dir"), encoding="utf-8") as f:
             src = f.read().strip()
         if src:
-            return iz_puti(src)
+            k, t, d = iz_puti(src)
+            # `.source_dir` МОЖЕТ БЫТЬ ДОНОРСКИМ (28.11.2026, пункт 201 —
+            # у второго канала, собранного переносом/клоном папки донора,
+            # этот файл иногда указывает на ПЕРВЫЙ канал, и сдача второго
+            # отмечалась не там). Имя папки проекта ("planeta-"/"5min-"
+            # префиксом) — надёжнее: оно ставится при создании ЭТОГО
+            # конкретного проекта и не наследуется от донора. При
+            # противоречии — верим папке, не файлу.
+            _имя = os.path.basename(p).lower()
+            _по_имени = ("ПЛАНЕТА" if _имя.startswith("planeta-")
+                        else "5 МИНУТ" if _имя.startswith("5min-") else "")
+            if _по_имени and k and _norm(k) != _norm(_по_имени):
+                k = _по_имени
+            return k, t, d
     except OSError:
         pass
     return iz_puti(p)

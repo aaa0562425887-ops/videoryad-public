@@ -443,13 +443,26 @@ def main():
             _have.add(os.path.abspath(c))
     tg = tgs[0] if tgs else None
     if not tgs:
-        print("ОШИБКА: не найден файл выдачи tg_media.py (tg*.json) рядом со "
-              "сценарием.", file=sys.stderr)
-        print("  Досье ОБЯЗАНО быть прогнано до раскадровки: соберите ВСЕ "
-              "ссылки t.me со ВСЕХ листов xlsx (Archive, Debug, AuthorNotes, "
-              "NewsInbox, Claims, Sources, Productions) и прогоните "
-              "tg_media.py --json tg.json <ссылки…>.", file=sys.stderr)
-        return 2
+        # КЛЮЧА ГЕОРАДАРА НЕ БЫЛО ВООБЩЕ — ЭТО НЕ ОШИБКА (28.11.2026,
+        # пункт 205 — падение «не найден tg*.json» даже когда ключа не
+        # давали вовсе). Признак — нет файла `.geo_key` рядом со сценарием:
+        # значит вложений и не ожидалось, создаём пустой tg.json сами и
+        # идём дальше, как при честном «вложений не было».
+        if not os.path.exists(os.path.join(here, ".geo_key")):
+            print("ключа георадара не было — вложений не ожидалось, "
+                  "создаю пустой tg.json и иду дальше.")
+            tg = os.path.join(here, "tg.json")
+            with open(tg, "w", encoding="utf-8") as f:
+                f.write("[]")
+            tgs = [tg]
+        else:
+            print("ОШИБКА: не найден файл выдачи tg_media.py (tg*.json) рядом со "
+                  "сценарием.", file=sys.stderr)
+            print("  Досье ОБЯЗАНО быть прогнано до раскадровки: соберите ВСЕ "
+                  "ссылки t.me со ВСЕХ листов xlsx (Archive, Debug, AuthorNotes, "
+                  "NewsInbox, Claims, Sources, Productions) и прогоните "
+                  "tg_media.py --json tg.json <ссылки…>.", file=sys.stderr)
+            return 2
 
     media = []
     _seen_u = set()
