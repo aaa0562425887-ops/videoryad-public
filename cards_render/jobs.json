@@ -1,0 +1,482 @@
+[
+ {
+  "scene": 2,
+  "view": "sceny.prolog",
+  "mode": "cli",
+  "script": "sceny_cli.py",
+  "dur": 7.5,
+  "channel": "ПЛАНЕТА",
+  "watermark": "ПЛАНЕТА",
+  "cfg": {
+   "view": "prolog",
+   "seconds": 7.5,
+   "fps": 30,
+   "t0": 0.0,
+   "kwargs": {
+    "text": "Список передают военным",
+    "channel": "ПЛАНЕТА",
+    "watermark": "ПЛАНЕТА",
+    "dur": 7.5
+   }
+  },
+  "kwargs": {
+   "text": "Список передают военным",
+   "channel": "ПЛАНЕТА",
+   "watermark": "ПЛАНЕТА",
+   "dur": 7.5
+  }
+ },
+ {
+  "scene": 11,
+  "view": "zal_schetchik",
+  "dur": 9.0,
+  "anim": 2.6,
+  "tail_zoom": 0.045,
+  "watermark": "ПЛАНЕТА",
+  "channel": "ПЛАНЕТА",
+  "kwargs": {
+   "channel": "ПЛАНЕТА",
+   "dur": 9.0,
+   "sheets": [],
+   "text": "Хотят лишить брони",
+   "value": "300 000",
+   "value_sub": "ПОД УГРОЗОЙ",
+   "watermark": "ПЛАНЕТА"
+  }
+ },
+ {
+  "scene": 13,
+  "view": "polosy",
+  "dur": 4.1,
+  "anim": 2.6,
+  "tail_zoom": 0.045,
+  "watermark": "ПЛАНЕТА",
+  "channel": "ПЛАНЕТА",
+  "kwargs": {
+   "channel": "ПЛАНЕТА",
+   "dur": 4.1,
+   "items": [
+    "Нижняя граница=100000",
+    "Верхняя граница=300000"
+   ],
+   "kick": "Сколько хотят лишить брони",
+   "watermark": "ПЛАНЕТА"
+  }
+ },
+ {
+  "scene": 26,
+  "view": "sortirovka",
+  "dur": 11.2,
+  "anim": 2.6,
+  "tail_zoom": 0.045,
+  "watermark": "ПЛАНЕТА",
+  "channel": "ПЛАНЕТА",
+  "kwargs": {
+   "channel": "ПЛАНЕТА",
+   "dur": 11.2,
+   "left": "ГОСУДАРСТВО",
+   "right": "СЕМЬЯ",
+   "items": [
+    "армия",
+    "производство",
+    "энергетика",
+    "дом"
+   ],
+   "watermark": "ПЛАНЕТА"
+  }
+ },
+ {
+  "scene": 28,
+  "view": "marker_serif",
+  "dur": 11.5,
+  "anim": 2.6,
+  "tail_zoom": 0.045,
+  "watermark": "ПЛАНЕТА",
+  "channel": "ПЛАНЕТА",
+  "kwargs": {
+   "text": "Под мобилизационные меры попадают студенты. В Закарпатье одного из них освободили после суда",
+   "watermark": "ПЛАНЕТА"
+  }
+ },
+ {
+  "scene": 38,
+  "view": "zal_shkala",
+  "dur": 11.3,
+  "anim": 2.6,
+  "tail_zoom": 0.045,
+  "watermark": "ПЛАНЕТА",
+  "channel": "ПЛАНЕТА",
+  "kwargs": {
+   "channel": "ПЛАНЕТА",
+   "dur": 11.3,
+   "sheets": [],
+   "text": "Звучат оценки потерь",
+   "value": "35 000",
+   "value_sub": "ЕЖЕМЕСЯЧНО",
+   "watermark": "ПЛАНЕТА"
+  }
+ },
+ {
+  "scene": 41,
+  "view": "duel",
+  "dur": 9.8,
+  "anim": 3.2,
+  "tail_zoom": 0.035,
+  "watermark": "ПЛАНЕТА",
+  "channel": "ПЛАНЕТА",
+  "kwargs": {
+   "top": {
+    "who": "Погибший",
+    "text": "Невозможно вернуть",
+    "accent": null,
+    "source": ""
+   },
+   "bottom": {
+    "who": "Реестр",
+    "text": "Отметка годен",
+    "accent": null,
+    "source": ""
+   },
+   "watermark": "ПЛАНЕТА"
+  }
+ },
+ {
+  "scene": 42,
+  "view": "charts.network",
+  "dur": 8.3,
+  "anim": 8.3,
+  "tail_zoom": 0.045,
+  "watermark": "ПЛАНЕТА",
+  "channel": "ПЛАНЕТА",
+  "kwargs": {
+   "nodes": [
+    {
+     "id": "Государство",
+     "label": "Государство",
+     "weight": 3.0
+    },
+    {
+     "id": "адреса",
+     "label": "адреса",
+     "weight": 1.0
+    },
+    {
+     "id": "документы",
+     "label": "документы",
+     "weight": 1.0
+    },
+    {
+     "id": "фотографии",
+     "label": "фотографии",
+     "weight": 1.0
+    }
+   ],
+   "links": [
+    {
+     "from": "Государство",
+     "to": "адреса",
+     "weight": 1.0
+    },
+    {
+     "from": "Государство",
+     "to": "документы",
+     "weight": 1.0
+    },
+    {
+     "from": "Государство",
+     "to": "фотографии",
+     "weight": 1.0
+    }
+   ],
+   "watermark": "ПЛАНЕТА"
+  }
+ },
+ {
+  "scene": 47,
+  "view": "zal_efir",
+  "dur": 7.9,
+  "anim": 2.6,
+  "tail_zoom": 0.045,
+  "watermark": "ПЛАНЕТА",
+  "channel": "ПЛАНЕТА",
+  "kwargs": {
+   "channel": "ПЛАНЕТА",
+   "dur": 7.9,
+   "sheets": [],
+   "text": "Тема вернётся снова",
+   "say": "Вежливость могут оставить для протокола",
+   "author": "дипломаты",
+   "role": "представитель ЕС",
+   "watermark": "ПЛАНЕТА"
+  }
+ },
+ {
+  "scene": 50,
+  "view": "zal_g44",
+  "dur": 7.5,
+  "anim": 7.5,
+  "tail_zoom": 0.045,
+  "watermark": "ПЛАНЕТА",
+  "channel": "ПЛАНЕТА",
+  "kwargs": {
+   "channel": "ПЛАНЕТА",
+   "dur": 7.5,
+   "sheets": [],
+   "text": "Он говорит об этом с самого начала",
+   "value": "10%",
+   "watermark": "ПЛАНЕТА"
+  }
+ },
+ {
+  "scene": 52,
+  "view": "paper_hand",
+  "dur": 8.4,
+  "anim": 2.8,
+  "tail_zoom": 0.04,
+  "watermark": "ПЛАНЕТА",
+  "channel": "ПЛАНЕТА",
+  "kwargs": {
+   "text": "Людям хочется другого прогноза. Хочется услышать приятное",
+   "watermark": "ПЛАНЕТА"
+  }
+ },
+ {
+  "scene": 58,
+  "view": "schetchik_let",
+  "dur": 8.3,
+  "anim": 2.6,
+  "tail_zoom": 0.045,
+  "watermark": "ПЛАНЕТА",
+  "channel": "ПЛАНЕТА",
+  "kwargs": {
+   "channel": "ПЛАНЕТА",
+   "dur": 8.3,
+   "value": "2027",
+   "accent": "ГОД",
+   "watermark": "ПЛАНЕТА"
+  }
+ },
+ {
+  "scene": 59,
+  "view": "shtamp_lestnica",
+  "dur": 7.6,
+  "anim": 2.6,
+  "tail_zoom": 0.045,
+  "watermark": "ПЛАНЕТА",
+  "channel": "ПЛАНЕТА",
+  "kwargs": {
+   "channel": "ПЛАНЕТА",
+   "dur": 7.6,
+   "kick": "Провалы операций",
+   "accent": "ОТКАЗ",
+   "items": [
+    "Высадка у Энергодара",
+    "Действия на косе",
+    "Тяжёлые потери"
+   ],
+   "watermark": "ПЛАНЕТА"
+  }
+ },
+ {
+  "scene": 60,
+  "view": "slider",
+  "dur": 7.3,
+  "anim": 7.3,
+  "tail_zoom": 0.0,
+  "watermark": "ПЛАНЕТА",
+  "channel": "ПЛАНЕТА",
+  "kwargs": {},
+  "mode": "cli",
+  "script": "build_chart_slider.py",
+  "cfg": {
+   "title": "",
+   "min": 0.0,
+   "max": 100.0,
+   "low": 17.0,
+   "high": 60.0,
+   "marker_value": 17.0,
+   "marker_display": "17",
+   "seconds": 7.3,
+   "range_label": "Возраст проверки",
+   "caption": "от 17 до 60 лет",
+   "source": ""
+  }
+ },
+ {
+  "scene": 65,
+  "view": "sceny.repliki",
+  "mode": "cli",
+  "script": "sceny_cli.py",
+  "dur": 3.5,
+  "channel": "ПЛАНЕТА",
+  "watermark": "ПЛАНЕТА",
+  "cfg": {
+   "view": "repliki",
+   "seconds": 3.5,
+   "fps": 30,
+   "t0": 0.0,
+   "kwargs": {
+    "text": "Заявления о мобилизации",
+    "channel": "ПЛАНЕТА",
+    "watermark": "ПЛАНЕТА",
+    "dur": 3.5,
+    "repliki_": [
+     "Зеленский|без столицы не будет страны",
+     "Гончаренко|лишить брони до 300 тысяч",
+     "Кравченко|приоритетная задача",
+     "Трамп|давит на Зеленского"
+    ]
+   }
+  },
+  "kwargs": {
+   "text": "Заявления о мобилизации",
+   "channel": "ПЛАНЕТА",
+   "watermark": "ПЛАНЕТА",
+   "dur": 3.5,
+   "repliki_": [
+    "Зеленский|без столицы не будет страны",
+    "Гончаренко|лишить брони до 300 тысяч",
+    "Кравченко|приоритетная задача",
+    "Трамп|давит на Зеленского"
+   ]
+  }
+ },
+ {
+  "scene": 67,
+  "view": "tape",
+  "dur": 5.0,
+  "anim": 2.4,
+  "tail_zoom": 0.04,
+  "watermark": "ПЛАНЕТА",
+  "channel": "ПЛАНЕТА",
+  "kwargs": {
+   "text": "Подразделения уже движутся к цели",
+   "watermark": "ПЛАНЕТА"
+  }
+ },
+ {
+  "scene": 79,
+  "view": "cheklist",
+  "dur": 6.1,
+  "anim": 2.6,
+  "tail_zoom": 0.045,
+  "watermark": "ПЛАНЕТА",
+  "channel": "ПЛАНЕТА",
+  "kwargs": {
+   "channel": "ПЛАНЕТА",
+   "dur": 6.1,
+   "items": [
+    "+Техника",
+    "-Личный состав",
+    "?Переправы"
+   ],
+   "kick": "Готовность к наступлению",
+   "watermark": "ПЛАНЕТА"
+  }
+ },
+ {
+  "scene": 83,
+  "view": "paper_typed",
+  "dur": 9.5,
+  "anim": 2.8,
+  "tail_zoom": 0.04,
+  "watermark": "ПЛАНЕТА",
+  "channel": "ПЛАНЕТА",
+  "kwargs": {
+   "text": "Публичные слова делают договорённость настолько узкой, что проходить через неё придётся боком",
+   "watermark": "ПЛАНЕТА"
+  }
+ },
+ {
+  "scene": 85,
+  "view": "karta_koltso",
+  "dur": 11.1,
+  "anim": 2.6,
+  "tail_zoom": 0.045,
+  "watermark": "ПЛАНЕТА",
+  "channel": "ПЛАНЕТА",
+  "kwargs": {
+   "channel": "ПЛАНЕТА",
+   "dur": 11.1,
+   "lon_c": 17.23,
+   "lat_c": 26.34,
+   "span": 50.0,
+   "country": "Ливия",
+   "accent": "Ливия",
+   "kick": "атака на корабль",
+   "watermark": "ПЛАНЕТА"
+  }
+ },
+ {
+  "scene": 94,
+  "view": "charts.slope",
+  "dur": 8.2,
+  "anim": 2.6,
+  "tail_zoom": 0.045,
+  "watermark": "ПЛАНЕТА",
+  "channel": "ПЛАНЕТА",
+  "kwargs": {
+   "items": [
+    {
+     "label": "Отсрочка",
+     "from": 1.0,
+     "to": 1.0,
+     "to_label": "Отменена"
+    },
+    {
+     "label": "Бронь",
+     "from": 1.0,
+     "to": 1.0,
+     "to_label": "Под вопросом"
+    }
+   ],
+   "left_label": "Было",
+   "right_label": "Стало",
+   "source": "текст сценария",
+   "sobytiya": true,
+   "watermark": "ПЛАНЕТА"
+  }
+ },
+ {
+  "scene": 96,
+  "view": "sceny.globus_map",
+  "mode": "cli",
+  "script": "sceny_cli.py",
+  "dur": 8.7,
+  "channel": "ПЛАНЕТА",
+  "watermark": "ПЛАНЕТА",
+  "cfg": {
+   "view": "globus",
+   "seconds": 8.7,
+   "fps": 30,
+   "t0": 0.0,
+   "kwargs": {
+    "text": "Выбор не из хороших вариантов",
+    "channel": "ПЛАНЕТА",
+    "watermark": "ПЛАНЕТА",
+    "dur": 8.7,
+    "region": "Украина"
+   }
+  },
+  "kwargs": {
+   "text": "Выбор не из хороших вариантов",
+   "channel": "ПЛАНЕТА",
+   "watermark": "ПЛАНЕТА",
+   "dur": 8.7,
+   "region": "Украина"
+  }
+ },
+ {
+  "scene": 99,
+  "view": "pull",
+  "dur": 13.01,
+  "anim": 2.6,
+  "tail_zoom": 0.05,
+  "watermark": "ПЛАНЕТА",
+  "channel": "ПЛАНЕТА",
+  "kwargs": {
+   "text": "Бумажная карта спорить не станет. Живых людей сначала надо найти",
+   "watermark": "ПЛАНЕТА"
+  }
+ }
+]
